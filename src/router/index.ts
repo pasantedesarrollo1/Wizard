@@ -1,17 +1,15 @@
 import { createRouter, createWebHistory } from "@ionic/vue-router"
 import type { RouteRecordRaw } from "vue-router"
-import WizardContainer from "@/pages/wizards/WizardContainer.vue"
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/wizard",
+    redirect: "/wizard/ventas",
   },
   {
-    path: "/wizard",
-    name: "Wizard",
-    component: WizardContainer,
-  },
+    path: "/wizard/ventas",
+    component: () => import("@/pages/wizards/ventas/indexVentas.vue")
+  }
 ]
 
 const router = createRouter({
@@ -20,4 +18,3 @@ const router = createRouter({
 })
 
 export default router
-
