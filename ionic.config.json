@@ -1,0 +1,7 @@
+{
+  "name": "Wizard",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
