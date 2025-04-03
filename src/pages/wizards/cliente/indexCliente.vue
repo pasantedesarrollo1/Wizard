@@ -2,7 +2,7 @@
   <IonPage>
     <IonHeader>
       <IonToolbar>
-        <IonTitle>Wizard de Ventas</IonTitle>
+        <IonTitle>Wizard de Cliente</IonTitle>
       </IonToolbar>
     </IonHeader>
     
@@ -13,7 +13,7 @@
         
         <!-- Contenido condicional -->
         <div class="ion-padding-top">
-          <welcomeVentas v-if="currentStep === 0" />
+          <welcomeCliente v-if="currentStep === 0" />
           <personalData v-else-if="currentStep === 1" />
         </div>
         
@@ -29,11 +29,11 @@
 <script setup>
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton } from '@ionic/vue';
 import ProgressBar from "@/components/common/progressBar.vue";
-import welcomeVentas from "@/components/wizard/ventas/welcomeVentas.vue"; 
+import welcomeCliente from "@/components/wizard/cliente/welcomeCliente.vue";
 import personalData from "@/pages/wizards/common/personalData.vue";
 import { useWizardProgress } from "@/composables/useWizardProgress";
 
-const { steps, currentStep } = useWizardProgress("ventas");
+const { steps, currentStep } = useWizardProgress("cliente");
 
 const nextStep = () => {
   if (currentStep.value < steps.value.length - 1) {

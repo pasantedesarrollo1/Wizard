@@ -4,11 +4,19 @@ import type { RouteRecordRaw } from "vue-router"
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/wizard/ventas",
+    redirect: "/wizard/sales",
   },
   {
-    path: "/wizard/ventas",
+    path: "/wizard/sales",
     component: () => import("@/pages/wizards/ventas/indexVentas.vue")
+  },
+  {
+    path: "/wizard/support",
+    component: () => import("@/pages/wizards/soporte/indexSoporte.vue")
+  },
+  {
+    path: "/wizard/client",
+    component: () => import("@/pages/wizards/cliente/indexCliente.vue")
   }
 ]
 
