@@ -4,7 +4,11 @@ import type { RouteRecordRaw } from "vue-router"
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/wizard/sales",
+    redirect: "/wizard/general",
+  },
+  {
+    path: "/wizard/sales",
+    component: () => import("@/pages/wizards/general/indexGeneral.vue")
   },
   {
     path: "/wizard/sales",

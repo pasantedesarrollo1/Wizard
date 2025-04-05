@@ -4,7 +4,7 @@ export interface WizardStep {
   key: string;
   description?: string;
 }
-export function useWizardProgress(type: 'ventas' | 'soporte' | 'cliente') {
+export function useWizardProgress(type: 'ventas' | 'soporte' | 'cliente' | 'general') {
   // Definir los pasos comunes
   const commonSteps: WizardStep[] = [
     { label: "Inicio", key: "start"},
@@ -28,6 +28,11 @@ export function useWizardProgress(type: 'ventas' | 'soporte' | 'cliente') {
       ...commonSteps,
       { label: "Información de Cuenta", key: "account-info"},
       { label: "Resumen", key: "summary"}
+    ],
+    general: [
+      ...commonSteps,
+      { label: "Inf", key: "account-info"},
+      { label: "Resu", key: "summary"}
     ]
   };
 

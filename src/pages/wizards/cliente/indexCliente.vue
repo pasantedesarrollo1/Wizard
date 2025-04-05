@@ -7,7 +7,6 @@
       :current-step="currentStep" 
       :show-title="true"
       @update:current-step="updateStep"
-      class="add"
     />
     
     <!-- Contenedor del contenido -->
