@@ -1,91 +1,233 @@
 <template>
-    <IonPage>
-      <IonContent class="ion-content">
-    <div class="wizard-container">
-      <ProgressBar 
-        :steps="steps" 
-        :current-step="currentStep" 
-        :show-title="true"
-        @update:current-step="updateStep"
-      />
-      
-      <!-- Contenedor del contenido -->
-      <div class="wizard-content">
-        <welcomeGeneral v-if="currentStep === 0" />
-        <personalData v-else-if="currentStep === 1" />
-        <!-- Otros componentes para pasos adicionales -->
+  <IonPage>
+    <IonContent class="ion-content">
+      <div class="wizard-container">
+        <ProgressBar 
+          :steps="steps" 
+          :current-step="currentStep" 
+          :show-title="true"
+          @update:current-step="updateStep"
+        />
+        
+        <!-- Contenedor del contenido -->
+        <div class="wizard-content">
+          <!-- Renderizado dinámico basado en el paso actual -->
+          <template v-if="hasSubStepsForCurrentStep">
+            <!-- Si el paso actual tiene sub-pasos -->
+            <div class="sub-step-container">
+              <!-- Indicador de sub-paso -->
+              <div class="sub-step-indicator" v-if="currentSubStep">
+                <p class="text-sm text-center mb-4">
+                  Sub-paso {{ currentSubStepIndex + 1 }} de {{ totalSubStepsForCurrentStep }}: 
+                  {{ currentSubStep.title }}
+                </p>
+              </div>
+              
+              <!-- Componente del sub-paso actual -->
+              <component 
+                v-if="currentSubStep" 
+                :is="currentSubStep.component" 
+              />
+            </div>
+          </template>
+          <template v-else>
+            <!-- Renderizado normal para pasos sin sub-pasos -->
+            <welcomeGeneral v-if="currentStep === 0" />
+            <personalData v-else-if="currentStep === 1" />
+            <!-- Aquí puedes añadir más pasos sin sub-pasos -->
+          </template>
+        </div>
+        
+        <!-- Botones de navegación -->
+        <div class="navigation-controls">
+          <IonButton fill="outline" @click="handlePrevious" :disabled="currentStep === 0">
+            Anterior
+          </IonButton>
+          <IonButton @click="handleNext" :disabled="isLastStep">
+            {{ isSecondLastStep ? 'Completar' : 'Siguiente' }}
+          </IonButton>
+        </div>
       </div>
-      
-      <!-- Botones de navegación -->
-      <div class="navigation-controls">
-        <IonButton fill="outline" @click="prevStep" :disabled="currentStep === 0">
-          Anterior
-        </IonButton>
-        <IonButton @click="nextStep" :disabled="currentStep === steps.length - 1">
-          {{ currentStep === steps.length - 2 ? 'Completar' : 'Siguiente' }}
-        </IonButton>
-      </div>
-    </div>
-  </IonContent>
-    </IonPage>
-  </template>
+    </IonContent>
+  </IonPage>
+</template>
+
+<script setup lang="ts">
+import { IonPage, IonContent, IonButton } from '@ionic/vue';
+import { computed, markRaw, defineAsyncComponent } from 'vue';
+import ProgressBar from "@/components/common/progressBar.vue";
+import welcomeGeneral from "@/components/wizard/general/welcomeGeneral.vue";
+import personalData from "@/pages/wizards/common/personalData.vue";
+import { useWizardProgress } from "@/composables/useWizardProgress";
+import { useWizardSubSteps } from "@/composables/useWizardSubSteps";
+
+// Importamos los componentes para los sub-pasos
+// Usamos markRaw para evitar problemas de reactividad con los componentes
+const companyInfo = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/createCompany/companyInfo.vue")));
+const companyContact = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/createCompany/companyContact.vue")));
+
+// Obtenemos los pasos del wizard
+const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress("general");
+
+// Configuración de sub-pasos para cada paso principal
+// Esta es la parte clave que te permite agregar o quitar sub-pasos fácilmente
+const subStepsConfig = {
+  // El paso 'create-company' (índice 2) tiene sub-pasos
+  'create-company': [
+    { title: "Información Básica", component: companyInfo },
+    { title: "Datos de Contacto", component: companyContact },
+  ],
+};
+
+// Inicializamos el composable de sub-pasos con la configuración
+const { 
+  currentSubStepIndex, 
+  hasSubSteps,
+  getCurrentSubStep,
+  getTotalSubSteps,
+  nextSubStep,
+  prevSubStep,
+  resetSubStep
+} = useWizardSubSteps(subStepsConfig);
+
+// Obtenemos la clave del paso actual
+const currentStepKey = computed(() => {
+  return steps.value[currentStep.value]?.key || '';
+});
+
+// Verificamos si el paso actual tiene sub-pasos
+const hasSubStepsForCurrentStep = computed(() => {
+  return hasSubSteps(currentStepKey.value);
+});
+
+// Obtenemos el sub-paso actual
+const currentSubStep = computed(() => {
+  return getCurrentSubStep(currentStepKey.value);
+});
+
+// Obtenemos el número total de sub-pasos para el paso actual
+const totalSubStepsForCurrentStep = computed(() => {
+  return getTotalSubSteps(currentStepKey.value);
+});
+
+// Verificamos si estamos en el último paso
+const isLastStep = computed(() => {
+  return currentStep.value === steps.value.length - 1;
+});
+
+// Verificamos si estamos en el penúltimo paso y último sub-paso
+const isSecondLastStep = computed(() => {
+  const isSecondLast = currentStep.value === steps.value.length - 2;
+  if (!isSecondLast) return false;
   
-  <script setup lang="ts">
-  import { IonPage, IonContent, IonButton } from '@ionic/vue';
-  import ProgressBar from "@/components/common/progressBar.vue";
-  import welcomeGeneral from "@/components/wizard/general/welcomeGeneral.vue";
-  import personalData from "@/pages/wizards/common/personalData.vue";
-  import { useWizardProgress } from "@/composables/useWizardProgress";
-  
-  const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress("general");
-  
-  const updateStep = (step: number) => {
-    goToStep(step);
-  };
-  </script>
-  
-  <style scoped>
-  .ion-content {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Asegura que ocupe toda la pantalla */
+  if (hasSubStepsForCurrentStep.value) {
+    return currentSubStepIndex.value === totalSubStepsForCurrentStep.value - 1;
   }
   
-  .wizard-container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1; /* Permite que crezca */
-    height: 100%; /* Asegura que ocupe toda la altura disponible */
+  return true;
+});
+
+// Maneja la lógica de navegación "siguiente"
+const handleNext = () => {
+  // Si el paso actual tiene sub-pasos
+  if (hasSubStepsForCurrentStep.value) {
+    // Intentamos avanzar al siguiente sub-paso
+    const completed = nextSubStep(currentStepKey.value);
+    
+    // Si hemos completado todos los sub-pasos, avanzamos al siguiente paso principal
+    if (completed) {
+      nextStep();
+    }
+    
+    return;
   }
   
-  .wizard-content {
-    flex-grow: 1; /* Hace que el contenido ocupe el espacio restante */
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Cambiado de center a flex-start para que el contenido empiece desde arriba */
-    padding: 20px;
-    overflow-y: auto; /* Permite scroll si el contenido es muy grande */
+  // Para pasos sin sub-pasos, comportamiento normal
+  nextStep();
+};
+
+// Maneja la lógica de navegación "anterior"
+const handlePrevious = () => {
+  // Si el paso actual tiene sub-pasos
+  if (hasSubStepsForCurrentStep.value) {
+    // Intentamos retroceder al sub-paso anterior
+    const goToPrevStep = prevSubStep(currentStepKey.value);
+    
+    // Si estamos en el primer sub-paso, retrocedemos al paso principal anterior
+    if (goToPrevStep) {
+      prevStep();
+    }
+    
+    return;
   }
   
-  .navigation-controls {
-    display: flex;
-    justify-content: space-between;
-    padding-right: 16px;
-    padding-left: 16px;
-    padding-top: 7;
-    padding-bottom: 7;
-    background: white;
-    position: sticky; /* Cambiado de static a sticky */
-    bottom: 0; /* Fija al fondo */
-    width: 100%;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); /* Añade una sombra sutil para separar visualmente */
-    z-index: 10; /* Asegura que esté por encima de otros elementos */
+  // Para pasos sin sub-pasos, comportamiento normal
+  prevStep();
+};
+
+// Maneja la actualización manual del paso
+const updateStep = (step: number) => {
+  // Si cambiamos a un paso diferente, reseteamos el sub-paso
+  if (step !== currentStep.value) {
+    resetSubStep();
   }
   
-  .ion-content {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Asegura que ocupe toda la pantalla */
-  }
-  
-  </style>
+  goToStep(step);
+};
+</script>
+
+<style scoped>
+.ion-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Asegura que ocupe toda la pantalla */
+}
+
+.wizard-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Permite que crezca */
+  height: 100%; /* Asegura que ocupe toda la altura disponible */
+}
+
+.wizard-content {
+  flex-grow: 1; /* Hace que el contenido ocupe el espacio restante */
+  display: flex;
+  flex-direction: column; /* Cambiado a column para que el indicador esté arriba */
+  align-items: center;
+  padding: 20px;
+  overflow-y: auto; /* Permite scroll si el contenido es muy grande */
+}
+
+.sub-step-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sub-step-indicator {
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 8px;
+  background-color: rgba(0, 60, 255, 0.05);
+  border-radius: 8px;
+}
+
+.navigation-controls {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 16px;
+  padding-left: 16px;
+  padding-top: 7;
+  padding-bottom: 7;
+  background: white;
+  position: sticky; /* Cambiado de static a sticky */
+  bottom: 0; /* Fija al fondo */
+  width: 100%;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); /* Añade una sombra sutil para separar visualmente */
+  z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+</style>

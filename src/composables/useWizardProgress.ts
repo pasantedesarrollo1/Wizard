@@ -8,7 +8,8 @@ export function useWizardProgress(type: 'ventas' | 'soporte' | 'cliente' | 'gene
   // Definir los pasos comunes
   const commonSteps: WizardStep[] = [
     { label: "Inicio", key: "start"},
-    { label: "Datos Personales", key: "personal-info"}
+    { label: "Datos Personales", key: "personal-info"},
+    { label: "Creacion Empresa", key: "create-company"},
   ];
 
   // Definir los pasos específicos por wizard

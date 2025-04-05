@@ -110,20 +110,17 @@
     </div>
   </template>
   
-  <script>
-  export default {
-    data() {
-      return {
-        animationComplete: false
-      };
-    },
-    mounted() {
-      // Add additional animation effects after initial load
-      setTimeout(() => {
-        this.animationComplete = true;
-      }, 4000);
-    }
-  }
+  <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+
+const animationComplete = ref(false);
+
+onMounted(() => {
+  setTimeout(() => {
+    animationComplete.value = true;
+  }, 4000);
+});
+
   </script>
   
   <style>

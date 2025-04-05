@@ -14,7 +14,7 @@
 
       <!-- Dirección -->
       <div>
-        <label>Dirección</label>
+        <label>Dirección Domiciliaria</label>
         <br />
         <input type="text" class="border border-black px-2 py-1 rounded w-full"/>
       </div>
@@ -33,10 +33,6 @@
         <input type="tel" class="border border-black px-2 py-1 rounded w-full"/>
       </div>
       <br>
-      <!-- Botón de enviar -->
-      <div class="flex justify-center border border-black px-2 py-1 rounded w-full" >
-        <button type="submit" >ENVIAR</button>
-      </div>
     </form>
   </div>
 </template>
