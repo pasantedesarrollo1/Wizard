@@ -104,6 +104,14 @@ const configDocumentDefault = markRaw(defineAsyncComponent(() =>
   import("@/pages/wizards/common/configuracionCompany/configDocumentDefault.vue")));
 const configParameterSearch = markRaw(defineAsyncComponent(() => 
   import("@/pages/wizards/common/configuracionCompany/configParameterSearch.vue")));
+const configRipe = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/configuracionCompany/configRipe.vue")));
+const configRetencion = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/configuracionCompany/configRetencion.vue")));
+const configArtesano = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/configuracionCompany/configArtesano.vue")));
+const configInventario = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/configuracionCompany/configInventario.vue")));
 // Variable para almacenar el tipo de compañía seleccionado
 const tipoCompaniaSeleccionado = ref<string>('');
 
@@ -150,6 +158,10 @@ const subStepsConfig = ref({
     { title: "Configuracion de Tipo de Documento", component: configDocumentType },
     { title: "Configuracion de Documento por Defecto", component: configDocumentDefault },
     { title: "Configuracion del Parametro de busqueda", component: configParameterSearch },
+    { title: "Configuracion de RIPE", component: configRipe },
+    { title: "Configuracion de Agente de retencion", component: configRetencion },
+    { title: "Configuracion de Artesano", component: configArtesano },
+    { title: "Configuracion de Control de Inventario", component: configInventario },
   ],
   'sucursal-punto-venta-inicial': [
     { title: "Creacion de Sucursal", component: companySucursal },
