@@ -67,6 +67,10 @@ const companyInfo = markRaw(defineAsyncComponent(() =>
   import("@/pages/wizards/common/createCompany/companyInfo.vue")));
 const companyContact = markRaw(defineAsyncComponent(() => 
   import("@/pages/wizards/common/createCompany/companyContact.vue")));
+const companyType = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/createCompany/companyType.vue")));
+const companyDomain = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/createCompany/companyDomain.vue")));
 
 // Obtenemos los pasos del wizard
 const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress("general");
@@ -77,8 +81,9 @@ const subStepsConfig = {
   // El paso 'create-company' (índice 2) tiene sub-pasos
   'create-company': [
     { title: "Información Básica", component: companyInfo },
-    { title: "Datos de Contacto", component: companyContact },
-  ],
+    { title: "Tipo de compania", component: companyType },
+    { title: "Dominio", component: companyDomain },
+    { title: "Datos de Contacto", component: companyContact },  ],
 };
 
 // Inicializamos el composable de sub-pasos con la configuración

@@ -14,6 +14,12 @@
           <br />
           <input type="tel" class="border border-black px-2 py-1 rounded w-full"/>
         </div>
+              <!-- Correo Electrónico -->
+      <div>
+        <label>Correo Electrónico Empresarial</label>
+        <br />
+        <input type="email" class="border border-black px-2 py-1 rounded w-full"/>
+      </div>
       </form>
     </div>
   </template>
