@@ -27,6 +27,7 @@
               <component 
                 v-if="currentSubStep" 
                 :is="currentSubStep.component" 
+                @update:tipoCompania="handleTipoCompaniaChange"
               />
             </div>
           </template>
@@ -34,6 +35,7 @@
             <!-- Renderizado normal para pasos sin sub-pasos -->
             <welcomeGeneral v-if="currentStep === 0" />
             <personalData v-else-if="currentStep === 1" />
+            <impuestosManejar v-else-if="currentStep === 4" />
             <!-- Aquí puedes añadir más pasos sin sub-pasos -->
           </template>
         </div>
@@ -54,10 +56,11 @@
 
 <script setup lang="ts">
 import { IonPage, IonContent, IonButton } from '@ionic/vue';
-import { computed, markRaw, defineAsyncComponent } from 'vue';
+import { computed, markRaw, defineAsyncComponent, ref } from 'vue';
 import ProgressBar from "@/components/common/progressBar.vue";
 import welcomeGeneral from "@/components/wizard/general/welcomeGeneral.vue";
 import personalData from "@/pages/wizards/common/personalData.vue";
+import impuestosManejar from "@/pages/wizards/common/impuestosManejar.vue";
 import { useWizardProgress } from "@/composables/useWizardProgress";
 import { useWizardSubSteps } from "@/composables/useWizardSubSteps";
 
@@ -79,29 +82,53 @@ const companyTuristico = markRaw(defineAsyncComponent(() =>
   import("@/pages/wizards/common/sucursalPOS/companyTuristico.vue")));
 const companyPOS = markRaw(defineAsyncComponent(() => 
   import("@/pages/wizards/common/sucursalPOS/companyPOS.vue")));
+const companyPlanComercios = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/createCompany/companyPlanComercios.vue")));
+const companyPlanRestaurantes = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/createCompany/companyPlanRestaurantes.vue")));
+
+// Variable para almacenar el tipo de compañía seleccionado
+const tipoCompaniaSeleccionado = ref<string>('');
 
 // Obtenemos los pasos del wizard
 const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress("general");
 
-// Configuración de sub-pasos para cada paso principal
-// Esta es la parte clave que te permite agregar o quitar sub-pasos fácilmente
-const subStepsConfig = {
-  // El paso 'create-company' (índice 2) tiene sub-pasos
-  'create-company': [
-    { title: "Información Básica", component: companyInfo },
-    { title: "Tipo de compania", component: companyType },
-    { title: "Dominio", component: companyDomain },
-    { title: "Datos de Contacto", component: companyContact },  
-  ],
-  'sucursal-punto-venta-inicial': [
-    { title: "Creacion de Sucursal", component: companySucursal },
-    { title: "Creacion de Sucursal", component: companyDespacho },
-    { title: "Creacion de Sucursal", component: companyTuristico },
-    { title: "Creacion de Punto de Venta", component: companyPOS },
-    ],
+// Función para manejar el cambio en el tipo de compañía
+const handleTipoCompaniaChange = (tipo: string) => {
+  // Actualizamos el tipo de compañía seleccionado
+  tipoCompaniaSeleccionado.value = tipo;
+  console.log('Tipo de compañía seleccionado:', tipo);
 };
 
-// Inicializamos el composable de sub-pasos con la configuración
+// Configuración dinámica de sub-pasos basada en el tipo de compañía
+const getSubStepsConfig = computed(() => {
+  // Configuración base de sub-pasos
+  const baseConfig = {
+    // El paso 'create-company' (índice 2) tiene sub-pasos
+    'create-company': [
+      { title: "Información Básica", component: companyInfo },
+      { title: "Tipo de compania", component: companyType },
+      // Aquí decidimos qué componente de plan mostrar según el tipo seleccionado
+      ...(tipoCompaniaSeleccionado.value === 'comercios' 
+        ? [{ title: "Planes Comercios", component: companyPlanComercios }]
+        : tipoCompaniaSeleccionado.value === 'restaurante'
+          ? [{ title: "Planes Restaurantes", component: companyPlanRestaurantes }]
+          : []), // Si no hay selección, no mostramos ningún plan
+      { title: "Dominio", component: companyDomain },
+      { title: "Datos de Contacto", component: companyContact },  
+    ],
+    'sucursal-punto-venta-inicial': [
+      { title: "Creacion de Sucursal", component: companySucursal },
+      { title: "Creacion de Sucursal", component: companyDespacho },
+      { title: "Creacion de Sucursal", component: companyTuristico },
+      { title: "Creacion de Punto de Venta", component: companyPOS },
+    ],
+  };
+  
+  return baseConfig;
+});
+
+// Inicializamos el composable de sub-pasos con la configuración dinámica
 const { 
   currentSubStepIndex, 
   hasSubSteps,
@@ -110,7 +137,7 @@ const {
   nextSubStep,
   prevSubStep,
   resetSubStep
-} = useWizardSubSteps(subStepsConfig);
+} = useWizardSubSteps(getSubStepsConfig.value);
 
 // Obtenemos la clave del paso actual
 const currentStepKey = computed(() => {
