@@ -8,7 +8,7 @@
           <br />
           <!-- Reemplazamos el select por un contenedor de cards -->
           <div class="cards-container">
-            <!-- Iteramos sobre las opciones para crear una card por cada tipo de compañía -->
+            <!-- Iteramos sobre las opciones para crear una card por cada tipo de documento -->
             <div 
               v-for="opcion in opcionesDocumentDefault" 
               :key="opcion.value" 
@@ -27,29 +27,91 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, defineEmits } from 'vue';
+  import { ref, defineEmits, defineProps, watch, onMounted } from 'vue';
   
   // Definimos los eventos que puede emitir este componente
   const emit = defineEmits<{
     (e: 'update:DocumentDefault', value: string): void;
   }>();
   
-  // Definimos la interfaz para las opciones de tipo de ID
+  // Definimos las propiedades que recibe el componente
+  const props = defineProps<{
+    recivoSeleccionado?: string;
+    documentTypeSeleccionado?: string;
+  }>();
+  
+  // Definimos la interfaz para las opciones de tipo de documento
   interface DocumentDefaultOpcion {
     label: string;
     value: string;
   }
   
   // Array con las opciones de tipo de documento por defecto
-  const opcionesDocumentDefault = ref<DocumentDefaultOpcion[]>([
-    { label: '', value: '' },
-    { label: '', value: '' },
-  ]);
+  // Inicializamos con un array vacío que se llenará dinámicamente
+  const opcionesDocumentDefault = ref<DocumentDefaultOpcion[]>([]);
   
-  // Variable para almacenar el tipo de ID seleccionado
+  // Variable para almacenar el tipo de documento seleccionado
   const DocumentDefaultSeleccionado = ref('');
   
-  // Función para seleccionar un tipo de compañía y emitir el evento
+  // Función para actualizar las opciones basadas en las selecciones previas
+  const actualizarOpciones = () => {
+    // Limpiamos el array de opciones
+    opcionesDocumentDefault.value = [];
+    
+    // Si se seleccionó "Si voy a manejar recivos" en configRecivos.vue
+    if (props.recivoSeleccionado === 'si') {
+      // Agregamos la opción de recibos
+      opcionesDocumentDefault.value.push({ 
+        label: 'Recivos', 
+        value: 'recivos' 
+      });
+      
+      // Mensaje de depuración
+      console.log('Se agregó la opción de recibos');
+    }
+    
+    // Si se seleccionó alguna opción en configDocumentType.vue
+    if (props.documentTypeSeleccionado) {
+      if (props.documentTypeSeleccionado === 'electronico') {
+        // Agregamos la opción de documento electrónico
+        opcionesDocumentDefault.value.push({ 
+          label: 'Electronico', 
+          value: 'electronico' 
+        });
+        
+        // Mensaje de depuración
+        console.log('Se agregó la opción de documento electrónico');
+      } else if (props.documentTypeSeleccionado === 'preimpresos') {
+        // Agregamos la opción de documento preimpreso
+        opcionesDocumentDefault.value.push({ 
+          label: 'Preimpresos', 
+          value: 'preimpresos' 
+        });
+        
+        // Mensaje de depuración
+        console.log('Se agregó la opción de documento preimpreso');
+      }
+    }
+    
+    // Mensaje de depuración con todas las opciones
+    console.log('Opciones actualizadas:', opcionesDocumentDefault.value);
+  };
+  
+  // Observamos cambios en las propiedades para actualizar las opciones
+  watch(() => props.recivoSeleccionado, () => {
+    actualizarOpciones();
+  });
+  
+  watch(() => props.documentTypeSeleccionado, () => {
+    actualizarOpciones();
+  });
+  
+  // Inicializamos las opciones al montar el componente
+  onMounted(() => {
+    actualizarOpciones();
+  });
+  
+  // Función para seleccionar un tipo de documento y emitir el evento
   const seleccionarDocumentDefault = (value: string) => {
     // Actualizamos el valor seleccionado
     DocumentDefaultSeleccionado.value = value;

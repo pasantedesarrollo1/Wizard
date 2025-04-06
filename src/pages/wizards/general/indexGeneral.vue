@@ -28,6 +28,10 @@
                 v-if="currentSubStep" 
                 :is="currentSubStep.component" 
                 @update:tipoCompania="handleTipoCompaniaChange"
+                @update:Recivos="handleRecivosChange"
+                @update:DocumentType="handleDocumentTypeChange"
+                :recivoSeleccionado="recivosSeleccionado"
+                :documentTypeSeleccionado="documentTypeSeleccionado"
               />
             </div>
           </template>
@@ -96,8 +100,16 @@ const configRecivos = markRaw(defineAsyncComponent(() =>
   import("@/pages/wizards/common/configuracionCompany/configRecivos.vue")));
 const configDocumentType = markRaw(defineAsyncComponent(() => 
   import("@/pages/wizards/common/configuracionCompany/configDocumentType.vue")));
+const configDocumentDefault = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/configuracionCompany/configDocumentDefault.vue")));
+const configParameterSearch = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/configuracionCompany/configParameterSearch.vue")));
 // Variable para almacenar el tipo de compañía seleccionado
 const tipoCompaniaSeleccionado = ref<string>('');
+
+// Variables para almacenar las selecciones de recibos y tipo de documento
+const recivosSeleccionado = ref<string>('');
+const documentTypeSeleccionado = ref<string>('');
 
 // Obtenemos los pasos del wizard
 const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress("general");
@@ -107,6 +119,18 @@ const handleTipoCompaniaChange = (tipo: string) => {
   // Actualizamos el tipo de compañía seleccionado
   tipoCompaniaSeleccionado.value = tipo;
   console.log('Tipo de compañía seleccionado:', tipo);
+};
+
+// Función para manejar el cambio en la selección de recibos
+const handleRecivosChange = (value: string) => {
+  recivosSeleccionado.value = value;
+  console.log('Recibos seleccionado:', value);
+};
+
+// Función para manejar el cambio en el tipo de documento
+const handleDocumentTypeChange = (value: string) => {
+  documentTypeSeleccionado.value = value;
+  console.log('Tipo de documento seleccionado:', value);
 };
 
 // Configuración de sub-pasos
@@ -122,8 +146,10 @@ const subStepsConfig = ref({
     { title: "Datos de Contacto", component: companyContact },  
   ],
   'config-company': [
-    { title: "Configuracion de Documentos", component: configRecivos },
-    { title: "Configuracion de Documentos", component: configDocumentType },
+    { title: "Configuracion de Recibos", component: configRecivos },
+    { title: "Configuracion de Tipo de Documento", component: configDocumentType },
+    { title: "Configuracion de Documento por Defecto", component: configDocumentDefault },
+    { title: "Configuracion del Parametro de busqueda", component: configParameterSearch },
   ],
   'sucursal-punto-venta-inicial': [
     { title: "Creacion de Sucursal", component: companySucursal },
