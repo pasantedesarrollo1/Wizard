@@ -71,6 +71,14 @@ const companyType = markRaw(defineAsyncComponent(() =>
   import("@/pages/wizards/common/createCompany/companyType.vue")));
 const companyDomain = markRaw(defineAsyncComponent(() => 
   import("@/pages/wizards/common/createCompany/companyDomain.vue")));
+const companySucursal = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/sucursalPOS/companySucursal.vue")));
+const companyDespacho = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/sucursalPOS/companyDespacho.vue")));
+const companyTuristico = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/sucursalPOS/companyTuristico.vue")));
+const companyPOS = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/sucursalPOS/companyPOS.vue")));
 
 // Obtenemos los pasos del wizard
 const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress("general");
@@ -83,7 +91,14 @@ const subStepsConfig = {
     { title: "Información Básica", component: companyInfo },
     { title: "Tipo de compania", component: companyType },
     { title: "Dominio", component: companyDomain },
-    { title: "Datos de Contacto", component: companyContact },  ],
+    { title: "Datos de Contacto", component: companyContact },  
+  ],
+  'sucursal-punto-venta-inicial': [
+    { title: "Creacion de Sucursal", component: companySucursal },
+    { title: "Creacion de Sucursal", component: companyDespacho },
+    { title: "Creacion de Sucursal", component: companyTuristico },
+    { title: "Creacion de Punto de Venta", component: companyPOS },
+    ],
 };
 
 // Inicializamos el composable de sub-pasos con la configuración
