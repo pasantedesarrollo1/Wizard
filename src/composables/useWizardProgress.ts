@@ -10,6 +10,7 @@ export function useWizardProgress(type: 'ventas' | 'soporte' | 'cliente' | 'gene
     { label: "Inicio", key: "start"},
     { label: "Datos Personales", key: "personal-info"},
     { label: "Creacion Empresa", key: "create-company"},
+    { label: "Configuraciones de la Empresa", key: "config-company"},
     { label: "Sucursal y Punto de Venta Inicial", key: "sucursal-punto-venta-inicial"},
     { label: "Impuestos a Manejar", key: "impuestos-manejar"},
   ];

@@ -92,7 +92,10 @@ const companyPagos = markRaw(defineAsyncComponent(() =>
   import("@/pages/wizards/common/createCompany/companyPagos.vue")));
 const companyTicketEmail = markRaw(defineAsyncComponent(() => 
   import("@/pages/wizards/common/createCompany/companyTicketEmail.vue")));
-
+const configRecivos = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/configuracionCompany/configRecivos.vue")));
+const configDocumentType = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/configuracionCompany/configDocumentType.vue")));
 // Variable para almacenar el tipo de compañía seleccionado
 const tipoCompaniaSeleccionado = ref<string>('');
 
@@ -117,6 +120,10 @@ const subStepsConfig = ref({
     { title: "Email del ticket", component: companyTicketEmail },
     { title: "Dominio", component: companyDomain },
     { title: "Datos de Contacto", component: companyContact },  
+  ],
+  'config-company': [
+    { title: "Configuracion de Documentos", component: configRecivos },
+    { title: "Configuracion de Documentos", component: configDocumentType },
   ],
   'sucursal-punto-venta-inicial': [
     { title: "Creacion de Sucursal", component: companySucursal },
