@@ -105,6 +105,17 @@
               animationDelay: `${3.5 + n * 0.2}s`
             }"></div>
           </div>
+
+          <!-- Botón Comenzar (Nuevo) -->
+                    <div class="start-button-container">
+            <button 
+              class="start-button" 
+              @click="onStartClick"
+              :style="{ animationDelay: '4.5s' }"
+            >
+              Comenzar
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -113,6 +124,9 @@
   <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
+// Definimos el evento que emitirá este componente cuando se haga clic en "Comenzar"
+const emit = defineEmits(['start']);
+
 const animationComplete = ref(false);
 
 onMounted(() => {
@@ -120,6 +134,12 @@ onMounted(() => {
     animationComplete.value = true;
   }, 4000);
 });
+
+// Función que se ejecuta cuando se hace clic en el botón "Comenzar"
+const onStartClick = () => {
+  // Emitimos el evento 'start' para notificar al componente padre
+  emit('start');
+};
 
   </script>
   
@@ -451,6 +471,48 @@ onMounted(() => {
     100% {
       transform: scale(1);
       opacity: 0.7;
+    }
+  }
+  
+    /* Nuevo: Estilos para el botón de comenzar */
+    .start-button-container {
+    margin-top: 2.5rem;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards;
+    animation-delay: 4.5s;
+  }
+  
+  .start-button {
+    background: linear-gradient(135deg, #003cff, #0080ff);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0, 60, 255, 0.2);
+    transition: all 0.3s ease;
+    transform: scale(0.95);
+  }
+  
+  .start-button:hover {
+    transform: scale(1);
+    box-shadow: 0 15px 25px rgba(0, 60, 255, 0.3);
+  }
+  
+  .start-button:active {
+    transform: scale(0.98);
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
   

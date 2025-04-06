@@ -1,7 +1,10 @@
 <template>
   <IonPage>
     <IonContent class="ion-content">
-  <div class="wizard-container">
+    <!-- Pantalla de bienvenida (se muestra primero) -->
+      <welcomeGeneral v-if="!started" @start="handleStart" />
+      <!-- Contenido principal del wizard (se muestra después de hacer clic en "Comenzar") -->
+      <div  v-else class="wizard-container">
     <ProgressBar 
       :steps="steps" 
       :current-step="currentStep" 
@@ -11,8 +14,7 @@
     
     <!-- Contenedor del contenido -->
     <div class="wizard-content">
-      <welcomeCliente v-if="currentStep === 0" />
-      <personalData v-else-if="currentStep === 1" />
+      <personalData v-if="currentStep === 0" />
       <!-- Otros componentes para pasos adicionales -->
     </div>
     
@@ -32,8 +34,9 @@
 
 <script setup lang="ts">
 import { IonPage, IonContent, IonButton } from '@ionic/vue';
+import { ref } from 'vue';
 import ProgressBar from "@/components/common/progressBar.vue";
-import welcomeCliente from "@/components/wizard/cliente/welcomeCliente.vue";
+import welcomeGeneral from "@/components/wizard/general/welcomeGeneral.vue";
 import personalData from "@/pages/wizards/common/personalData.vue";
 import { useWizardProgress } from "@/composables/useWizardProgress";
 
@@ -41,6 +44,12 @@ const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress("
 
 const updateStep = (step: number) => {
   goToStep(step);
+};
+const started = ref(false);
+
+// Función para manejar el evento de inicio desde welcomeGeneral
+const handleStart = () => {
+  started.value = true;
 };
 </script>
 

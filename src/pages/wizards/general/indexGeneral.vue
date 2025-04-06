@@ -1,7 +1,10 @@
 <template>
   <IonPage>
     <IonContent class="ion-content">
-      <div class="wizard-container">
+          <!-- Pantalla de bienvenida (se muestra primero) -->
+          <welcomeGeneral v-if="!started" @start="handleStart" />
+      <!-- Contenido principal del wizard (se muestra después de hacer clic en "Comenzar") -->
+      <div v-else class="wizard-container">
         <ProgressBar 
           :steps="steps" 
           :current-step="currentStep" 
@@ -37,8 +40,10 @@
           </template>
           <template v-else>
             <!-- Renderizado normal para pasos sin sub-pasos -->
-            <welcomeGeneral v-if="currentStep === 0" />
-            <personalData v-else-if="currentStep === 1" />
+            <!-- <welcomeGeneral v-if="currentStep === 0" /> -->
+            <!-- <personalData v-else-if="currentStep === 1" /> -->
+            <personalData v-if="currentStep === 0" />
+
             <!-- <impuestosManejar v-else-if="currentStep === 4" /> -->
             <!-- Aquí puedes añadir más pasos sin sub-pasos -->
           </template>
@@ -68,6 +73,12 @@ import personalData from "@/pages/wizards/common/personalData.vue";
 import { useWizardProgress } from "@/composables/useWizardProgress";
 import { useWizardSubSteps } from "@/composables/useWizardSubSteps";
 
+const started = ref(false);
+
+// Función para manejar el evento de inicio desde welcomeGeneral
+const handleStart = () => {
+  started.value = true;
+};
 // Importamos los componentes para los sub-pasos
 // Usamos markRaw para evitar problemas de reactividad con los componentes
 const companyInfo = markRaw(defineAsyncComponent(() => 
