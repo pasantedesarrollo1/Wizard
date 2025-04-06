@@ -39,7 +39,7 @@
             <!-- Renderizado normal para pasos sin sub-pasos -->
             <welcomeGeneral v-if="currentStep === 0" />
             <personalData v-else-if="currentStep === 1" />
-            <impuestosManejar v-else-if="currentStep === 4" />
+            <!-- <impuestosManejar v-else-if="currentStep === 4" /> -->
             <!-- Aquí puedes añadir más pasos sin sub-pasos -->
           </template>
         </div>
@@ -64,7 +64,7 @@ import { computed, markRaw, defineAsyncComponent, ref, watch } from 'vue';
 import ProgressBar from "@/components/common/progressBar.vue";
 import welcomeGeneral from "@/components/wizard/general/welcomeGeneral.vue";
 import personalData from "@/pages/wizards/common/personalData.vue";
-import impuestosManejar from "@/pages/wizards/common/impuestosManejar.vue";
+// import impuestosManejar from "@/pages/wizards/common/impuestosManejar.vue";
 import { useWizardProgress } from "@/composables/useWizardProgress";
 import { useWizardSubSteps } from "@/composables/useWizardSubSteps";
 
@@ -112,6 +112,10 @@ const configArtesano = markRaw(defineAsyncComponent(() =>
   import("@/pages/wizards/common/configuracionCompany/configArtesano.vue")));
 const configInventario = markRaw(defineAsyncComponent(() => 
   import("@/pages/wizards/common/configuracionCompany/configInventario.vue")));
+const configLogo = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/configuracionCompany/configLogo.vue")));
+const impuestosManejar = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/impuestosManejar.vue")));
 // Variable para almacenar el tipo de compañía seleccionado
 const tipoCompaniaSeleccionado = ref<string>('');
 
@@ -162,6 +166,8 @@ const subStepsConfig = ref({
     { title: "Configuracion de Agente de retencion", component: configRetencion },
     { title: "Configuracion de Artesano", component: configArtesano },
     { title: "Configuracion de Control de Inventario", component: configInventario },
+    { title: "Configuracion de Impuestos a Manejar", component: impuestosManejar },
+    { title: "Configuracion de Logo", component: configLogo },
   ],
   'sucursal-punto-venta-inicial': [
     { title: "Creacion de Sucursal", component: companySucursal },

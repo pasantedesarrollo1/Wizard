@@ -12,26 +12,19 @@ export function useWizardProgress(type: 'ventas' | 'soporte' | 'cliente' | 'gene
     { label: "Creacion Empresa", key: "create-company"},
     { label: "Configuraciones de la Empresa", key: "config-company"},
     { label: "Sucursal y Punto de Venta Inicial", key: "sucursal-punto-venta-inicial"},
-    { label: "Impuestos a Manejar", key: "impuestos-manejar"},
   ];
 
   // Definir los pasos específicos por wizard
   const wizardSteps = {
     ventas: [
       ...commonSteps,
-      { label: "Carrito", key: "cart"},
-      { label: "Pago", key: "payment"},
-      { label: "Confirmación", key: "confirmation"}
+      { label: "Consultor", key: "consultor"},
     ],
     soporte: [
       ...commonSteps,
-      { label: "Detalles del Ticket", key: "ticket-details"},
-      { label: "Confirmación", key: "confirmation"}
     ],
     cliente: [
       ...commonSteps,
-      { label: "Información de Cuenta", key: "account-info"},
-      { label: "Resumen", key: "summary"}
     ],
     general: [
       ...commonSteps,

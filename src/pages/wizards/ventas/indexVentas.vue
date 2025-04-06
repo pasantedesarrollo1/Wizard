@@ -12,7 +12,8 @@
     <!-- Contenedor del contenido -->
     <div class="wizard-content">
       <welcomeVentas v-if="currentStep === 0" />
-      <personalData v-else-if="currentStep === 1" />
+      <consultorVentas v-else-if="currentStep === 1" />
+      <personalData v-else-if="currentStep === 2" />
       <!-- Otros componentes para pasos adicionales -->
     </div>
     
@@ -36,6 +37,7 @@ import ProgressBar from "@/components/common/progressBar.vue";
 import welcomeVentas from "@/components/wizard/ventas/welcomeVentas.vue"; 
 import personalData from "@/pages/wizards/common/personalData.vue";
 import { useWizardProgress } from "@/composables/useWizardProgress";
+import consultorVentas from '@/components/wizard/ventas/consultorVentas.vue';
 
 const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress("ventas");
 

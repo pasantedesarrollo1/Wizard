@@ -28,7 +28,7 @@
         </div>
         <!-- Telefono de la sucursal (central.illarli)-->
         <div>
-          <label>Direccion de la Sucursal</label>
+          <label>Telefono de la sucursal</label>
           <br />
           <input type="text" class="border border-black px-2 py-1 rounded w-full"/>
         </div>
