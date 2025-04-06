@@ -56,7 +56,7 @@
 
 <script setup lang="ts">
 import { IonPage, IonContent, IonButton } from '@ionic/vue';
-import { computed, markRaw, defineAsyncComponent, ref } from 'vue';
+import { computed, markRaw, defineAsyncComponent, ref, watch } from 'vue';
 import ProgressBar from "@/components/common/progressBar.vue";
 import welcomeGeneral from "@/components/wizard/general/welcomeGeneral.vue";
 import personalData from "@/pages/wizards/common/personalData.vue";
@@ -100,35 +100,49 @@ const handleTipoCompaniaChange = (tipo: string) => {
   console.log('Tipo de compañía seleccionado:', tipo);
 };
 
-// Configuración dinámica de sub-pasos basada en el tipo de compañía
-const getSubStepsConfig = computed(() => {
-  // Configuración base de sub-pasos
-  const baseConfig = {
-    // El paso 'create-company' (índice 2) tiene sub-pasos
-    'create-company': [
-      { title: "Información Básica", component: companyInfo },
-      { title: "Tipo de compania", component: companyType },
-      // Aquí decidimos qué componente de plan mostrar según el tipo seleccionado
-      ...(tipoCompaniaSeleccionado.value === 'comercios' 
-        ? [{ title: "Planes Comercios", component: companyPlanComercios }]
-        : tipoCompaniaSeleccionado.value === 'restaurante'
-          ? [{ title: "Planes Restaurantes", component: companyPlanRestaurantes }]
-          : []), // Si no hay selección, no mostramos ningún plan
-      { title: "Dominio", component: companyDomain },
-      { title: "Datos de Contacto", component: companyContact },  
-    ],
-    'sucursal-punto-venta-inicial': [
-      { title: "Creacion de Sucursal", component: companySucursal },
-      { title: "Creacion de Sucursal", component: companyDespacho },
-      { title: "Creacion de Sucursal", component: companyTuristico },
-      { title: "Creacion de Punto de Venta", component: companyPOS },
-    ],
-  };
-  
-  return baseConfig;
+// Configuración de sub-pasos
+const subStepsConfig = ref({
+  // El paso 'create-company' (índice 2) tiene sub-pasos
+  'create-company': [
+    { title: "Información Básica", component: companyInfo },
+    { title: "Tipo de compania", component: companyType },
+    // Inicialmente no incluimos ningún plan, se añadirá dinámicamente
+    { title: "Dominio", component: companyDomain },
+    { title: "Datos de Contacto", component: companyContact },  
+  ],
+  'sucursal-punto-venta-inicial': [
+    { title: "Creacion de Sucursal", component: companySucursal },
+    { title: "Creacion de Sucursal", component: companyDespacho },
+    { title: "Creacion de Sucursal", component: companyTuristico },
+    { title: "Creacion de Punto de Venta", component: companyPOS },
+  ],
 });
 
-// Inicializamos el composable de sub-pasos con la configuración dinámica
+// Observamos cambios en tipoCompaniaSeleccionado para actualizar los sub-pasos
+watch(tipoCompaniaSeleccionado, (newValue) => {
+  // Obtenemos la configuración actual
+  const currentConfig = [...subStepsConfig.value['create-company']];
+  
+  // Eliminamos cualquier plan existente (si lo hubiera)
+  const filteredConfig = currentConfig.filter(step => 
+    step.title !== "Planes Comercios" && step.title !== "Planes Restaurantes");
+  
+  // Determinamos qué plan insertar basado en el tipo seleccionado
+  if (newValue === 'comercios') {
+    // Insertamos el plan de comercios después del tipo de compañía (índice 1)
+    filteredConfig.splice(2, 0, { title: "Planes Comercios", component: companyPlanComercios });
+  } else if (newValue === 'restaurante') {
+    // Insertamos el plan de restaurantes después del tipo de compañía (índice 1)
+    filteredConfig.splice(2, 0, { title: "Planes Restaurantes", component: companyPlanRestaurantes });
+  }
+  
+  // Actualizamos la configuración
+  subStepsConfig.value['create-company'] = filteredConfig;
+  
+  console.log('Configuración de sub-pasos actualizada:', subStepsConfig.value['create-company']);
+}, { immediate: true });
+
+// Inicializamos el composable de sub-pasos con la configuración
 const { 
   currentSubStepIndex, 
   hasSubSteps,
@@ -137,7 +151,7 @@ const {
   nextSubStep,
   prevSubStep,
   resetSubStep
-} = useWizardSubSteps(getSubStepsConfig.value);
+} = useWizardSubSteps(subStepsConfig.value);
 
 // Obtenemos la clave del paso actual
 const currentStepKey = computed(() => {

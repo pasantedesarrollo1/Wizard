@@ -13,7 +13,7 @@
               v-for="opcion in opcionesTipoPlanes" 
               :key="opcion.value" 
               class="company-card" 
-              :class="{ 'selected': tiposPlanesSeleccionados.includes(opcion.value) }"
+              :class="{ 'selected': tiposPlanesSeleccionados === opcion.value }"
               @click="toggleSeleccion(opcion.value)"
             >
               <!-- Texto centrado dentro de la card -->
@@ -45,18 +45,13 @@
   ]);
   
   // Cambiamos la variable para almacenar múltiples selecciones usando un array
-  const tiposPlanesSeleccionados = ref<string[]>([]);
+  const tiposPlanesSeleccionados = ref<string>('');
   
   // Función para alternar la selección de un impuesto
   const toggleSeleccion = (value: string) => {
-    // Si el valor ya está seleccionado, lo quitamos del array
-    if (tiposPlanesSeleccionados.value.includes(value)) {
-      tiposPlanesSeleccionados.value = tiposPlanesSeleccionados.value.filter(item => item !== value);
-    } 
-    // Si no está seleccionado, lo agregamos al array
-    else {
-      tiposPlanesSeleccionados.value.push(value);
-    }
+      tiposPlanesSeleccionados.value = value;
+    
+ 
   };
   
   // El resto del formulario sigue siendo simple sin validaciones ni estilos adicionales
