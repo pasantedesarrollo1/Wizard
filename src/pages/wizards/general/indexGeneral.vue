@@ -86,6 +86,12 @@ const companyPlanComercios = markRaw(defineAsyncComponent(() =>
   import("@/pages/wizards/common/createCompany/companyPlanComercios.vue")));
 const companyPlanRestaurantes = markRaw(defineAsyncComponent(() => 
   import("@/pages/wizards/common/createCompany/companyPlanRestaurantes.vue")));
+const companyFrecuencia = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/createCompany/companyFrecuencia.vue")));
+const companyPagos = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/createCompany/companyPagos.vue")));
+const companyTicketEmail = markRaw(defineAsyncComponent(() => 
+  import("@/pages/wizards/common/createCompany/companyTicketEmail.vue")));
 
 // Variable para almacenar el tipo de compañía seleccionado
 const tipoCompaniaSeleccionado = ref<string>('');
@@ -106,7 +112,9 @@ const subStepsConfig = ref({
   'create-company': [
     { title: "Información Básica", component: companyInfo },
     { title: "Tipo de compania", component: companyType },
-    // Inicialmente no incluimos ningún plan, se añadirá dinámicamente
+    { title: "Freuencia", component: companyFrecuencia },
+    { title: "Tipo de Pagos", component: companyPagos },
+    { title: "Email del ticket", component: companyTicketEmail },
     { title: "Dominio", component: companyDomain },
     { title: "Datos de Contacto", component: companyContact },  
   ],
