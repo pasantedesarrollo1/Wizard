@@ -63,8 +63,20 @@ export function getWizardComponents(): Record<string, Component> {
   const configLogo = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/configuracionCompany/configLogo.vue")),
   )
-  const impuestosManejar = markRaw(defineAsyncComponent(() => import("@/pages/wizards/common/impuestosManejar.vue")))
+  const impuestosManejar = markRaw(
+    defineAsyncComponent(() => import("@/pages/wizards/common/impuestosManejar.vue")))
 
+  const simpleQuestion = markRaw(
+    defineAsyncComponent(() => import("@/pages/wizards/common/subSetupsSimple/simpleQuestion.vue")),
+  )
+
+  const simpleQuestionSucursal = markRaw(
+    defineAsyncComponent(() => import("@/pages/wizards/common/subSetupsSimple/simpleQuestionSucursal.vue")),
+  )
+
+  const compoundQuestion = markRaw(
+    defineAsyncComponent(() => import("@/pages/wizards/common/subSetupsCompound/compoundQuestion.vue")),
+  )
   // Devolvemos todos los componentes en un objeto
   return {
     companyInfo,
@@ -88,6 +100,9 @@ export function getWizardComponents(): Record<string, Component> {
     configInventario,
     configLogo,
     impuestosManejar,
+    simpleQuestion,
+    simpleQuestionSucursal,
+    compoundQuestion,
   }
 }
 
@@ -100,27 +115,30 @@ export function getCommonSubStepsConfig() {
   return {
     "create-company": [
       { title: "Información Básica", component: components.companyInfo },
-      { title: "Dominio", component: components.companyDomain },
-      { title: "Email del ticket", component: components.companyTicketEmail },
       { title: "Datos de Contacto", component: components.companyContact },
+      { title: "Email del ticket", component: components.companyTicketEmail },
       { title: "Establecer un Logo", component: components.configLogo },
+      { title: "Dominio", component: components.companyDomain },
+    ],
+    "config-company": [
       { title: "Planes", component: components.companyPlanes },
       { title: "Tipo de Pagos", component: components.companyPagos },
       { title: "Frecuencia de Pago", component: components.companyFrecuencia },
-    ],
-    "config-company": [
-      { title: "Configuracion de Recibos", component: components.configRecivos },
-      { title: "Configuracion de Tipo de Documento", component: components.configDocumentType },
-      { title: "Configuracion de Documento por Defecto", component: components.configDocumentDefault },
-      { title: "Configuracion del Parametro de busqueda", component: components.configParameterSearch },
+      { title: "Preguntas simples", component: components.simpleQuestion },
+      // { title: "Configuracion de Recibos", component: components.configRecivos },
+      // { title: "Configuracion de Tipo de Documento", component: components.configDocumentType },
+      // { title: "Configuracion de Documento por Defecto", component: components.configDocumentDefault },
+      // { title: "Configuracion del Parametro de busqueda", component: components.configParameterSearch },
       { title: "Configuracion de RIPE", component: components.configRipe },
-      { title: "Configuracion de Agente de retencion", component: components.configRetencion },
-      { title: "Configuracion de Artesano", component: components.configArtesano },
-      { title: "Configuracion de Control de Inventario", component: components.configInventario },
-      { title: "Configuracion de Impuestos a Manejar", component: components.impuestosManejar },
+      { title: "Preguntas Compuestas", component: components.compoundQuestion },
+      // { title: "Configuracion de Agente de retencion", component: components.configRetencion },
+      // { title: "Configuracion de Artesano", component: components.configArtesano },
+      // { title: "Configuracion de Control de Inventario", component: components.configInventario },
+      // { title: "Configuracion de Impuestos a Manejar", component: components.impuestosManejar },
       { title: "Datos de la Sucursal", component: components.companySucursal },
-      { title: "Establecer Despacho", component: components.companyDespacho },
-      { title: "Tipo de Establecimiento", component: components.companyTuristico },
+      // { title: "Establecer Despacho", component: components.companyDespacho },
+      { title: "Preguntas simples Sucursal", component: components.simpleQuestionSucursal },
+      // { title: "Tipo de Establecimiento", component: components.companyTuristico },
       { title: "Creacion de Punto de Venta", component: components.companyPOS },
     ],
     "sucursal-punto-venta-inicial": [

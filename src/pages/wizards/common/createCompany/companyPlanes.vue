@@ -4,7 +4,7 @@
     <form>
       <!-- Impuestos a Manejar-->
       <div>
-        <label class="block text-center">Planes</label>
+        <label class="block text-center">Selecciona el plan de tu preferencia</label>
         <br />
         <!-- Reemplazamos el select por un contenedor de cards -->
         <div class="cards-container">
