@@ -42,8 +42,8 @@
   
   // Array con las opciones de tipo de identificación
   const opcionesInventario = ref<InventarioOpcion[]>([
-    { label: 'Si necesito manejar Control de Inventario', value: 'si' },
-    { label: 'No necesito manejar Control de Inventario', value: 'no' },
+    { label: 'Si necesita manejar Control de Inventario', value: 'si' },
+    { label: 'No necesita manejar Control de Inventario', value: 'no' },
   ]);
   
   // Variable para almacenar el tipo de ID seleccionado

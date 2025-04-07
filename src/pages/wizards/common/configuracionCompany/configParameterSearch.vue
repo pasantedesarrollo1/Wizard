@@ -4,7 +4,7 @@
       <form>
         <!-- Configuracion de parametro de busqueda sistema.illarli-->
         <div>
-          <label class="block text-center">¿Cuál es el parametro de busqueda que va a utilizar?</label>
+          <label class="block text-center">¿Cuál es el parámetro de busqueda que utilizará su Empresa?</label>
           <br />
           <!-- Reemplazamos el select por un contenedor de cards -->
           <div class="cards-container">

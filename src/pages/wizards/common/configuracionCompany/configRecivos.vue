@@ -4,7 +4,7 @@
       <form>
         <!-- Configuracion de documentos sistema.illarli-->
         <div>
-          <label class="block text-center">¿Usted va a Manejar Recivos? </label>
+          <label class="block text-center">¿Su empresa manejará Recivos? </label>
           <br />
           <!-- Reemplazamos el select por un contenedor de cards -->
           <div class="cards-container">
@@ -42,8 +42,8 @@
   
   // Array con las opciones de tipo de identificación
   const opcionesRecivos = ref<RecivosOpcion[]>([
-    { label: 'Si voy a manejar recivos', value: 'si' },
-    { label: 'No voy a manejar recivos', value: 'no' },
+    { label: 'Si manejará recivos', value: 'si' },
+    { label: 'No manejará recivos', value: 'no' },
   ]);
   
   // Variable para almacenar el tipo de ID seleccionado

@@ -108,13 +108,13 @@ export function getCommonSubStepsConfig() {
   return {
     "create-company": [
       { title: "Información Básica", component: components.companyInfo },
-      { title: "Tipo de Emprendimiento", component: components.companyType },
-      { title: "Frecuencia de Pago", component: components.companyFrecuencia },
-      { title: "Tipo de Pagos", component: components.companyPagos },
-      { title: "Email del ticket", component: components.companyTicketEmail },
       { title: "Dominio", component: components.companyDomain },
+      { title: "Email del ticket", component: components.companyTicketEmail },
       { title: "Datos de Contacto", component: components.companyContact },
       { title: "Establecer un Logo", component: components.configLogo },
+      { title: "Tipo de Emprendimiento", component: components.companyType },
+      { title: "Tipo de Pagos", component: components.companyPagos },
+      { title: "Frecuencia de Pago", component: components.companyFrecuencia },
     ],
     "config-company": [
       { title: "Configuracion de Recibos", component: components.configRecivos },

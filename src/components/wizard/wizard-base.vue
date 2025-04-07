@@ -114,14 +114,16 @@ const handleTipoCompaniaChange = (tipo: string) => {
   // Actualizamos la configuración de sub-pasos según el tipo de compañía seleccionado
   if (tipo === 'comercios') {
     // Si se selecciona "Comercios", insertamos el plan de comercios después del tipo de compañía
-    insertSubStep('create-company', 2, {
+    // Ya no usamos una posición fija (2), la función insertSubStep ahora buscará la posición correcta
+    insertSubStep('create-company', 0, {
       title: "Plan para Comercios",
       component: components.companyPlanComercios
     });
     console.log('Se ha añadido el plan de Comercios');
   } else if (tipo === 'restaurante') {
     // Si se selecciona "Restaurante", insertamos el plan de restaurantes después del tipo de compañía
-    insertSubStep('create-company', 2, {
+    // Ya no usamos una posición fija (2), la función insertSubStep ahora buscará la posición correcta
+    insertSubStep('create-company', 0, {
       title: "Plan para Restaurantes",
       component: components.companyPlanRestaurantes
     });

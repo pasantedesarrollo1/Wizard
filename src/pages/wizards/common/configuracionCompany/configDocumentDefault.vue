@@ -4,7 +4,7 @@
       <form>
         <!-- Configuracion de documentos sistema.illarli-->
         <div>
-          <label class="block text-center">¿Que tipo de documento va a utilizar por defecto?</label>
+          <label class="block text-center">¿Qué tipo de documento por defecto utilizará su Empresa?</label>
           <br />
           <!-- Reemplazamos el select por un contenedor de cards -->
           <div class="cards-container">
