@@ -67,6 +67,7 @@
 <script setup lang="ts">
 import { IonPage, IonContent, IonButton } from '@ionic/vue';
 import { computed, ref, PropType } from 'vue';
+import { useRouter } from 'vue-router'; // Importamos useRouter para la navegación
 import ProgressBar from "@/components/common/progressBar.vue";
 import welcomeGeneral from "@/components/wizard/general/welcomeGeneral.vue";
 import ConfirmationModal from "@/components/common/confirmation-modal.vue"; // Importamos el modal de confirmación
@@ -74,6 +75,9 @@ import { useWizardProgress } from "@/composables/useWizardProgress";
 import { useWizardSubSteps, WizardSubStepsConfig } from "@/composables/useWizardSubSteps";
 import { getWizardComponents } from "@/utils/wizard-imports";
 import type { Component } from 'vue';
+
+// Obtenemos el router para la navegación
+const router = useRouter(); // Añadimos esta línea para obtener el router
 
 // Props para configurar el wizard
 const props = defineProps({
@@ -231,9 +235,8 @@ const handleConfirmFinish = () => {
   // Aquí iría la lógica para finalizar el wizard
   console.log('Wizard finalizado correctamente');
   
-  // Opcional: Redirigir a otra página o mostrar un mensaje de éxito
-  // Por ahora, simplemente volvemos al primer paso
-  goToStep(0);
+  // Navegamos a la página de finishedCompany
+  router.push('/finished-company');
 };
 
 // Función para manejar la cancelación del modal
@@ -316,4 +319,3 @@ const updateStep = (step: number) => {
   z-index: 10; /* Asegura que esté por encima de otros elementos */
 }
 </style>
-
