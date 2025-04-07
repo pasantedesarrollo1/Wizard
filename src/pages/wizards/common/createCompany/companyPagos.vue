@@ -4,7 +4,7 @@
       <form>
         <!-- Metodos de pago sistema.illarli-->
         <div>
-          <label class="block text-center">Metodo de Pago</label>
+          <label class="block text-center">Seleccione el método de pago del Servicio</label>
           <br />
           <!-- Reemplazamos el select por un contenedor de cards -->
           <div class="cards-container">

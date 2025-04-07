@@ -4,7 +4,7 @@
       <form>
         <!-- Configuracion de documentos sistema.illarli-->
         <div>
-          <label class="block text-center">¿Usted va a Manejar Control de Inventario? </label>
+          <label class="block text-center">¿Su empresa necesita manejar Control de Inventario? </label>
           <br />
           <!-- Reemplazamos el select por un contenedor de cards -->
           <div class="cards-container">
@@ -42,8 +42,8 @@
   
   // Array con las opciones de tipo de identificación
   const opcionesInventario = ref<InventarioOpcion[]>([
-    { label: 'Si voy a manejar Control de Inventario', value: 'si' },
-    { label: 'No voy a manejar Control de Inventario', value: 'no' },
+    { label: 'Si necesito manejar Control de Inventario', value: 'si' },
+    { label: 'No necesito manejar Control de Inventario', value: 'no' },
   ]);
   
   // Variable para almacenar el tipo de ID seleccionado

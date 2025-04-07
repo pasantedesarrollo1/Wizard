@@ -1,81 +1,94 @@
+<!--central.illarli-->
 <template>
-    <div>
-      <form>
-        <!-- Restaurante -->
-        <div>
-          <label class="block text-center">Establecimiento Turistico</label>
-          <br />
-          <!-- Contenedor para la card de despacho -->
-          <div class="cards-container">
-            <!-- Card única para despacho que se puede seleccionar/deseleccionar -->
-            <div 
-              class="company-card" 
-              :class="{ 'selected': turisticoSeleccionado }"
-              @click="toggleDespacho"
-            >
-              <!-- Texto centrado dentro de la card -->
-              <div class="card-text">{{ opcionTuristico.label }}</div>
-            </div>
+  <div>
+    <form>
+      <!-- Configuracion de documentos sistema.illarli-->
+      <div>
+        <label class="block text-center">¿Su empresa es Establecimiento Turistico? </label>
+        <br />
+        <!-- Reemplazamos el select por un contenedor de cards -->
+        <div class="cards-container">
+          <!-- Iteramos sobre las opciones para crear una card por cada tipo de compañía -->
+          <div 
+            v-for="opcion in opcionesTuristico" 
+            :key="opcion.value" 
+            class="company-card" 
+            :class="{ 'selected': TuristicoSeleccionado === opcion.value }"
+            @click="seleccionarTuristico(opcion.value)"
+          >
+            <!-- Texto centrado dentro de la card -->
+          <div class="card-text">{{ opcion.label }}</div>
           </div>
+          
         </div>
-      </form>
-    </div>
-  </template>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, defineEmits } from 'vue';
+
+// Definimos los eventos que puede emitir este componente
+const emit = defineEmits<{
+  (e: 'update:Turistico', value: string): void;
+}>();
+
+// Definimos la interfaz para las opciones de tipo de ID
+interface TuristicoOpcion {
+  label: string;
+  value: string;
+}
+
+// Array con las opciones de tipo de identificación
+const opcionesTuristico = ref<TuristicoOpcion[]>([
+  { label: 'Si, mi empresa es establecimiento Turistico', value: 'si' },
+  { label: 'No, mi empresa no es establecimiento Turistico', value: 'no' },
+]);
+
+// Variable para almacenar el tipo de ID seleccionado
+const TuristicoSeleccionado = ref('');
+
+// Función para seleccionar un tipo de compañía y emitir el evento
+const seleccionarTuristico = (value: string) => {
+  // Actualizamos el valor seleccionado
+  TuristicoSeleccionado.value = value;
   
-  <script setup lang="ts">
-  import { ref } from 'vue';
+  // Emitimos el evento para notificar al componente padre
+  emit('update:Turistico', value);
   
-  // Definimos la interfaz para la opción de despacho
-  interface turisticoOpcion {
-    label: string;
-    value: string;
-  }
+  // Mensaje de depuración
+  console.log('Turistico seleccionado:', value);
+};
+</script>
+
+<style scoped>
+/* Contenedor para centrar las cards */
+.cards-container {
+  display: flex;
+  justify-content: center; /* Centra las cards horizontalmente */
+  gap: 1rem; /* Espacio entre las cards */
+  margin-top: 0.5rem;
+}
+
+/* Estilos básicos para las cards */
+.company-card {
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  padding: 1rem;
+  cursor: pointer;
+  min-width: 120px;
   
-  // Definimos una única opción para despacho posterior
-  // Se eliminó la opción de "Establecimiento Turistico" como solicitado
-  const opcionTuristico = ref<turisticoOpcion>({
-    label: 'Establecimiento Turistico', 
-    value: 'establecimiento-turistico'
-  });
-  
-  // Variable para controlar si el despacho está seleccionado o no
-  // Ahora es un booleano para facilitar la selección/deselección
-  const turisticoSeleccionado = ref(false);
-  
-  // Función para alternar la selección del despacho (seleccionar/deseleccionar)
-  const toggleDespacho = () => {
-    turisticoSeleccionado.value = !turisticoSeleccionado.value;
-  };
-  
-  // El resto del formulario sigue siendo simple sin validaciones ni estilos adicionales
-  </script>
-  
-  <style scoped>
-  /* Contenedor para centrar la card */
-  .cards-container {
-    display: flex;
-    justify-content: center; /* Centra la card horizontalmente */
-    margin-top: 0.5rem;
-  }
-  
-  /* Estilos básicos para la card */
-  .company-card {
-    border: 1px solid #ccc;
-    border-radius: 0.25rem;
-    padding: 1rem;
-    cursor: pointer;
-    min-width: 120px;
-    
-    /* Centrar el texto dentro de la card */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  }
-  
-  /* Estilo para la card seleccionada */
-  .company-card.selected {
-    border-color: black;
-    background-color: #f0f0f0;
-  }
-  </style>
+  /* Centrar el texto dentro de la card */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Estilo para la card seleccionada */
+.company-card.selected {
+  border-color: black;
+  background-color: #f0f0f0;
+}
+</style>

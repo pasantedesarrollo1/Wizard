@@ -4,7 +4,7 @@
     <form>
       <!-- Tipo de empresa-->
       <div>
-        <label class="block text-center">Tipo Compania</label>
+        <label class="block text-center">¿A que categoría pertenece su Empresa?</label>
         <br />
         <!-- Reemplazamos el select por un contenedor de cards -->
         <div class="cards-container">
@@ -42,7 +42,7 @@ interface TipoCompnayOpcion {
 // Array con las opciones de tipo de identificación
 const opcionesTipoCompnay = ref<TipoCompnayOpcion[]>([
   { label: 'Comercios', value: 'comercios' },
-  { label: 'Restaurante', value: 'restaurante' },
+  { label: 'Restaurantes', value: 'restaurante' },
 ]);
 
 // Variable para almacenar el tipo de ID seleccionado

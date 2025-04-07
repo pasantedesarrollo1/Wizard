@@ -3,7 +3,7 @@
       <form>
         <!-- Configuracion de ripe sistema.illarli-->
         <div>
-          <label class="block text-center">¿Usted es RIPE?</label>
+          <label class="block text-center">¿Usted pertenece al RIPE?</label>
           <br />
           <!-- Primera fila: Opciones de RIPE -->
           <div class="cards-container">
@@ -38,7 +38,7 @@
           
           <!-- Tercera fila: Opción adicional para Emprendedor (solo visible si seleccionó "Emprendedor") -->
           <div v-if="tipoRipeSeleccionado === 'emprendedor'" class="card-section">
-            <label class="block text-center mt-4">Seleccione solo en caso de que usted este obligado a llevar Contabilidad</label>
+            <label class="block text-center mt-4">Seleccione solo en caso de que su empresa este obligada a llevar Contabilidad</label>
             <div class="cards-container mt-4">
               <div 
                 class="company-card" 
@@ -72,8 +72,8 @@
   
   // Array con las opciones de tipo de identificación
   const opcionesRipe = ref<RipeOpcion[]>([
-    { label: 'Si soy Ripe', value: 'si' },
-    { label: 'No soy Ripe', value: 'no' },
+    { label: 'Si pertenezco al RIPE', value: 'si' },
+    { label: 'No pertenezco al RIPE', value: 'no' },
   ]);
   
   // Array con las opciones de tipo de RIPE

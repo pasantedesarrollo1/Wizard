@@ -4,7 +4,7 @@
       <form>
         <!-- Frecuencia (mensual o anual) sistema.illarli-->
         <div>
-          <label class="block text-center">Tipo Frecuencia</label>
+          <label class="block text-center">¿Con qué frecuencia realizará usted el pago del servicio?</label>
           <br />
           <!-- Reemplazamos el select por un contenedor de cards -->
           <div class="cards-container">

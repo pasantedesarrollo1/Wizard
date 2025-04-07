@@ -108,13 +108,13 @@ export function getCommonSubStepsConfig() {
   return {
     "create-company": [
       { title: "Información Básica", component: components.companyInfo },
-      { title: "Tipo de compania", component: components.companyType },
-      // Eliminamos los planes de aquí, se añadirán dinámicamente
-      { title: "Freuencia", component: components.companyFrecuencia },
+      { title: "Tipo de Emprendimiento", component: components.companyType },
+      { title: "Frecuencia de Pago", component: components.companyFrecuencia },
       { title: "Tipo de Pagos", component: components.companyPagos },
       { title: "Email del ticket", component: components.companyTicketEmail },
       { title: "Dominio", component: components.companyDomain },
       { title: "Datos de Contacto", component: components.companyContact },
+      { title: "Establecer un Logo", component: components.configLogo },
     ],
     "config-company": [
       { title: "Configuracion de Recibos", component: components.configRecivos },
@@ -126,12 +126,11 @@ export function getCommonSubStepsConfig() {
       { title: "Configuracion de Artesano", component: components.configArtesano },
       { title: "Configuracion de Control de Inventario", component: components.configInventario },
       { title: "Configuracion de Impuestos a Manejar", component: components.impuestosManejar },
-      { title: "Configuracion de Logo", component: components.configLogo },
     ],
     "sucursal-punto-venta-inicial": [
-      { title: "Creacion de Sucursal", component: components.companySucursal },
-      { title: "Creacion de Sucursal", component: components.companyDespacho },
-      { title: "Creacion de Sucursal", component: components.companyTuristico },
+      { title: "Datos de la Sucursal", component: components.companySucursal },
+      { title: "Establecer Despacho", component: components.companyDespacho },
+      { title: "Tipo de Establecimiento", component: components.companyTuristico },
       { title: "Creacion de Punto de Venta", component: components.companyPOS },
     ],
   }
