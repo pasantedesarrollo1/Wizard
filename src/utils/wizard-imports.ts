@@ -11,9 +11,6 @@ export function getWizardComponents(): Record<string, Component> {
   const companyContact = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyContact.vue")),
   )
-  const companyType = markRaw(
-    defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyType.vue")),
-  )
   const companyDomain = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyDomain.vue")),
   )
@@ -27,11 +24,8 @@ export function getWizardComponents(): Record<string, Component> {
     defineAsyncComponent(() => import("@/pages/wizards/common/sucursalPOS/companyTuristico.vue")),
   )
   const companyPOS = markRaw(defineAsyncComponent(() => import("@/pages/wizards/common/sucursalPOS/companyPOS.vue")))
-  const companyPlanComercios = markRaw(
-    defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyPlanComercios.vue")),
-  )
-  const companyPlanRestaurantes = markRaw(
-    defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyPlanRestaurantes.vue")),
+  const companyPlanes = markRaw(
+    defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyPlanes.vue")),
   )
   const companyFrecuencia = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyFrecuencia.vue")),
@@ -75,14 +69,12 @@ export function getWizardComponents(): Record<string, Component> {
   return {
     companyInfo,
     companyContact,
-    companyType,
     companyDomain,
     companySucursal,
     companyDespacho,
     companyTuristico,
     companyPOS,
-    companyPlanComercios,
-    companyPlanRestaurantes,
+    companyPlanes,
     companyFrecuencia,
     companyPagos,
     companyTicketEmail,
@@ -112,7 +104,7 @@ export function getCommonSubStepsConfig() {
       { title: "Email del ticket", component: components.companyTicketEmail },
       { title: "Datos de Contacto", component: components.companyContact },
       { title: "Establecer un Logo", component: components.configLogo },
-      { title: "Tipo de Emprendimiento", component: components.companyType },
+      { title: "Planes", component: components.companyPlanes },
       { title: "Tipo de Pagos", component: components.companyPagos },
       { title: "Frecuencia de Pago", component: components.companyFrecuencia },
     ],
@@ -126,12 +118,12 @@ export function getCommonSubStepsConfig() {
       { title: "Configuracion de Artesano", component: components.configArtesano },
       { title: "Configuracion de Control de Inventario", component: components.configInventario },
       { title: "Configuracion de Impuestos a Manejar", component: components.impuestosManejar },
-    ],
-    "sucursal-punto-venta-inicial": [
       { title: "Datos de la Sucursal", component: components.companySucursal },
       { title: "Establecer Despacho", component: components.companyDespacho },
       { title: "Tipo de Establecimiento", component: components.companyTuristico },
       { title: "Creacion de Punto de Venta", component: components.companyPOS },
+    ],
+    "sucursal-punto-venta-inicial": [
     ],
   }
 }

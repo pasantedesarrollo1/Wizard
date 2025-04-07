@@ -36,13 +36,10 @@ interface TipoPlanesOpcion {
 
 // Array con las opciones de tipo de identificación
 const opcionesTipoPlanes = ref<TipoPlanesOpcion[]>([
-  { label: 'Illarli Comercios Plan Basico', value: 'icpb' },
-  { label: 'Illarli Comercios Plan Pyme', value: 'icpp' },
-  { label: 'Illarli Comercios Plan Ilimitado', value: 'icpi' },
-  { label: 'Promo Illarli Comercios Plan PYME Mensual Web (Gratis 1 Mes)', value: 'picppmw' },
-  { label: 'Illarli Comercios Plan Inicial', value: 'icpinicial' },
-  { label: 'Illarli Comercios Plan Lite', value: 'icpl' },
-  { label: 'Illarli Comercios Plan Franquicias', value: 'icpf' },
+  { label: 'Plan Gratuito', value: 'pg' },
+  { label: 'Plan Lite', value: 'pl' },
+  { label: 'Plan Básico', value: 'pb' },
+  { label: 'Plan Pyme', value: 'pp' },
 ]);
 
 // Modificado: Cambiamos de un array a un string único para almacenar solo un valor seleccionado

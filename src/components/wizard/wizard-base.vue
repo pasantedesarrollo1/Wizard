@@ -73,7 +73,6 @@ import welcomeGeneral from "@/components/wizard/general/welcomeGeneral.vue";
 import ConfirmationModal from "@/components/common/confirmation-modal.vue"; // Importamos el modal de confirmación
 import { useWizardProgress } from "@/composables/useWizardProgress";
 import { useWizardSubSteps, WizardSubStepsConfig } from "@/composables/useWizardSubSteps";
-import { getWizardComponents } from "@/utils/wizard-imports";
 import type { Component } from 'vue';
 
 // Obtenemos el router para la navegación
@@ -104,8 +103,6 @@ const started = ref(false);
 // Variable para controlar la visibilidad del modal de confirmación
 const showConfirmationModal = ref(false); // Añadimos esta variable para controlar la visibilidad del modal
 
-// Variables para almacenar selecciones
-const tipoCompaniaSeleccionado = ref<string>('');
 const recivosSeleccionado = ref<string>('');
 const documentTypeSeleccionado = ref<string>('');
 
@@ -115,35 +112,6 @@ const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress(p
 // Función para manejar el evento de inicio desde welcomeGeneral
 const handleStart = () => {
   started.value = true;
-};
-
-// Funciones para manejar cambios en selecciones
-const handleTipoCompaniaChange = (tipo: string) => {
-  // Guardamos el tipo de compañía seleccionado
-  tipoCompaniaSeleccionado.value = tipo;
-  console.log('Tipo de compañía seleccionado:', tipo);
-  
-  // Obtenemos los componentes disponibles
-  const components = getWizardComponents();
-  
-  // Actualizamos la configuración de sub-pasos según el tipo de compañía seleccionado
-  if (tipo === 'comercios') {
-    // Si se selecciona "Comercios", insertamos el plan de comercios después del tipo de compañía
-    // Ya no usamos una posición fija (2), la función insertSubStep ahora buscará la posición correcta
-    insertSubStep('create-company', 0, {
-      title: "Plan para Comercios",
-      component: components.companyPlanComercios
-    });
-    console.log('Se ha añadido el plan de Comercios');
-  } else if (tipo === 'restaurante') {
-    // Si se selecciona "Restaurante", insertamos el plan de restaurantes después del tipo de compañía
-    // Ya no usamos una posición fija (2), la función insertSubStep ahora buscará la posición correcta
-    insertSubStep('create-company', 0, {
-      title: "Plan para Restaurantes",
-      component: components.companyPlanRestaurantes
-    });
-    console.log('Se ha añadido el plan de Restaurantes');
-  }
 };
 
 const handleRecivosChange = (value: string) => {
@@ -163,7 +131,6 @@ const {
   nextSubStep,
   prevSubStep,
   resetSubStep,
-  insertSubStep
 } = useWizardSubSteps(props.subStepsConfig);
 
 // Obtenemos la clave del paso actual
