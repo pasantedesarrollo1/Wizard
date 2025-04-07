@@ -15,7 +15,8 @@
             :class="{
               'completed': index < currentStep,
               'active': index === currentStep,
-              'upcoming': index > currentStep
+              'upcoming': index > currentStep,
+              'last-step': index === steps.length - 1 // Añadida clase para identificar el último paso
             }"
             @click="goToStep(index)"
           >
@@ -33,7 +34,8 @@
             
             <!-- Contenido del paso -->
             <div class="step-content">
-              <div class="step-title">{{ step.label }}</div>
+              <!-- Modificado para permitir saltos de línea en el último paso -->
+              <div class="step-title" :class="{ 'last-step-title': index === steps.length - 1 }">{{ step.label }}</div>
               <div class="step-description" v-if="step.description">{{ step.description }}</div>
             </div>
           </div>
@@ -232,6 +234,18 @@ const goToStep = (index: number) => {
   white-space: nowrap; /* Evita que el título se rompa en múltiples líneas */
 }
 
+/* Nuevo estilo para el título del último paso */
+.last-step-title {
+  white-space: normal; /* Permite que el texto se divida en múltiples líneas */
+  word-break: break-word; /* Permite romper palabras largas si es necesario */
+  line-height: 1.2; /* Ajusta el espacio entre líneas */
+  height: auto; /* Permite que la altura se ajuste al contenido */
+  display: -webkit-box; /* Para compatibilidad con navegadores basados en WebKit */
+  -webkit-line-clamp: 2; /* Limita a 2 líneas como máximo */
+  -webkit-box-orient: vertical; /* Orientación vertical para el texto */
+  overflow: hidden; /* Oculta el texto que exceda las 2 líneas */
+}
+
 .step-description {
   font-size: 12px;
   color: #666;
@@ -265,10 +279,15 @@ const goToStep = (index: number) => {
   font-weight: 700;
 }
 
+/* Ajuste para el último paso */
+.timeline-step.last-step {
+  margin-bottom: 10px; /* Añade espacio adicional en la parte inferior para el texto en dos líneas */
+}
+
 /* Ajustes responsivos */
 @media (max-width: 768px) {
   .steps-timeline {
-    height: 140px;
+    height: 140px; /* Aumentado para dar más espacio al texto en dos líneas */
   }
   
   .timeline-step {
