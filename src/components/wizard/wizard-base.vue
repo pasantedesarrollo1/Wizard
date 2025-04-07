@@ -50,9 +50,7 @@
             Anterior
           </IonButton>
           <IonButton @click="handleNext">
-            <!-- Modificado: Ahora siempre muestra "Siguiente" sin importar en qué paso estemos -->
-            <!-- Comentario: Eliminamos la lógica condicional que cambiaba el texto a "Completar" -->
-            Siguiente
+            {{ isLastStepAndSubStep ? 'Finalizado' : 'Siguiente' }}
           </IonButton>
         </div>
       </div>
@@ -150,6 +148,10 @@ const totalSubStepsForCurrentStep = computed(() => {
 //   return currentStep.value === steps.value.length - 1;
 // });
 
+const isLastStepAndSubStep = computed(() => {
+  return currentStep.value === steps.value.length - 1 && currentSubStepIndex.value === totalSubStepsForCurrentStep.value -1;
+});
+
 // Maneja la lógica de navegación "siguiente"
 const handleNext = () => {
   // Si el paso actual tiene sub-pasos
@@ -246,4 +248,3 @@ const updateStep = (step: number) => {
   z-index: 10; /* Asegura que esté por encima de otros elementos */
 }
 </style>
-
