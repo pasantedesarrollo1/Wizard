@@ -55,6 +55,13 @@
         </div>
       </div>
     </IonContent>
+    
+    <!-- Modal de confirmación -->
+    <ConfirmationModal 
+      :is-open="showConfirmationModal" 
+      @confirm="handleConfirmFinish" 
+      @cancel="handleCancelFinish"
+    />
   </IonPage>
 </template>
 <script setup lang="ts">
@@ -62,9 +69,10 @@ import { IonPage, IonContent, IonButton } from '@ionic/vue';
 import { computed, ref, PropType } from 'vue';
 import ProgressBar from "@/components/common/progressBar.vue";
 import welcomeGeneral from "@/components/wizard/general/welcomeGeneral.vue";
+import ConfirmationModal from "@/components/common/confirmation-modal.vue"; // Importamos el modal de confirmación
 import { useWizardProgress } from "@/composables/useWizardProgress";
 import { useWizardSubSteps, WizardSubStepsConfig } from "@/composables/useWizardSubSteps";
-import { getWizardComponents } from "@/utils/wizard-imports"; // Añadimos esta importación
+import { getWizardComponents } from "@/utils/wizard-imports";
 import type { Component } from 'vue';
 
 // Props para configurar el wizard
@@ -88,6 +96,9 @@ const props = defineProps({
 
 // Estado para controlar si se ha iniciado el wizard
 const started = ref(false);
+
+// Variable para controlar la visibilidad del modal de confirmación
+const showConfirmationModal = ref(false); // Añadimos esta variable para controlar la visibilidad del modal
 
 // Variables para almacenar selecciones
 const tipoCompaniaSeleccionado = ref<string>('');
@@ -148,7 +159,7 @@ const {
   nextSubStep,
   prevSubStep,
   resetSubStep,
-  insertSubStep // Añadimos esta función que implementaremos en useWizardSubSteps
+  insertSubStep
 } = useWizardSubSteps(props.subStepsConfig);
 
 // Obtenemos la clave del paso actual
@@ -177,12 +188,21 @@ const totalSubStepsForCurrentStep = computed(() => {
   return getTotalSubSteps(currentStepKey.value);
 });
 
+// Verificamos si estamos en el último paso y sub-paso
 const isLastStepAndSubStep = computed(() => {
-  return currentStep.value === steps.value.length - 1 && currentSubStepIndex.value === totalSubStepsForCurrentStep.value -1;
+  return currentStep.value === steps.value.length - 1 && currentSubStepIndex.value === totalSubStepsForCurrentStep.value - 1;
 });
 
 // Maneja la lógica de navegación "siguiente"
 const handleNext = () => {
+  // Si estamos en el último paso y sub-paso y el botón dice "Finalizado"
+  if (isLastStepAndSubStep.value) {
+    // Mostramos el modal de confirmación en lugar de avanzar
+    showConfirmationModal.value = true;
+    // Comentario: Aquí mostramos el modal de confirmación cuando el botón dice "Finalizado"
+    return;
+  }
+  
   // Si el paso actual tiene sub-pasos
   if (hasSubStepsForCurrentStep.value) {
     // Intentamos avanzar al siguiente sub-paso
@@ -194,15 +214,33 @@ const handleNext = () => {
     return;
   }
   
-  // Modificado: Permitimos avanzar incluso en el último paso
-  // Comentario: Eliminamos la verificación que impedía avanzar en el último paso
+  // Para pasos sin sub-pasos, comportamiento normal
   nextStep();
   
-  // Modificado: Agregamos lógica para volver al primer paso si estamos en el último
-  // Comentario: Esto permite que el wizard sea cíclico en lugar de bloquearse al final
+  // Si hemos llegado al final, volvemos al primer paso
   if (currentStep.value >= steps.value.length) {
     goToStep(0);
   }
+};
+
+// Función para manejar la confirmación del modal
+const handleConfirmFinish = () => {
+  // Ocultamos el modal
+  showConfirmationModal.value = false;
+  
+  // Aquí iría la lógica para finalizar el wizard
+  console.log('Wizard finalizado correctamente');
+  
+  // Opcional: Redirigir a otra página o mostrar un mensaje de éxito
+  // Por ahora, simplemente volvemos al primer paso
+  goToStep(0);
+};
+
+// Función para manejar la cancelación del modal
+const handleCancelFinish = () => {
+  // Simplemente ocultamos el modal sin hacer nada más
+  showConfirmationModal.value = false;
+  console.log('Finalización cancelada');
 };
 
 // Maneja la lógica de navegación "anterior"
@@ -278,3 +316,4 @@ const updateStep = (step: number) => {
   z-index: 10; /* Asegura que esté por encima de otros elementos */
 }
 </style>
+
