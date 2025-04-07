@@ -3,34 +3,40 @@
     <form>
       <!-- Tipo de identificación (central.illarli)-->
       <div>
-        <label>Tipo de identificación</label>
+        <label>Tipo de Identificación</label>
         <br />
-        <select v-model="tipoIDSeleccionado" class="border border-black px-2 py-1 rounded w-full">
-          <option v-for="opcion in opcionesTipoID" :key="opcion.value" :value="opcion.value" >
-            {{ opcion.label }}
-          </option>
-        </select>
-        <input type="text" class="border border-black px-2 py-1 rounded w-full" placeholder="ingresa tu identifiacion"/>
+        <!-- Modificado: Agregamos un div con display flex para colocar elementos en línea -->
+        <div class="flex gap-2">
+          <!-- Modificado: Cambiamos el ancho del select para que no ocupe todo el espacio -->
+          <select v-model="tipoIDSeleccionado" class="border border-black px-2 py-1 rounded w-1/3">
+            <option disabled value="" selected>Seleccionar</option>
+            <option v-for="opcion in opcionesTipoID" :key="opcion.value" :value="opcion.value" >
+              {{ opcion.label }}
+            </option>
+          </select>
+          <!-- Modificado: Ajustamos el ancho del input para que ocupe el resto del espacio -->
+          <input type="text" class="border border-black px-2 py-1 rounded w-2/3" placeholder="Ingresa tu Identificación"/>
+        </div>
       </div>
       <!-- Nombre (sistema.illarli)-->
       <div>
-        <label>Nombre</label>
+        <label>Nombres</label>
         <br />
-        <input type="text" class="border border-black px-2 py-1 rounded w-full" placeholder="ingresa tu nombre"/>
+        <input type="text" class="border border-black px-2 py-1 rounded w-full" placeholder="Ingresa tus Nombres"/>
       </div>
 
       <!-- Apellido (sistema.illarli)-->
       <div>
-        <label>Apellido</label>
+        <label>Apellidos</label>
         <br />
-        <input type="text" class="border border-black px-2 py-1 rounded w-full" placeholder="ingresa tu apellido"/>
+        <input type="text" class="border border-black px-2 py-1 rounded w-full" placeholder="Ingresa tus Apellidos"/>
       </div>
 
       <!-- Correo Electrónico (sistema y central .illarli)-->
       <div>
         <label>Correo Electrónico</label>
         <br />
-        <input type="email" class="border border-black px-2 py-1 rounded w-full"/>
+        <input type="email" class="border border-black px-2 py-1 rounded w-full" placeholder="Email"/>
       </div>
 
       <!-- Teléfonos -->
@@ -38,13 +44,13 @@
       <div>
         <label>Teléfono convencional</label>
         <br />
-        <input type="tel" class="border border-black px-2 py-1 rounded w-full"/>
+        <input type="tel" class="border border-black px-2 py-1 rounded w-full" placeholder="Ej.: 02 123 4567 "/>
       </div>
        <!-- whatsapp (sistema.illarli) -->
        <div>
-        <label>whatsapp</label>
+        <label>Teléfono celular/whatsapp</label>
         <br />
-        <input type="tel" class="border border-black px-2 py-1 rounded w-full"/>
+        <input type="tel" class="border border-black px-2 py-1 rounded w-full" placeholder="+593"/>
       </div>
 
       <!-- Rol en la empresa (sistema.illarli)-->
@@ -52,6 +58,7 @@
         <label>Selecciona tu rol en la empresa</label>
         <br />
         <select v-model="RolSeleccionado" class="border border-black px-2 py-1 rounded w-full">
+          <option disabled value="" selected>Seleccionar</option>
           <option v-for="opcion in opcionesRol" :key="opcion.value" :value="opcion.value" >
             {{ opcion.label }}
           </option>

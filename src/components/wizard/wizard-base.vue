@@ -1,6 +1,6 @@
 <template>
   <IonPage>
-    <IonContent class="ion-content">\
+    <IonContent class="ion-content">
       <!-- Pantalla de bienvenida (se muestra primero) -->
       <welcomeGeneral v-if="!started" @start="handleStart" />
       <!-- Contenido principal del wizard (se muestra después de hacer clic en "Comenzar") -->
