@@ -77,6 +77,19 @@
                 </p>
               </div>
               
+              <!-- URL de acceso - Movido fuera del contenedor de confeti y con estilos mejorados -->
+              <div class="domain-url-container">
+                <p class="domain-url-label">Accede a tu empresa en:</p>
+                <a 
+                  href="https://tudominio.wanqara.com" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="domain-link"
+                >
+                  https://tudominio.wanqara.com
+                </a>
+              </div>
+              
               <!-- Elementos decorativos -->
               <div class="confetti-container">
                 <div v-for="n in 30" :key="`confetti-${n}`" class="confetti" :style="{
@@ -441,6 +454,45 @@
     }
   }
   
+  /* Estilos para el contenedor de la URL del dominio */
+  .domain-url-container {
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: rgba(0, 60, 255, 0.05);
+    border-radius: 12px;
+    border: 1px dashed #003cff;
+    max-width: 90%;
+    animation: fadeIn 0.5s ease-in-out forwards;
+    animation-delay: 2.5s;
+    opacity: 0;
+    position: relative;
+    z-index: 5; /* Asegura que esté por encima del confeti */
+  }
+  
+  .domain-url-label {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+  }
+  
+  .domain-link {
+    display: inline-block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #003cff;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background-color: rgba(0, 60, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .domain-link:hover {
+    background-color: rgba(0, 60, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 60, 255, 0.2);
+  }
+  
   /* Ajustes responsivos */
   @media (max-width: 768px) {
     .success-title {
@@ -458,6 +510,10 @@
     .success-icon {
       width: 60px;
       height: 60px;
+    }
+    
+    .domain-link {
+      font-size: 1rem;
     }
   }
   
@@ -482,6 +538,11 @@
     .continue-button {
       padding: 10px 30px;
       font-size: 1rem;
+    }
+    
+    .domain-link {
+      font-size: 0.9rem;
+      padding: 0.4rem 0.8rem;
     }
   }
   </style>
