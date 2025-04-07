@@ -136,18 +136,6 @@ const totalSubStepsForCurrentStep = computed(() => {
   return getTotalSubSteps(currentStepKey.value);
 });
 
-// Modificado: Eliminamos la propiedad isLastStep que se usaba para deshabilitar el botón
-// Comentario: Esta propiedad se usaba para bloquear el botón "Siguiente" en el último paso
-// const isLastStep = computed(() => {
-//   return currentStep.value === steps.value.length - 1;
-// });
-
-// Modificado: Eliminamos la propiedad isSecondLastStep que se usaba para cambiar el texto del botón
-// Comentario: Esta propiedad determinaba cuándo mostrar "Completar" en lugar de "Siguiente"
-// const isSecondLastStep = computed(() => {
-//   return currentStep.value === steps.value.length - 1;
-// });
-
 const isLastStepAndSubStep = computed(() => {
   return currentStep.value === steps.value.length - 1 && currentSubStepIndex.value === totalSubStepsForCurrentStep.value -1;
 });
