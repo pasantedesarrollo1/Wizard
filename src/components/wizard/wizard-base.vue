@@ -1,6 +1,6 @@
 <template>
   <IonPage>
-    <IonContent class="ion-content">
+    <IonContent class="ion-content">\
       <!-- Pantalla de bienvenida (se muestra primero) -->
       <welcomeGeneral v-if="!started" @start="handleStart" />
       <!-- Contenido principal del wizard (se muestra después de hacer clic en "Comenzar") -->
@@ -49,8 +49,10 @@
           <IonButton fill="outline" @click="handlePrevious" :disabled="currentStep === 0">
             Anterior
           </IonButton>
-          <IonButton @click="handleNext" :disabled="isLastStep">
-            {{ isSecondLastStep ? 'Completar' : 'Siguiente' }}
+          <IonButton @click="handleNext">
+            <!-- Modificado: Ahora siempre muestra "Siguiente" sin importar en qué paso estemos -->
+            <!-- Comentario: Eliminamos la lógica condicional que cambiaba el texto a "Completar" -->
+            Siguiente
           </IonButton>
         </div>
       </div>
@@ -135,19 +137,19 @@ const currentSubStep = computed(() => {
 const totalSubStepsForCurrentStep = computed(() => {
   return getTotalSubSteps(currentStepKey.value);
 });
-// Verificamos si estamos en el último paso
-const isLastStep = computed(() => {
-  return currentStep.value === steps.value.length - 1;
-});
-// Verificamos si estamos en el penúltimo paso y último sub-paso
-const isSecondLastStep = computed(() => {
-  const isSecondLast = currentStep.value === steps.value.length - 2;
-  if (!isSecondLast) return false;
-  if (hasSubStepsForCurrentStep.value) {
-    return currentSubStepIndex.value === totalSubStepsForCurrentStep.value - 1;
-  }
-  return true;
-});
+
+// Modificado: Eliminamos la propiedad isLastStep que se usaba para deshabilitar el botón
+// Comentario: Esta propiedad se usaba para bloquear el botón "Siguiente" en el último paso
+// const isLastStep = computed(() => {
+//   return currentStep.value === steps.value.length - 1;
+// });
+
+// Modificado: Eliminamos la propiedad isSecondLastStep que se usaba para cambiar el texto del botón
+// Comentario: Esta propiedad determinaba cuándo mostrar "Completar" en lugar de "Siguiente"
+// const isSecondLastStep = computed(() => {
+//   return currentStep.value === steps.value.length - 1;
+// });
+
 // Maneja la lógica de navegación "siguiente"
 const handleNext = () => {
   // Si el paso actual tiene sub-pasos
@@ -160,9 +162,18 @@ const handleNext = () => {
     }
     return;
   }
-  // Para pasos sin sub-pasos, comportamiento normal
+  
+  // Modificado: Permitimos avanzar incluso en el último paso
+  // Comentario: Eliminamos la verificación que impedía avanzar en el último paso
   nextStep();
+  
+  // Modificado: Agregamos lógica para volver al primer paso si estamos en el último
+  // Comentario: Esto permite que el wizard sea cíclico en lugar de bloquearse al final
+  if (currentStep.value >= steps.value.length) {
+    goToStep(0);
+  }
 };
+
 // Maneja la lógica de navegación "anterior"
 const handlePrevious = () => {
   // Si el paso actual tiene sub-pasos
@@ -235,3 +246,4 @@ const updateStep = (step: number) => {
   z-index: 10; /* Asegura que esté por encima de otros elementos */
 }
 </style>
+
