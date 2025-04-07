@@ -103,10 +103,13 @@ export function getWizardComponents(): Record<string, Component> {
 export function getCommonSubStepsConfig() {
   const components = getWizardComponents()
 
+  // Modificado: Eliminamos los planes de la configuración común
+  // ya que ahora se añadirán dinámicamente según la selección
   return {
     "create-company": [
       { title: "Información Básica", component: components.companyInfo },
       { title: "Tipo de compania", component: components.companyType },
+      // Eliminamos los planes de aquí, se añadirán dinámicamente
       { title: "Freuencia", component: components.companyFrecuencia },
       { title: "Tipo de Pagos", component: components.companyPagos },
       { title: "Email del ticket", component: components.companyTicketEmail },
@@ -133,4 +136,3 @@ export function getCommonSubStepsConfig() {
     ],
   }
 }
-

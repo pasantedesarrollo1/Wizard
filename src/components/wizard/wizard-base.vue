@@ -64,7 +64,9 @@ import ProgressBar from "@/components/common/progressBar.vue";
 import welcomeGeneral from "@/components/wizard/general/welcomeGeneral.vue";
 import { useWizardProgress } from "@/composables/useWizardProgress";
 import { useWizardSubSteps, WizardSubStepsConfig } from "@/composables/useWizardSubSteps";
+import { getWizardComponents } from "@/utils/wizard-imports"; // Añadimos esta importación
 import type { Component } from 'vue';
+
 // Props para configurar el wizard
 const props = defineProps({
   // Tipo de wizard (ventas, soporte, cliente, general)
@@ -83,28 +85,59 @@ const props = defineProps({
     required: true
   }
 });
+
 // Estado para controlar si se ha iniciado el wizard
 const started = ref(false);
+
 // Variables para almacenar selecciones
 const tipoCompaniaSeleccionado = ref<string>('');
 const recivosSeleccionado = ref<string>('');
 const documentTypeSeleccionado = ref<string>('');
+
 // Inicializamos el wizard con el tipo proporcionado
 const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress(props.wizardType);
+
 // Función para manejar el evento de inicio desde welcomeGeneral
 const handleStart = () => {
   started.value = true;
 };
+
 // Funciones para manejar cambios en selecciones
 const handleTipoCompaniaChange = (tipo: string) => {
+  // Guardamos el tipo de compañía seleccionado
   tipoCompaniaSeleccionado.value = tipo;
+  console.log('Tipo de compañía seleccionado:', tipo);
+  
+  // Obtenemos los componentes disponibles
+  const components = getWizardComponents();
+  
+  // Actualizamos la configuración de sub-pasos según el tipo de compañía seleccionado
+  if (tipo === 'comercios') {
+    // Si se selecciona "Comercios", insertamos el plan de comercios después del tipo de compañía
+    insertSubStep('create-company', 2, {
+      title: "Plan para Comercios",
+      component: components.companyPlanComercios
+    });
+    console.log('Se ha añadido el plan de Comercios');
+  } else if (tipo === 'restaurante') {
+    // Si se selecciona "Restaurante", insertamos el plan de restaurantes después del tipo de compañía
+    insertSubStep('create-company', 2, {
+      title: "Plan para Restaurantes",
+      component: components.companyPlanRestaurantes
+    });
+    console.log('Se ha añadido el plan de Restaurantes');
+  }
 };
+
 const handleRecivosChange = (value: string) => {
   recivosSeleccionado.value = value;
 };
+
 const handleDocumentTypeChange = (value: string) => {
   documentTypeSeleccionado.value = value;
 };
+
+// Obtenemos las funciones del composable useWizardSubSteps, incluyendo insertSubStep
 const { 
   currentSubStepIndex, 
   hasSubSteps,
@@ -112,25 +145,31 @@ const {
   getTotalSubSteps,
   nextSubStep,
   prevSubStep,
-  resetSubStep
+  resetSubStep,
+  insertSubStep // Añadimos esta función que implementaremos en useWizardSubSteps
 } = useWizardSubSteps(props.subStepsConfig);
+
 // Obtenemos la clave del paso actual
 const currentStepKey = computed(() => {
   return steps.value[currentStep.value]?.key || '';
 });
+
 // Obtenemos el componente para el paso actual
 const currentStepComponent = computed(() => {
   const key = currentStepKey.value;
   return props.stepComponents[key] || null;
 });
+
 // Verificamos si el paso actual tiene sub-pasos
 const hasSubStepsForCurrentStep = computed(() => {
   return hasSubSteps(currentStepKey.value);
 });
+
 // Obtenemos el sub-paso actual
 const currentSubStep = computed(() => {
   return getCurrentSubStep(currentStepKey.value);
 });
+
 // Obtenemos el número total de sub-pasos para el paso actual
 const totalSubStepsForCurrentStep = computed(() => {
   return getTotalSubSteps(currentStepKey.value);
@@ -179,6 +218,7 @@ const handlePrevious = () => {
   // Para pasos sin sub-pasos, comportamiento normal
   prevStep();
 };
+
 // Maneja la actualización manual del paso
 const updateStep = (step: number) => {
   // Si cambiamos a un paso diferente, reseteamos el sub-paso

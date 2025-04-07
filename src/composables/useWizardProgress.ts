@@ -14,7 +14,7 @@ export function useWizardProgress(type: "ventas" | "soporte" | "cliente" | "gene
   // Definir los pasos comunes
   const commonSteps: WizardStep[] = [
     { label: "Datos Personales", key: "personal-info" },
-    { label: "Creacion Empresa", key: "create-company" },
+    { label: "Datos de la Empresa", key: "create-company" },
     { label: "Configuraciones de la Empresa", key: "config-company" },
     { label: "Sucursal y Punto de Venta Inicial", key: "sucursal-punto-venta-inicial" },
   ]
