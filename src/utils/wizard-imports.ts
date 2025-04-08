@@ -8,9 +8,7 @@ export function getWizardComponents(): Record<string, Component> {
   const companyInfo = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyInfo.vue")),
   )
-  const companyContact = markRaw(
-    defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyContact.vue")),
-  )
+
   const companyDomain = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyDomain.vue")),
   )
@@ -23,27 +21,22 @@ export function getWizardComponents(): Record<string, Component> {
   const companyTuristico = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/sucursalPOS/companyTuristico.vue")),
   )
-  const companyPOS = markRaw(defineAsyncComponent(() => import("@/pages/wizards/common/sucursalPOS/companyPOS.vue")))
+  const companyPOS = markRaw(
+    defineAsyncComponent(() => import("@/pages/wizards/common/sucursalPOS/companyPOS.vue")),
+  )
+  
   const companyPlanes = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyPlanes.vue")),
   )
-  const companyFrecuencia = markRaw(
-    defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyFrecuencia.vue")),
-  )
+
   const companyPagos = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyPagos.vue")),
   )
   const companyTicketEmail = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyTicketEmail.vue")),
   )
-  const configRecivos = markRaw(
-    defineAsyncComponent(() => import("@/pages/wizards/common/configuracionCompany/configRecivos.vue")),
-  )
   const configDocumentType = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/configuracionCompany/configDocumentType.vue")),
-  )
-  const configDocumentDefault = markRaw(
-    defineAsyncComponent(() => import("@/pages/wizards/common/configuracionCompany/configDocumentDefault.vue")),
   )
   const configParameterSearch = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/configuracionCompany/configParameterSearch.vue")),
@@ -56,9 +49,6 @@ export function getWizardComponents(): Record<string, Component> {
   )
   const configArtesano = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/configuracionCompany/configArtesano.vue")),
-  )
-  const configInventario = markRaw(
-    defineAsyncComponent(() => import("@/pages/wizards/common/configuracionCompany/configInventario.vue")),
   )
   const configLogo = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/configuracionCompany/configLogo.vue")),
@@ -74,35 +64,26 @@ export function getWizardComponents(): Record<string, Component> {
     defineAsyncComponent(() => import("@/pages/wizards/common/subSetupsSimple/simpleQuestionSucursal.vue")),
   )
 
-  const compoundQuestion = markRaw(
-    defineAsyncComponent(() => import("@/pages/wizards/common/subSetupsCompound/compoundQuestion.vue")),
-  )
   // Devolvemos todos los componentes en un objeto
   return {
     companyInfo,
-    companyContact,
     companyDomain,
     companySucursal,
     companyDespacho,
     companyTuristico,
     companyPOS,
     companyPlanes,
-    companyFrecuencia,
     companyPagos,
     companyTicketEmail,
-    configRecivos,
     configDocumentType,
-    configDocumentDefault,
     configParameterSearch,
     configRipe,
     configRetencion,
     configArtesano,
-    configInventario,
     configLogo,
     impuestosManejar,
     simpleQuestion,
     simpleQuestionSucursal,
-    compoundQuestion,
   }
 }
 
@@ -115,7 +96,6 @@ export function getCommonSubStepsConfig() {
   return {
     "create-company": [
       { title: "Información Básica", component: components.companyInfo },
-      { title: "Datos de Contacto", component: components.companyContact },
       { title: "Email del ticket", component: components.companyTicketEmail },
       { title: "Establecer un Logo", component: components.configLogo },
       { title: "Dominio", component: components.companyDomain },
@@ -123,22 +103,10 @@ export function getCommonSubStepsConfig() {
     "config-company": [
       { title: "Planes", component: components.companyPlanes },
       { title: "Tipo de Pagos", component: components.companyPagos },
-      { title: "Frecuencia de Pago", component: components.companyFrecuencia },
+      { title: "Configuracion de RIMPE", component: components.configRipe },
       { title: "Preguntas simples", component: components.simpleQuestion },
-      // { title: "Configuracion de Recibos", component: components.configRecivos },
-      // { title: "Configuracion de Tipo de Documento", component: components.configDocumentType },
-      // { title: "Configuracion de Documento por Defecto", component: components.configDocumentDefault },
-      // { title: "Configuracion del Parametro de busqueda", component: components.configParameterSearch },
-      { title: "Configuracion de RIPE", component: components.configRipe },
-      { title: "Preguntas Compuestas", component: components.compoundQuestion },
-      // { title: "Configuracion de Agente de retencion", component: components.configRetencion },
-      // { title: "Configuracion de Artesano", component: components.configArtesano },
-      // { title: "Configuracion de Control de Inventario", component: components.configInventario },
-      // { title: "Configuracion de Impuestos a Manejar", component: components.impuestosManejar },
       { title: "Datos de la Sucursal", component: components.companySucursal },
-      // { title: "Establecer Despacho", component: components.companyDespacho },
       { title: "Preguntas simples Sucursal", component: components.simpleQuestionSucursal },
-      // { title: "Tipo de Establecimiento", component: components.companyTuristico },
       { title: "Creacion de Punto de Venta", component: components.companyPOS },
     ],
     "sucursal-punto-venta-inicial": [

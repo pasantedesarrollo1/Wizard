@@ -5,19 +5,10 @@
       
       <!-- Contenedor para los componentes importados -->
       <div class="components-container">
-        <!-- Componente de configuración de recibos -->
-        <div class="component-wrapper">
-          <configRecivos @update:Recivos="handleRecivosChange" />
-        </div>
 
         <!-- Componente de configuración de tipo de documentos -->
         <div class="component-wrapper">
           <configDocumentType/>
-        </div>
-
-        <!-- Componente de configuración de tipo de documento por defecto -->
-        <div class="component-wrapper">
-          <configDocumentDefault />
         </div>
         
         <!-- Componente de configuración de parámetros de búsqueda -->
@@ -25,44 +16,33 @@
           <configParameterSearch />
         </div>
 
-        <!-- Componente de configuración de parámetros de búsqueda -->
+        <!-- Componente de configuración de agente de retencion-->
         <div class="component-wrapper">
-          <configInventario />
+          <configRetencion />
         </div>
+
+        <!-- Componente de configuración de tipo de documentos -->
+        <div class="component-wrapper">
+          <configArtesano/>
+        </div>
+
+        <!-- Componente de configuración de tipo de documento por defecto -->
+        <div class="component-wrapper">
+          <impuestosManejar />
+        </div>
+
       </div>
     </div>
   </template>
   
   <script setup lang="ts">
   // Importamos los componentes que queremos consumir
-  import configRecivos from "@/pages/wizards/common/configuracionCompany/configRecivos.vue";
   import configDocumentType from "@/pages/wizards/common/configuracionCompany/configDocumentType.vue";
-  import configDocumentDefault from "@/pages/wizards/common/configuracionCompany/configDocumentDefault.vue";
   import configParameterSearch from "@/pages/wizards/common/configuracionCompany/configParameterSearch.vue";
-  import configInventario from "@/pages/wizards/common/configuracionCompany/configInventario.vue";
+  import configRetencion from "@/pages/wizards/common/configuracionCompany/configRetencion.vue";
+  import configArtesano from "@/pages/wizards/common/configuracionCompany/configArtesano.vue";
+  import impuestosManejar from "@/pages/wizards/common/impuestosManejar.vue";
 
-  
-  import { ref, defineEmits } from 'vue';
-  
-  // Definimos los eventos que puede emitir este componente
-  const emit = defineEmits<{
-    (e: 'update:Recivos', value: string): void;
-  }>();
-  
-  // Variable para almacenar el valor seleccionado de recibos
-  const recivosSeleccionado = ref('');
-  
-  // Función para manejar el cambio en la selección de recibos
-  const handleRecivosChange = (value: string) => {
-    // Actualizamos el valor local
-    recivosSeleccionado.value = value;
-    
-    // Propagamos el evento hacia arriba
-    emit('update:Recivos', value);
-    
-    // Mensaje de depuración
-    console.log('Recibos seleccionado en simpleQuestion:', value);
-  };
   </script>
   
   <style scoped>
