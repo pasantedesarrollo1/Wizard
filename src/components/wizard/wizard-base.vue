@@ -27,8 +27,7 @@
               <!-- Componente del sub-paso actual -->
               <component 
                 v-if="currentSubStep" 
-                :is="currentSubStep.component" 
-                @update:tipoCompania="handleTipoCompaniaChange"
+                :is="currentSubStep.component"
                 @update:Recivos="handleRecivosChange"
                 @update:DocumentType="handleDocumentTypeChange"
                 :recivoSeleccionado="recivosSeleccionado"

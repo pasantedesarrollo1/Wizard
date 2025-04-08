@@ -1,7 +1,7 @@
 import { createApp } from "vue"
 import { createPinia } from "pinia"
-import App from "./App.vue"
-import router from "./router"
+import App from "@/App.vue"
+import router from "@/router"
 
 import { IonicVue } from "@ionic/vue"
 
@@ -24,7 +24,7 @@ import "@ionic/vue/css/display.css"
 import "@ionic/vue/css/palettes/dark.system.css"
 
 /* Theme variables */
-import "./assets/styles.css"
+import "@/assets/styles.css"
 
 // Creamos la instancia de Pinia
 const pinia = createPinia()
