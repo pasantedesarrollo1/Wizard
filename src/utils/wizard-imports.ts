@@ -1,9 +1,8 @@
 import { markRaw, defineAsyncComponent } from "vue"
-import type { Component } from "vue" // Modificado: Importamos Component como tipo
+import type { Component } from "vue"
 
 // Función para importar y marcar como raw todos los componentes comunes
 export function getWizardComponents(): Record<string, Component> {
-  // Modificado: Añadimos tipo de retorno
   // Componentes comunes
   const companyInfo = markRaw(
     defineAsyncComponent(() => import("@/pages/wizards/common/createCompany/companyInfo.vue")),
@@ -91,8 +90,6 @@ export function getWizardComponents(): Record<string, Component> {
 export function getCommonSubStepsConfig() {
   const components = getWizardComponents()
 
-  // Modificado: Eliminamos los planes de la configuración común
-  // ya que ahora se añadirán dinámicamente según la selección
   return {
     "create-company": [
       { title: "Información Básica", component: components.companyInfo },
@@ -108,8 +105,6 @@ export function getCommonSubStepsConfig() {
       { title: "Datos de la Sucursal", component: components.companySucursal },
       { title: "Preguntas simples Sucursal", component: components.simpleQuestionSucursal },
       { title: "Creacion de Punto de Venta", component: components.companyPOS },
-    ],
-    "sucursal-punto-venta-inicial": [
     ],
   }
 }
