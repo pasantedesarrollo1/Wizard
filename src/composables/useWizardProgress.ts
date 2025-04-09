@@ -22,7 +22,7 @@ export function useWizardProgress(type: "ventas" | "soporte" | "cliente" | "gene
   // Configuración centralizada de pasos para cada tipo de wizard
   // Esto permite agregar o modificar pasos específicos para cada flujo
   const wizardStepsConfig: WizardStepsConfig = {
-    ventas: [{ label: "Consultor", key: "consultor" }, ...commonSteps],
+    ventas: [{ label: "Datos de venta", key: "data-sales" }, ...commonSteps],
     soporte: [...commonSteps],
     cliente: [...commonSteps],
     general: [...commonSteps],

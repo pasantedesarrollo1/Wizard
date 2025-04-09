@@ -18,12 +18,16 @@
         <input type="text" class="border border-black px-2 py-1 rounded w-full" placeholder="Nro. comprobante pago"/>
       </div>
       </form>
+      <br>
+       <companyPagos />
     </div>
   </template>
   
   <script setup lang="ts">
   import { ref } from 'vue';
-  
+  import companyPagos from "@/pages/wizards/common/createCompany/companyPagos.vue"
+
+
   // Definimos la interfaz para las opciones de Vendedor
   interface VendedorOpcion {
     label: string;

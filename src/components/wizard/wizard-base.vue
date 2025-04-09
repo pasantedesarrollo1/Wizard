@@ -187,10 +187,6 @@ const handleNext = () => {
   // Para pasos sin sub-pasos, comportamiento normal
   nextStep();
   
-  // Si hemos llegado al final, volvemos al primer paso
-  if (currentStep.value >= steps.value.length) {
-    goToStep(0);
-  }
 };
 
 // Función para manejar la confirmación del modal

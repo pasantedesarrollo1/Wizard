@@ -25,17 +25,12 @@ const components = getWizardComponents()
 const subStepsConfig = ref({
   "create-company": [
     { title: "Información Básica", component: components.companyInfo },
-    { title: "Email del ticket", component: components.companyTicketEmail },
     { title: "Establecer un Logo", component: components.configLogo },
-    { title: "Dominio", component: components.companyDomain },
   ],
   "config-company": [
-    // Se omiten los sub-setups 1 (planes) y 2 (método de pago)
-    { title: "Configuracion Generales", component: components.configRipe },
+      { title: "Consulta tu RUC", component: components.searchRUC },
       { title: "Configuraciones Generales", component: components.simpleQuestion },
-      { title: "Sucursal - Creacion sucursal", component: components.companySucursal },
-      { title: "Sucursal - Configuracion", component: components.simpleQuestionSucursal },
-      { title: "Sucursal - Creacion de Punto de Venta", component: components.companyPOS },
+      { title: "Email del ticket", component: components.companyTicketEmail },
   ],
 })
 
