@@ -68,7 +68,7 @@ import { IonPage, IonContent, IonButton } from '@ionic/vue';
 import { computed, ref, PropType } from 'vue';
 import { useRouter } from 'vue-router'; // Importamos useRouter para la navegación
 import ProgressBar from "@/components/common/progressBar.vue";
-import welcomeGeneral from "@/pages/wizards/common/welcomeGeneral.vue";
+import welcomeGeneral from "@/components/common/welcomeGeneral.vue";
 import ConfirmationModal from "@/components/common/confirmation-modal.vue"; // Importamos el modal de confirmación
 import { useWizardProgress } from "@/composables/useWizardProgress";
 import { useWizardSubSteps, WizardSubStepsConfig } from "@/composables/useWizardSubSteps";

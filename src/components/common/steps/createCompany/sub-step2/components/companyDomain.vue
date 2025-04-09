@@ -14,8 +14,8 @@
         <span>Ejemplos</span>
         </div>
         <div>
-            <img src="../../../../assets/ejemploDomain.png" alt="ejemplo de dominio"> <br>
-            <img src="../../../../assets/ejemploDomain2.png" alt="ejemplo de dominio2">
+            <img src="@/assets/ejemploDomain.png" alt="ejemplo de dominio"> <br>
+            <img src="@/assets/ejemploDomain2.png" alt="ejemplo de dominio2">
         </div>
       </form>
     </div>

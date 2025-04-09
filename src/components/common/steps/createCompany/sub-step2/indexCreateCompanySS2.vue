@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import companyDomain from "@/pages/wizards/common/createCompany/companyDomain.vue"
+import companyDomain from "@/components/common/steps/createCompany/sub-step2/components/companyDomain.vue"
 </script>
 
 <style scoped>

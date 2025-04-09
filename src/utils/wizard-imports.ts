@@ -6,64 +6,97 @@ export function getWizardComponents(): Record<string, Component> {
   // Componentes comunes
   const companyInfo = markRaw(
     defineAsyncComponent(
-      () => import("@/pages/wizards/common/steps/createCompany/companyInfo.vue")
+      () =>
+        import(
+          "@/components/common/steps/createCompany/sub-step1/indexCreateCompanySS1.vue"
+        )
     )
   );
 
   const companyDomain = markRaw(
     defineAsyncComponent(
-      () => import("@/pages/wizards/common/steps/createCompany/companyDomain.vue")
+      () =>
+        import(
+          "@/components/common/steps/createCompany/sub-step2/components/companyDomain.vue"
+        )
     )
   );
   const companySucursal = markRaw(
     defineAsyncComponent(
-      () => import("@/pages/wizards/common/steps/createCompany/companySucursal.vue")
+      () =>
+        import(
+          "@/components/common/steps/createCompany/sub-step1/components/companySucursal.vue"
+        )
     )
   );
 
   const companyPOS = markRaw(
     defineAsyncComponent(
-      () => import("@/pages/wizards/common/steps/createCompany/companyPOS.vue")
+      () =>
+        import(
+          "@/components/common/steps/createCompany/sub-step1/components/companyPOS.vue"
+        )
     )
   );
 
   const companyPlanes = markRaw(
     defineAsyncComponent(
-      () => import("@/pages/wizards/common/steps/dataSales/companyPlanes.vue")
+      () =>
+        import(
+          "@/components/common/steps/dataSales/sub-step1/indexSalesDataSS1.vue"
+        )
     )
   );
 
   const companyPagos = markRaw(
     defineAsyncComponent(
-      () => import("@/pages/wizards/common/steps/dataSales/companyPagos.vue")
+      () =>
+        import(
+          "@/components/common/steps/dataSales/sub-step2/components/companyPagos.vue"
+        )
     )
   );
   const companyTicketEmail = markRaw(
     defineAsyncComponent(
       () =>
-        import("@/pages/wizards/common/steps/configurationCompany/companyTicketEmail.vue")
+        import(
+          "@/components/common/steps/configurationCompany/sub-step3/indexConfiCompanySS3.vue"
+        )
     )
   );
 
   const configLogo = markRaw(
     defineAsyncComponent(
-      () => import("@/pages/wizards/common/steps/configurationCompany/configLogo.vue")
+      () =>
+        import(
+          "@/components/common/steps/createCompany/sub-step2/indexCreateCompanySS2.vue"
+        )
     )
   );
 
   const simpleQuestion = markRaw(
     defineAsyncComponent(
       () =>
-        import("@/pages/wizards/common/steps/configurationCompany/simpleQuestion.vue")
+        import(
+          "@/components/common/steps/configurationCompany/sub-step2/indexConfiCompanySS2.vue"
+        )
     )
   );
 
   const searchRUC = markRaw(
-    defineAsyncComponent(() => import("@/pages/wizards/common/steps/configurationCompany/searchRuc.vue"))
+    defineAsyncComponent(
+      () =>
+        import(
+          "@/components/common/steps/configurationCompany/sub-step1/indexConfigCompanySS1.vue"
+        )
+    )
   );
   const consultorVentas = markRaw(
     defineAsyncComponent(
-      () => import("@/pages/wizards/common/steps/dataSales/consultorVentas.vue")
+      () =>
+        import(
+          "@/components/common/steps/dataSales/sub-step2/indexSalesDataSS2.vue"
+        )
     )
   );
 

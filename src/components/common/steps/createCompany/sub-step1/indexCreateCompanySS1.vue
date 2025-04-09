@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import companyPOS from "@/pages/wizards/common/sucursalPOS/companyPOS.vue"
-import companySucursal from "@/pages/wizards/common/sucursalPOS/companySucursal.vue"
+import companyPOS from "@/components/common/steps/createCompany/sub-step1/components/companyPOS.vue"
+import companySucursal from "@/components/common/steps/createCompany/sub-step1/components/companySucursal.vue"
 
 </script>
