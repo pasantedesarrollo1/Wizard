@@ -25,7 +25,7 @@
   
   <script setup lang="ts">
   import { ref } from 'vue';
-  import companyPagos from "@/pages/wizards/common/createCompany/companyPagos.vue"
+  import companyPagos from "@/pages/wizards/common/steps/dataSales/companyPagos.vue"
 
 
   // Definimos la interfaz para las opciones de Vendedor

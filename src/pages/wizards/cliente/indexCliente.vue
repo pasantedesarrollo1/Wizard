@@ -8,8 +8,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-import WizardBase from "@/components/wizard/wizard-base.vue"
-import personalData from "@/pages/wizards/common/personalData.vue"
+import WizardBase from "@/pages/wizards/common/wizard-base.vue"
+import personalData from "@/pages/wizards/common/steps/personalData/personalData.vue"
 import { getWizardComponents } from "@/utils/wizard-imports"
 
 // Definimos los componentes para cada paso principal

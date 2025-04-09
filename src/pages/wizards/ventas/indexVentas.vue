@@ -1,5 +1,5 @@
 <template>
-  <wizard-base 
+  <wizard-base
     wizard-type="ventas"
     :step-components="stepComponents"
     :sub-steps-config="subStepsConfig"
@@ -7,17 +7,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import WizardBase from "@/components/wizard/wizard-base.vue";
-import personalData from "@/pages/wizards/common/personalData.vue";
-import { getWizardComponents } from "@/utils/wizard-imports"
+import { ref } from "vue";
+import WizardBase from "@/pages/wizards/common/wizard-base.vue";
+import personalData from "@/pages/wizards/common/steps/personalData/personalData.vue";
+import { getWizardComponents } from "@/utils/wizard-imports";
 
 // Obtenemos los componentes del wizard
-const components = getWizardComponents()
+const components = getWizardComponents();
 
 // Definimos los componentes para cada paso principal
 const stepComponents = {
-  'personal-info': personalData,
+  "personal-info": personalData,
   // Otros pasos principales que no tienen sub-pasos
 };
 
@@ -28,15 +28,16 @@ const subStepsConfig = ref({
     { title: "Establecer un Logo", component: components.configLogo },
   ],
   "config-company": [
-      { title: "Consulta tu RUC", component: components.searchRUC },
-      { title: "Configuraciones Generales", component: components.simpleQuestion },
-      { title: "Email del ticket", component: components.companyTicketEmail },
+    { title: "Consulta tu RUC", component: components.searchRUC },
+    {
+      title: "Configuraciones Generales",
+      component: components.simpleQuestion,
+    },
+    { title: "Email del ticket", component: components.companyTicketEmail },
   ],
   "data-sales": [
-      { title: "Planes - Tipo de Planes", component: components.companyPlanes },
-      { title: "datos de la venta", component: components.consultorVentas },
-    ],
-})
-
+    { title: "Planes - Tipo de Planes", component: components.companyPlanes },
+    { title: "datos de la venta", component: components.consultorVentas },
+  ],
+});
 </script>
-
