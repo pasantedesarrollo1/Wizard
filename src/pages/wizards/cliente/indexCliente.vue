@@ -31,11 +31,11 @@ const subStepsConfig = ref({
   ],
   "config-company": [
     // Se omiten los sub-setups 1 (planes) y 2 (método de pago)
-    { title: "Configuracion de RIMPE", component: components.configRipe },
-    { title: "Preguntas simples", component: components.simpleQuestion },
-    { title: "Datos de la Sucursal", component: components.companySucursal },
-    { title: "Preguntas simples Sucursal", component: components.simpleQuestionSucursal },
-    { title: "Creacion de Punto de Venta", component: components.companyPOS },
+    { title: "Configuracion Generales", component: components.configRipe },
+      { title: "Configuraciones Generales", component: components.simpleQuestion },
+      { title: "Sucursal - Creacion sucursal", component: components.companySucursal },
+      { title: "Sucursal - Configuracion", component: components.simpleQuestionSucursal },
+      { title: "Sucursal - Creacion de Punto de Venta", component: components.companyPOS },
   ],
 })
 
