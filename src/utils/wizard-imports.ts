@@ -1,71 +1,42 @@
-import { markRaw, defineAsyncComponent } from "vue";
-import type { Component } from "vue";
+import { markRaw, defineAsyncComponent } from "vue"
+import type { Component } from "vue"
 
 // Función para importar y marcar como raw todos los componentes comunes
 export function getWizardComponents(): Record<string, Component> {
   // Componentes comunes
   const indexCreateCompanySS1 = markRaw(
-    defineAsyncComponent(
-      () =>
-        import(
-          "@/components/common/steps/createCompany/sub-step1/indexCreateCompanySS1.vue"
-        )
-    )
-  );
+    defineAsyncComponent(() => import("@/components/common/steps/createCompany/sub-step1/indexCreateCompanySS1.vue")),
+  )
 
   const indexSalesDataSS1 = markRaw(
-    defineAsyncComponent(
-      () =>
-        import(
-          "@/components/common/steps/dataSales/sub-step1/indexSalesDataSS1.vue"
-        )
-    )
-  );
-
+    defineAsyncComponent(() => import("@/components/common/steps/dataSales/sub-step1/indexSalesDataSS1.vue")),
+  )
 
   const indexConfiCompanySS3 = markRaw(
     defineAsyncComponent(
-      () =>
-        import(
-          "@/components/common/steps/configurationCompany/sub-step3/indexConfiCompanySS3.vue"
-        )
-    )
-  );
+      () => import("@/components/common/steps/configurationCompany/sub-step3/indexConfiCompanySS3.vue"),
+    ),
+  )
 
   const indexCreateCompanySS2 = markRaw(
-    defineAsyncComponent(
-      () =>
-        import(
-          "@/components/common/steps/createCompany/sub-step2/indexCreateCompanySS2.vue"
-        )
-    )
-  );
+    defineAsyncComponent(() => import("@/components/common/steps/createCompany/sub-step2/indexCreateCompanySS2.vue")),
+  )
 
   const indexConfiCompanySS2 = markRaw(
     defineAsyncComponent(
-      () =>
-        import(
-          "@/components/common/steps/configurationCompany/sub-step2/indexConfiCompanySS2.vue"
-        )
-    )
-  );
+      () => import("@/components/common/steps/configurationCompany/sub-step2/indexConfiCompanySS2.vue"),
+    ),
+  )
 
   const indexConfigCompanySS1 = markRaw(
     defineAsyncComponent(
-      () =>
-        import(
-          "@/components/common/steps/configurationCompany/sub-step1/indexConfigCompanySS1.vue"
-        )
-    )
-  );
+      () => import("@/components/common/steps/configurationCompany/sub-step1/indexConfigCompanySS1.vue"),
+    ),
+  )
+
   const indexSalesDataSS2 = markRaw(
-    defineAsyncComponent(
-      () =>
-        import(
-          "@/components/common/steps/dataSales/sub-step2/indexSalesDataSS2.vue"
-        )
-    )
-  );
+    defineAsyncComponent(() => import("@/components/common/steps/dataSales/sub-step2/indexSalesDataSS2.vue")),
+  )
 
   // Devolvemos todos los componentes en un objeto
   return {
@@ -76,12 +47,12 @@ export function getWizardComponents(): Record<string, Component> {
     indexConfiCompanySS2,
     indexConfigCompanySS1,
     indexSalesDataSS2,
-  };
+  }
 }
 
-// Función para obtener la configuración de sub-pasos común
-export function getCommonSubStepsConfig() {
-  const components = getWizardComponents();
+// Función para obtener la configuración base de sub-pasos común a todos los wizards
+export function getBaseSubStepsConfig() {
+  const components = getWizardComponents()
 
   return {
     "create-company": [
@@ -90,12 +61,46 @@ export function getCommonSubStepsConfig() {
     ],
     "config-company": [
       { title: "config-comapny SS1", component: components.indexConfigCompanySS1 },
-      {title: "config-comapny SS2",component: components.indexConfiCompanySS2,},
+      { title: "config-comapny SS2", component: components.indexConfiCompanySS2 },
       { title: "config-comapny SS3", component: components.indexConfiCompanySS3 },
     ],
+  }
+}
+
+// Función para obtener la configuración de sub-pasos para el wizard de ventas
+export function getVentasSubStepsConfig() {
+  const baseConfig = getBaseSubStepsConfig()
+  const components = getWizardComponents()
+
+  return {
+    ...baseConfig,
     "data-sales": [
       { title: "data-sales SS1", component: components.indexSalesDataSS1 },
       { title: "data-sales SS2", component: components.indexSalesDataSS2 },
     ],
-  };
+  }
+}
+
+// Función para obtener la configuración de sub-pasos para el wizard de soporte
+export function getSoporteSubStepsConfig() {
+  return getBaseSubStepsConfig()
+}
+
+// Función para obtener la configuración de sub-pasos para el wizard de cliente
+export function getClienteSubStepsConfig() {
+  return getBaseSubStepsConfig()
+}
+
+// Función para obtener la configuración de sub-pasos según el tipo de wizard
+export function getSubStepsConfigByType(type: string) {
+  switch (type) {
+    case "ventas":
+      return getVentasSubStepsConfig()
+    case "soporte":
+      return getSoporteSubStepsConfig()
+    case "cliente":
+      return getClienteSubStepsConfig()
+    default:
+      return getBaseSubStepsConfig()
+  }
 }

@@ -7,10 +7,6 @@ const routes: Array<RouteRecordRaw> = [
     redirect: "/wizard/sales",
   },
   {
-    path: "/wizard/general",
-    component: () => import("@/pages/wizards/general/indexGeneral.vue")
-  },
-  {
     path: "/wizard/sales",
     component: () => import("@/pages/wizards/ventas/indexVentas.vue")
   },
