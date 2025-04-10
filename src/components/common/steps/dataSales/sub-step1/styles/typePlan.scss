@@ -6,6 +6,10 @@ $color-unchecked: #03a9f4;
 $color-checked: #f44336;
 $bg-unchecked: #ebf7fc;
 $bg-checked: #fcebeb;
+$primary-color: #003cff;
+$primary-light: rgba(0, 60, 255, 0.1);
+$primary-dark: #0035e0;
+$border-radius: 16px;
 
 // Mixins
 @mixin absolute-fill {
@@ -16,11 +20,66 @@ $bg-checked: #fcebeb;
   left: 0;
 }
 
-// Estilos
+// Estilos generales
+.plan-selector {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title-heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+// Estilos para el toggle de periodo
+.period-toggle-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.period-toggle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #f5f7fa;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.period-active {
+  font-weight: 600;
+  color: #333;
+}
+
+.period-inactive {
+  color: #777;
+}
+
+.savings-badge {
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background-color: rgba(var(--ion-color-tertiary-rgb), 0.15);
+  color: var(--ion-color-tertiary);
+}
+
+// Estilos para el switch
 .button-cover,
 .knobs,
 .layer {
   @include absolute-fill;
+}
+
+.switch-container {
+  position: relative;
+  width: $switch-width;
+  height: $switch-height;
 }
 
 .button {
@@ -95,5 +154,235 @@ $bg-checked: #fcebeb;
     &:checked ~ .layer {
       background-color: $bg-checked;
     }
+  }
+}
+
+// Configuración del grid de Ionic
+.plans-grid {
+  --ion-grid-padding: 0;
+  --ion-grid-column-padding: 10px;
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+// Estilos para las tarjetas de planes
+.plan-card {
+  position: relative;
+  border-radius: $border-radius;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  }
+  
+  &.selected-plan {
+    border-color: $primary-color;
+    box-shadow: 0 10px 30px rgba($primary-color, 0.2);
+    
+    .plan-title {
+      color: $primary-color;
+    }
+    
+    .price-tag {
+      .amount {
+        color: $primary-color;
+      }
+    }
+  }
+  
+  &.popular-plan {
+    transform: scale(1.03);
+    border-color: var(--ion-color-warning);
+    
+    &:hover {
+      transform: translateY(-5px) scale(1.03);
+    }
+    
+    &.selected-plan {
+      border-color: $primary-color;
+    }
+  }
+}
+
+// Etiqueta de popular
+.popular-tag {
+  position: absolute;
+  top: 0;
+  right: 1.5rem;
+  background-color: var(--ion-color-warning);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 12px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.popular-icon {
+  font-size: 1rem;
+}
+
+// Título del plan
+.plan-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+// Contenedor de precio
+.price-container {
+  text-align: center;
+  margin: 1rem 0 1.5rem;
+}
+
+.price-tag {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  
+  .currency {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #555;
+  }
+  
+  .amount {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #333;
+    margin: 0 0.2rem;
+  }
+  
+  .period {
+    font-size: 0.9rem;
+    color: #777;
+  }
+}
+
+.savings-text {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #777;
+  
+  .original-price {
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+}
+
+// Lista de características
+.features-list {
+  margin: 1.5rem 0;
+  
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+    color: #555;
+    
+    .feature-icon {
+      color: $primary-color;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Contenedor de badges
+.badges-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.plan-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+// Contenedor de acción
+.action-container {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.continue-button {
+  max-width: 400px;
+  margin: 0 auto;
+  --background: #{$primary-color};
+  --background-hover: #{$primary-dark};
+  --border-radius: #{$border-radius};
+  --box-shadow: 0 8px 16px rgba(#{$primary-color}, 0.2);
+  font-weight: 600;
+  height: 48px;
+  
+  &:hover {
+    --box-shadow: 0 10px 20px rgba(#{$primary-color}, 0.3);
+  }
+}
+
+.help-text {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: #777;
+}
+
+// Ajustes responsivos
+@media (max-width: 992px) {
+  ion-col[size-md="3"] {
+    --ion-grid-column-size: 6;
+    --ion-grid-column: 6;
+  }
+}
+
+@media (max-width: 768px) {
+  .period-toggle {
+    padding: 0.4rem 0.8rem;
+    gap: 0.5rem;
+  }
+  
+  .plan-card.popular-plan {
+    transform: scale(1);
+    
+    &:hover {
+      transform: translateY(-5px);
+    }
+  }
+  
+  .price-tag {
+    .amount {
+      font-size: 2rem;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  ion-col {
+    --ion-grid-column-size: 12;
+    --ion-grid-column: 12;
+  }
+  
+  .plan-title {
+    font-size: 1.2rem;
   }
 }

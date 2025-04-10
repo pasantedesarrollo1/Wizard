@@ -1,16 +1,19 @@
 <template>
-  <div class="p-4">
+  <div class="plan-selector">
     <ion-text color="medium" class="text-center">
-      <h5>Selecciona el plan de tu preferencia</h5>
+      <h4 class="title-heading">Selecciona el plan de tu preferencia</h4>
     </ion-text>
     
     <!-- Switch personalizado para alternar entre Mensual y Anual -->
-    <div class="flex justify-center my-5">
-      <div class="flex items-center justify-center gap-2.5">
-        <span :class="{ 'text-black font-semibold': periodoSeleccionado === 'mensual', 'text-gray-500 font-medium': periodoSeleccionado !== 'mensual' }">
+    <div class="period-toggle-container">
+      <div class="period-toggle">
+        <span :class="{ 
+          'period-active': periodoSeleccionado === 'mensual', 
+          'period-inactive': periodoSeleccionado !== 'mensual' 
+        }">
           Mensual
         </span>
-        <div class="relative w-[74px] h-[36px] box-border">
+        <div class="switch-container">
           <div id="button-3" class="button r">
             <input 
               class="checkbox" 
@@ -22,14 +25,20 @@
             <div class="layer"></div>
           </div>
         </div>
-        <span :class="{ 'text-black font-semibold': periodoSeleccionado === 'anual', 'text-gray-500 font-medium': periodoSeleccionado !== 'anual' }">
+        <span :class="{ 
+          'period-active': periodoSeleccionado === 'anual', 
+          'period-inactive': periodoSeleccionado !== 'anual' 
+        }">
           Anual
+          <ion-badge v-if="periodoSeleccionado === 'anual'" class="savings-badge">
+            Ahorro 20%
+          </ion-badge>
         </span>
       </div>
     </div>
     
-    <!-- Contenedor de cards -->
-    <ion-grid>
+    <!-- Contenedor de cards con ion-grid para mejor control responsivo -->
+    <ion-grid class="plans-grid">
       <ion-row>
         <ion-col 
           size="12" 
@@ -40,33 +49,63 @@
         >
           <ion-card 
             button 
-            :color="tipoPlanSeleccionado === opcion.value ? 'primary' : ''"
+            :class="[
+              'plan-card',
+              tipoPlanSeleccionado === opcion.value ? 'selected-plan' : '',
+              opcion.value === 'pp' ? 'popular-plan' : ''
+            ]"
             @click="seleccionarPlan(opcion.value)"
-            class="h-full flex flex-col transition-transform duration-300 hover:-translate-y-1.5"
           >
+            <!-- Etiqueta de popular si corresponde -->
+            <div v-if="opcion.value === 'pp'" class="popular-tag">
+              <ion-icon :icon="star" class="popular-icon"></ion-icon>
+              Popular
+            </div>
+            
             <ion-card-header>
-              <ion-card-title class="text-center">{{ opcion.label }}</ion-card-title>
+              <ion-card-title class="plan-title">
+                {{ opcion.label }}
+              </ion-card-title>
             </ion-card-header>
-            <ion-card-content class="text-center">
-              <ion-text color="dark">
-                <h2 class="text-[1.8rem] font-bold my-[15px]">
-                  {{ periodoSeleccionado === 'anual' ? opcion.precioAnual : opcion.precioMensual }}
-                </h2>
-              </ion-text>
-              <ion-badge 
-                v-if="opcion.value === 'pg'" 
-                color="success"
-                class="mt-4"
-              >
-                Gratis
-              </ion-badge>
-              <ion-badge 
-                v-if="periodoSeleccionado === 'anual'" 
-                color="tertiary"
-                class="mt-4"
-              >
-                Ahorro anual
-              </ion-badge>
+            
+            <ion-card-content>
+              <div class="price-container">
+                <div class="price-tag">
+                  <span class="currency">$</span>
+                  <span class="amount">{{ getPlanPrice(opcion) }}</span>
+                  <span class="period">/{{ periodoSeleccionado === 'anual' ? 'año' : 'mes' }}</span>
+                </div>
+                
+                <div v-if="periodoSeleccionado === 'anual' && opcion.value !== 'pg'" class="savings-text">
+                  <span class="original-price">{{ opcion.precioMensual }}×12</span>
+                </div>
+              </div>
+              
+              <!-- Características del plan -->
+              <div class="features-list">
+                <div v-for="(caracteristica, index) in opcion.caracteristicas" :key="index" class="feature-item">
+                  <ion-icon :icon="checkmarkCircle" class="feature-icon"></ion-icon>
+                  <span>{{ caracteristica }}</span>
+                </div>
+              </div>
+              
+              <!-- Etiquetas adicionales -->
+              <div class="badges-container">
+                <ion-badge 
+                  v-if="opcion.value === 'pg'" 
+                  color="success"
+                  class="plan-badge"
+                >
+                  Gratis
+                </ion-badge>
+                <ion-badge 
+                  v-if="periodoSeleccionado === 'anual' && opcion.value !== 'pg'" 
+                  color="tertiary"
+                  class="plan-badge annual-badge"
+                >
+                  Ahorro anual
+                </ion-badge>
+              </div>
             </ion-card-content>
           </ion-card>
         </ion-col>
@@ -76,18 +115,20 @@
 </template>
   
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref} from 'vue';
 import { 
   IonText, 
-  IonGrid, 
-  IonRow, 
-  IonCol, 
   IonCard, 
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-  IonBadge
+  IonBadge,
+  IonIcon,
+  IonGrid,
+  IonRow,
+  IonCol,
 } from '@ionic/vue';
+import { checkmarkCircle, star } from 'ionicons/icons';
   
 // Definimos la interfaz para las opciones de tipo de plan con precios
 interface TipoPlanesOpcion {
@@ -95,6 +136,7 @@ interface TipoPlanesOpcion {
   value: string;
   precioMensual: string;
   precioAnual: string;
+  caracteristicas?: string[];
 }
   
 // Estado para controlar si se muestra el precio anual o mensual
@@ -105,31 +147,63 @@ const opcionesTipoPlanes = ref<TipoPlanesOpcion[]>([
   { 
     label: 'Plan Gratuito', 
     value: 'pg',
-    precioMensual: '0$',
-    precioAnual: '0$'
+    precioMensual: '0',
+    precioAnual: '0',
+    caracteristicas: [
+      'Acceso básico',
+      'Funciones limitadas',
+      'Soporte por email'
+    ]
   },
   { 
     label: 'Plan Lite', 
     value: 'pl',
-    precioMensual: '10$',
-    precioAnual: '120$'
+    precioMensual: '10',
+    precioAnual: '96',
+    caracteristicas: [
+      'Todo lo del plan gratuito',
+      'Funciones adicionales',
+      'Soporte prioritario',
+      'Acceso a API básica'
+    ]
   },
   { 
     label: 'Plan Básico', 
     value: 'pb',
-    precioMensual: '20$',
-    precioAnual: '240$'
+    precioMensual: '20',
+    precioAnual: '192',
+    caracteristicas: [
+      'Todo lo del plan Lite',
+      'Características avanzadas',
+      'Soporte telefónico',
+      'Reportes personalizados',
+      'API completa'
+    ]
   },
   { 
     label: 'Plan Pyme', 
     value: 'pp',
-    precioMensual: '30$',
-    precioAnual: '360$'
+    precioMensual: '30',
+    precioAnual: '288',
+    caracteristicas: [
+      'Todo lo del plan Básico',
+      'Funciones empresariales',
+      'Soporte 24/7',
+      'Integraciones avanzadas',
+      'Usuarios ilimitados',
+      'Personalización completa'
+    ]
   },
 ]);
   
 // Variable para almacenar el plan seleccionado
 const tipoPlanSeleccionado = ref<string>('');
+
+
+// Función para obtener el precio según el periodo seleccionado
+const getPlanPrice = (plan: TipoPlanesOpcion): string => {
+  return periodoSeleccionado.value === 'anual' ? plan.precioAnual : plan.precioMensual;
+};
   
 // Función para seleccionar un plan
 const seleccionarPlan = (value: string) => {
@@ -141,6 +215,7 @@ const togglePeriodo = (event: Event) => {
   const target = event.target as HTMLInputElement;
   periodoSeleccionado.value = target.checked ? 'anual' : 'mensual';
 };
+
 </script>
   
 <style lang="scss" src="@/components/common/steps/dataSales/sub-step1/styles/typePlan.scss" scoped></style>
