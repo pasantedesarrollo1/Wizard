@@ -26,10 +26,25 @@ import "@ionic/vue/css/palettes/dark.system.css"
 /* Theme variables */
 import "@/assets/styles.css"
 
+import { VueQueryPlugin } from "@tanstack/vue-query"
+
+
 // Creamos la instancia de Pinia
 const pinia = createPinia()
 
-const app = createApp(App).use(IonicVue).use(router).use(pinia) // Añadimos Pinia a la aplicación
+const app = createApp(App)
+  .use(IonicVue)
+  .use(router)
+  .use(pinia)
+  .use(VueQueryPlugin, {
+    queryClientConfig: {
+      defaultOptions: {
+        queries: {
+          staleTime: 1000 * 60 * 5, // 5 minutos
+        },
+      },
+    },
+  })
 
 router.isReady().then(() => {
   app.mount("#app")
