@@ -4,7 +4,7 @@ import type { Component } from "vue";
 // Función para importar y marcar como raw todos los componentes comunes
 export function getWizardComponents(): Record<string, Component> {
   // Componentes comunes
-  const companyInfo = markRaw(
+  const indexCreateCompanySS1 = markRaw(
     defineAsyncComponent(
       () =>
         import(
@@ -13,33 +13,7 @@ export function getWizardComponents(): Record<string, Component> {
     )
   );
 
-  const companyDomain = markRaw(
-    defineAsyncComponent(
-      () =>
-        import(
-          "@/components/common/steps/createCompany/sub-step2/components/companyDomain.vue"
-        )
-    )
-  );
-  const companySucursal = markRaw(
-    defineAsyncComponent(
-      () =>
-        import(
-          "@/components/common/steps/createCompany/sub-step1/components/companySucursal.vue"
-        )
-    )
-  );
-
-  const companyPOS = markRaw(
-    defineAsyncComponent(
-      () =>
-        import(
-          "@/components/common/steps/createCompany/sub-step1/components/companyPOS.vue"
-        )
-    )
-  );
-
-  const companyPlanes = markRaw(
+  const indexSalesDataSS1 = markRaw(
     defineAsyncComponent(
       () =>
         import(
@@ -48,15 +22,8 @@ export function getWizardComponents(): Record<string, Component> {
     )
   );
 
-  const companyPagos = markRaw(
-    defineAsyncComponent(
-      () =>
-        import(
-          "@/components/common/steps/dataSales/sub-step2/components/companyPagos.vue"
-        )
-    )
-  );
-  const companyTicketEmail = markRaw(
+
+  const indexConfiCompanySS3 = markRaw(
     defineAsyncComponent(
       () =>
         import(
@@ -65,7 +32,7 @@ export function getWizardComponents(): Record<string, Component> {
     )
   );
 
-  const configLogo = markRaw(
+  const indexCreateCompanySS2 = markRaw(
     defineAsyncComponent(
       () =>
         import(
@@ -74,7 +41,7 @@ export function getWizardComponents(): Record<string, Component> {
     )
   );
 
-  const simpleQuestion = markRaw(
+  const indexConfiCompanySS2 = markRaw(
     defineAsyncComponent(
       () =>
         import(
@@ -83,7 +50,7 @@ export function getWizardComponents(): Record<string, Component> {
     )
   );
 
-  const searchRUC = markRaw(
+  const indexConfigCompanySS1 = markRaw(
     defineAsyncComponent(
       () =>
         import(
@@ -91,7 +58,7 @@ export function getWizardComponents(): Record<string, Component> {
         )
     )
   );
-  const consultorVentas = markRaw(
+  const indexSalesDataSS2 = markRaw(
     defineAsyncComponent(
       () =>
         import(
@@ -102,17 +69,13 @@ export function getWizardComponents(): Record<string, Component> {
 
   // Devolvemos todos los componentes en un objeto
   return {
-    companyInfo,
-    companyDomain,
-    companySucursal,
-    companyPOS,
-    companyPlanes,
-    companyPagos,
-    companyTicketEmail,
-    configLogo,
-    simpleQuestion,
-    searchRUC,
-    consultorVentas,
+    indexCreateCompanySS1,
+    indexSalesDataSS1,
+    indexConfiCompanySS3,
+    indexCreateCompanySS2,
+    indexConfiCompanySS2,
+    indexConfigCompanySS1,
+    indexSalesDataSS2,
   };
 }
 
@@ -122,29 +85,17 @@ export function getCommonSubStepsConfig() {
 
   return {
     "create-company": [
-      { title: "Información Básica", component: components.companyInfo },
-      { title: "Establecer un Logo", component: components.configLogo },
-      { title: "Dominio", component: components.companyDomain },
-      {
-        title: "Sucursal - Creacion sucursal",
-        component: components.companySucursal,
-      },
-      {
-        title: "Sucursal - Creacion de Punto de Venta",
-        component: components.companyPOS,
-      },
+      { title: "create-company SS1", component: components.indexCreateCompanySS1 },
+      { title: "create-company SS2", component: components.indexCreateCompanySS2 },
     ],
     "config-company": [
-      { title: "Consulta tu RUC", component: components.searchRUC },
-      {
-        title: "Configuraciones Generales",
-        component: components.simpleQuestion,
-      },
-      { title: "Email del ticket", component: components.companyTicketEmail },
+      { title: "config-comapny SS1", component: components.indexConfigCompanySS1 },
+      {title: "config-comapny SS2",component: components.indexConfiCompanySS2,},
+      { title: "config-comapny SS3", component: components.indexConfiCompanySS3 },
     ],
     "data-sales": [
-      { title: "Planes - Tipo de Planes", component: components.companyPlanes },
-      { title: "datos de la venta", component: components.consultorVentas },
+      { title: "data-sales SS1", component: components.indexSalesDataSS1 },
+      { title: "data-sales SS2", component: components.indexSalesDataSS2 },
     ],
   };
 }

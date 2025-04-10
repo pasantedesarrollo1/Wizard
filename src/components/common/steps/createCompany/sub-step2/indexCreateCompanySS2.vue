@@ -1,16 +1,14 @@
 <template>
     <div>
-        <form>
-            <label>Carga tu logo aqui</label> <br>
-            <input type="file" class="border border-black px-2 py-1 rounded w-full"/>
-        </form>
+        <uploadLogo />
         <br>
-        <companyDomain />
+        <createDomain />
     </div>
 </template>
 
 <script setup lang="ts">
-import companyDomain from "@/components/common/steps/createCompany/sub-step2/components/companyDomain.vue"
+import createDomain from "@/components/common/steps/createCompany/sub-step2/components/createDomain.vue"
+import uploadLogo from "@/components/common/steps/createCompany/sub-step2/components/uploadLogo.vue"
 </script>
 
 <style scoped>

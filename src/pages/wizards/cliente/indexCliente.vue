@@ -24,16 +24,13 @@ const components = getWizardComponents();
 // Creamos una configuración personalizada para el cliente que excluye planes y método de pago
 const subStepsConfig = ref({
   "create-company": [
-    { title: "Información Básica", component: components.companyInfo },
-    { title: "Establecer un Logo", component: components.configLogo },
-  ],
-  "config-company": [
-    { title: "Consulta tu RUC", component: components.searchRUC },
-    {
-      title: "Configuraciones Generales",
-      component: components.simpleQuestion,
-    },
-    { title: "Email del ticket", component: components.companyTicketEmail },
-  ],
+      { title: "create-company SS1", component: components.indexCreateCompanySS1 },
+      { title: "create-company SS2", component: components.indexCreateCompanySS2 },
+    ],
+    "config-company": [
+      { title: "config-comapny SS1", component: components.indexConfigCompanySS1 },
+      {title: "config-comapny SS2",component: components.indexConfiCompanySS2,},
+      { title: "config-comapny SS3", component: components.indexConfiCompanySS3 },
+    ],
 });
 </script>

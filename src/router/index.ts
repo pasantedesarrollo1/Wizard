@@ -24,7 +24,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/finished-company",
-    component: () => import("@/pages/wizards/common/finishedCompany.vue")
+    component: () => import("@/components/common/finishedCompany.vue")
   }
 ]
 
