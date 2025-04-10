@@ -28,10 +28,6 @@
               <component 
                 v-if="currentSubStep" 
                 :is="currentSubStep.component"
-                @update:Recivos="handleRecivosChange"
-                @update:DocumentType="handleDocumentTypeChange"
-                :recivoSeleccionado="recivosSeleccionado"
-                :documentTypeSeleccionado="documentTypeSeleccionado"
               />
             </div>
           </template>
@@ -102,23 +98,12 @@ const started = ref(false);
 // Variable para controlar la visibilidad del modal de confirmación
 const showConfirmationModal = ref(false); // Añadimos esta variable para controlar la visibilidad del modal
 
-const recivosSeleccionado = ref<string>('');
-const documentTypeSeleccionado = ref<string>('');
-
 // Inicializamos el wizard con el tipo proporcionado
 const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress(props.wizardType);
 
 // Función para manejar el evento de inicio desde welcomeGeneral
 const handleStart = () => {
   started.value = true;
-};
-
-const handleRecivosChange = (value: string) => {
-  recivosSeleccionado.value = value;
-};
-
-const handleDocumentTypeChange = (value: string) => {
-  documentTypeSeleccionado.value = value;
 };
 
 // Obtenemos las funciones del composable useWizardSubSteps, incluyendo insertSubStep
