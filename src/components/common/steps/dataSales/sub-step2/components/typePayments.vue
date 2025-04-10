@@ -1,96 +1,106 @@
-<!--central.illarli-->
 <template>
-    <div>
-      <form>
-        <!-- Metodos de pago sistema.illarli-->
-        <div>
-          <label class="block text-center">Seleccione el método de pago del Servicio</label>
-          <br />
-          <!-- Reemplazamos el select por un contenedor de cards -->
-          <div class="cards-container">
-            <!-- Iteramos sobre las opciones para crear una card por cada tipo de compañía -->
-            <div 
-              v-for="opcion in opcionesTipoPago" 
-              :key="opcion.value" 
-              class="company-card" 
-              :class="{ 'selected': TipoPagoSeleccionado === opcion.value }"
-              @click="seleccionarTipoCompania(opcion.value)"
-            >
-              <!-- Texto centrado dentro de la card -->
-            <div class="card-text">{{ opcion.label }}</div>
-            </div>
-            
-          </div>
-        </div>
-      </form>
-    </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref, defineEmits } from 'vue';
-  
-  // Definimos los eventos que puede emitir este componente
-  const emit = defineEmits<{
-    (e: 'update:tipoPago', value: string): void;
-  }>();
-  
-  // Definimos la interfaz para las opciones de tipo de ID
-  interface TipoPagoOpcion {
-    label: string;
-    value: string;
+  <div class="ion-padding-vertical">
+    <ion-text color="medium" class="ion-text-center">
+      <h5>Seleccione el método de pago del Servicio</h5>
+    </ion-text>
+
+    <ion-grid>
+      <ion-row class="ion-justify-content-center">
+        <ion-col
+          size="12"
+          size-sm="6"
+          size-md="3"
+          v-for="opcion in opcionesTipoPago"
+          :key="opcion.value"
+        >
+          <ion-card
+            :class="{ 'selected-card': TipoPagoSeleccionado === opcion.value }"
+            button
+            @click="seleccionarTipoCompania(opcion.value)"
+          >
+            <ion-card-content class="ion-text-center">
+              <ion-icon
+                :icon="getIconForPaymentType(opcion.value)"
+                size="large"
+                class="ion-margin-bottom"
+              ></ion-icon>
+              <ion-text>
+                <p>{{ opcion.label }}</p>
+              </ion-text>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import {
+  IonText,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonCard,
+  IonCardContent,
+  IonIcon
+} from '@ionic/vue'
+import { 
+  cardOutline, 
+  receiptOutline, 
+  cashOutline, 
+  swapHorizontalOutline 
+} from 'ionicons/icons'
+
+interface TipoPagoOpcion {
+  label: string
+  value: string
+}
+
+const opcionesTipoPago = ref<TipoPagoOpcion[]>([
+  { label: 'Tarjeta Nuevi', value: 'tarjeta-nuevi' },
+  { label: 'Datafast Vouchet', value: 'datafast-voucher' },
+  { label: 'Transferencia', value: 'transferencia' },
+  { label: 'Efectivo', value: 'efectivo' }
+])
+
+const TipoPagoSeleccionado = ref('')
+
+const seleccionarTipoCompania = (value: string) => {
+  TipoPagoSeleccionado.value = value
+  console.log('Tipo de Pago seleccionado:', value)
+}
+
+// Función para obtener el icono según el tipo de pago
+const getIconForPaymentType = (paymentType: string) => {
+  switch (paymentType) {
+    case 'tarjeta-nuevi':
+    case 'datafast-voucher':
+      return cardOutline
+    case 'transferencia':
+      return swapHorizontalOutline
+    case 'efectivo':
+      return cashOutline
+    default:
+      return receiptOutline
   }
-  
-  // Array con las opciones de tipo de identificación
-  const opcionesTipoPago = ref<TipoPagoOpcion[]>([
-    { label: 'Tarjeta Nuevi', value: 'tarjeta-nuevi' },
-    { label: 'Datafast Vouchet', value: 'datafast-voucher' },
-    { label: 'Transferencia', value: 'transferencia' },
-    { label: 'Efectivo', value: 'efectivo' },
-  ]);
-  
-  // Variable para almacenar el tipo de ID seleccionado
-  const TipoPagoSeleccionado = ref('');
-  
-  // Función para seleccionar un tipo de compañía y emitir el evento
-  const seleccionarTipoCompania = (value: string) => {
-    // Actualizamos el valor seleccionado
-    TipoPagoSeleccionado.value = value;
-    
-    // Emitimos el evento para notificar al componente padre
-    emit('update:tipoPago', value);
-    
-    // Mensaje de depuración
-    console.log('Tipo de Pago seleccionado:', value);
-  };
-  </script>
-  
-  <style scoped>
-  /* Contenedor para centrar las cards */
-  .cards-container {
-    display: flex;
-    justify-content: center; /* Centra las cards horizontalmente */
-    gap: 1rem; /* Espacio entre las cards */
-    margin-top: 0.5rem;
-  }
-  
-  /* Estilos básicos para las cards */
-  .company-card {
-    border: 1px solid #ccc;
-    border-radius: 0.25rem;
-    padding: 1rem;
-    cursor: pointer;
-    min-width: 120px;
-    
-    /* Centrar el texto dentro de la card */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-  }
-  
-  /* Estilo para la card seleccionada */
-  .company-card.selected {
-    border-color: black;
-    background-color: #f0f0f0;
-  }
-  </style>
+}
+</script>
+
+<style scoped>
+.selected-card {
+  border: 2px solid var(--ion-color-primary);
+  background-color: var(--ion-color-light);
+}
+
+ion-card {
+  margin: 8px;
+  transition: all 0.3s ease;
+}
+
+ion-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+</style>
