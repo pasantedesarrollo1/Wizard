@@ -1,6 +1,6 @@
 <template>
   <div class="wizard-master-container">
-    <div class="wizard-container w-full">
+    <div class="wizard-container w-full h-full">
       <!-- Título simplificado -->
       <h1 class="wizard-title" v-if="showTitle">{{ title }}</h1>
       

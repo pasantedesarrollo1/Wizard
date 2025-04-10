@@ -235,7 +235,7 @@ const updateStep = (step: number) => {
   display: flex;
   flex-direction: column; /* Cambiado a column para que el indicador esté arriba */
   align-items: center;
-  padding: 20px;
+  padding: 0px;
   overflow-y: auto; /* Permite scroll si el contenido es muy grande */
 }
 .sub-step-container {

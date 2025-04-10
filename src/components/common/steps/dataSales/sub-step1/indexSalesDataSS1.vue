@@ -1,5 +1,5 @@
 <template>
-  <ion-card>
+  <ion-card class="w-full">
     <ion-card-content>
       <typePlan />
     </ion-card-content>

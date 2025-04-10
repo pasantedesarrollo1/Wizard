@@ -1,7 +1,7 @@
 <template>
   <div class="plan-selector">
     <ion-text color="medium" class="text-center">
-      <h4 class="title-heading">Selecciona el plan de tu preferencia</h4>
+      <h4 class="title-heading">Selecciona el plan y la frecuencia de pago</h4>
     </ion-text>
     
     <!-- Switch personalizado para alternar entre Mensual y Anual -->
