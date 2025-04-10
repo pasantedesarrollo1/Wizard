@@ -1,7 +1,5 @@
-// Añadimos la función insertSubStep para insertar un sub-paso en una posición específica
-
 import { ref } from "vue"
-import type { Component } from "vue" // Modificado: Agregamos 'type' para indicar que es una importación de tipo
+import type { Component } from "vue"
 
 // Interfaz para la configuración de un sub-paso
 export interface SubStep {
@@ -111,52 +109,24 @@ export function useWizardSubSteps(config: WizardSubStepsConfig) {
       console.error(`No existe el paso principal con clave ${stepKey}`)
       return false
     }
-  
+
     // Verificamos que el componente del sub-paso no sea null
     if (!subStep.component) {
       console.error("El componente del sub-paso no puede ser null")
       return false
     }
-  
-    // Buscamos la posición del componente "Tipo de Emprendimiento"
-    let tipoEmprendimientoIndex = -1
-    for (let i = 0; i < config[stepKey].length; i++) {
-      if (config[stepKey][i].title === "Tipo de Emprendimiento") {
-        tipoEmprendimientoIndex = i
-        break
-      }
+
+    // Simplificación: Verificamos directamente si la posición es válida
+    // Eliminamos la lógica redundante de búsqueda de "Tipo de Emprendimiento"
+    if (position < 0 || position > config[stepKey].length) {
+      console.error(`Posición inválida: ${position}`)
+      return false
     }
-  
-    // Si no encontramos el componente, usamos la posición proporcionada
-    if (tipoEmprendimientoIndex === -1) {
-      console.warn("No se encontró el componente 'Tipo de Emprendimiento', usando posición proporcionada")
-  
-      // Verificamos que la posición sea válida
-      if (position < 0 || position > config[stepKey].length) {
-        console.error(`Posición inválida: ${position}`)
-        return false
-      }
-  
-      // Usamos la posición proporcionada
-      tipoEmprendimientoIndex = position - 1
-    }
-  
-    // La posición donde insertaremos el plan será justo después del componente "Tipo de Emprendimiento"
-    const insertPosition = tipoEmprendimientoIndex + 1
-  
-    // Verificamos si ya existe un plan en la posición siguiente
-    if (insertPosition < config[stepKey].length) {
-      const nextStep = config[stepKey][insertPosition]
-      // Si el título del siguiente paso contiene "Plan", lo eliminamos
-      if (nextStep.title.includes("Plan")) {
-        config[stepKey].splice(insertPosition, 1)
-      }
-    }
-  
-    // Insertamos el sub-paso en la posición calculada
-    config[stepKey].splice(insertPosition, 0, subStep)
-  
-    console.log(`Sub-paso "${subStep.title}" insertado después de "Tipo de Emprendimiento" en el paso ${stepKey}`)
+
+    // Insertamos el sub-paso en la posición especificada
+    config[stepKey].splice(position, 0, subStep)
+
+    console.log(`Sub-paso "${subStep.title}" insertado en posición ${position} en el paso ${stepKey}`)
     return true
   }
 
@@ -169,6 +139,6 @@ export function useWizardSubSteps(config: WizardSubStepsConfig) {
     nextSubStep,
     prevSubStep,
     resetSubStep,
-    insertSubStep, // Añadimos la nueva función al objeto retornado
+    insertSubStep,
   }
 }
