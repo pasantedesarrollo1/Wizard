@@ -1,75 +1,114 @@
 <template>
-  <div>
-    <form>
-      <!-- Tipo de identificación (central.illarli)-->
-      <div>
-        <label>Tipo de Identificación</label>
-        <br />
-        <!-- Modificado: Agregamos un div con display flex para colocar elementos en línea -->
-        <div class="flex gap-2">
-          <!-- Modificado: Cambiamos el ancho del select para que no ocupe todo el espacio -->
-          <select v-model="tipoIDSeleccionado" class="border border-black px-2 py-1 rounded w-1/3">
-            <option disabled value="" selected>Seleccionar</option>
-            <option v-for="opcion in opcionesTipoID" :key="opcion.value" :value="opcion.value" >
+  <ion-card class="personal-data-card">
+    <ion-card-content class="scrollable-content">
+      <form>
+        <!-- Tipo de identificación -->
+        <ion-item>
+          <ion-label position="stacked">Tipo de Identificación</ion-label>
+          <div class="ion-margin-top custom-select-input">
+            <ion-select 
+              v-model="tipoIDSeleccionado" 
+              interface="popover" 
+              placeholder="Seleccionar"
+              fill="outline"
+              class="id-type-select"
+            >
+              <ion-select-option 
+                v-for="opcion in opcionesTipoID" 
+                :key="opcion.value" 
+                :value="opcion.value"
+              >
+                {{ opcion.label }}
+              </ion-select-option>
+            </ion-select>
+            <ion-input
+              type="text"
+              placeholder="Ingresa tu Identificación"
+              fill="outline"
+              class="id-number-input"
+            ></ion-input>
+          </div>
+        </ion-item>
+
+        <!-- Nombres -->
+        <ion-item>
+          <ion-label position="stacked">Nombres</ion-label>
+          <ion-input
+            type="text"
+            placeholder="Ingresa tus Nombres"
+            fill="outline"
+            class="ion-margin-top"
+          ></ion-input>
+        </ion-item>
+
+        <!-- Apellidos -->
+        <ion-item>
+          <ion-label position="stacked">Apellidos</ion-label>
+          <ion-input
+            type="text"
+            placeholder="Ingresa tus Apellidos"
+            fill="outline"
+            class="ion-margin-top"
+          ></ion-input>
+        </ion-item>
+
+        <!-- Correo Electrónico -->
+        <ion-item>
+          <ion-label position="stacked">Correo Electrónico</ion-label>
+          <ion-input
+            type="email"
+            placeholder="Email"
+            fill="outline"
+            class="ion-margin-top"
+          ></ion-input>
+        </ion-item>
+
+        <!-- Teléfono celular/whatsapp -->
+        <ion-item>
+          <ion-label position="stacked">Teléfono celular/whatsapp</ion-label>
+          <ion-input
+            type="tel"
+            placeholder="+593"
+            fill="outline"
+            class="ion-margin-top"
+          ></ion-input>
+        </ion-item>
+
+        <!-- Rol en la empresa -->
+        <ion-item>
+          <ion-label position="stacked">Selecciona tu rol en la empresa</ion-label>
+          <ion-select
+            v-model="RolSeleccionado"
+            interface="popover"
+            placeholder="Seleccionar"
+            fill="outline"
+            class="ion-margin-top"
+          >
+            <ion-select-option
+              v-for="opcion in opcionesRol"
+              :key="opcion.value"
+              :value="opcion.value"
+            >
               {{ opcion.label }}
-            </option>
-          </select>
-          <!-- Modificado: Ajustamos el ancho del input para que ocupe el resto del espacio -->
-          <input type="text" class="border border-black px-2 py-1 rounded w-2/3" placeholder="Ingresa tu Identificación"/>
-        </div>
-      </div>
-      <!-- Nombre (sistema.illarli)-->
-      <div>
-        <label>Nombres</label>
-        <br />
-        <input type="text" class="border border-black px-2 py-1 rounded w-full" placeholder="Ingresa tus Nombres"/>
-      </div>
-
-      <!-- Apellido (sistema.illarli)-->
-      <div>
-        <label>Apellidos</label>
-        <br />
-        <input type="text" class="border border-black px-2 py-1 rounded w-full" placeholder="Ingresa tus Apellidos"/>
-      </div>
-
-      <!-- Correo Electrónico (sistema y central .illarli)-->
-      <div>
-        <label>Correo Electrónico</label>
-        <br />
-        <input type="email" class="border border-black px-2 py-1 rounded w-full" placeholder="Email"/>
-      </div>
-
-      <!-- Teléfonos -->
-       <!-- Teléfono convencional (central.illarli)-->
-      <div>
-        <label>Teléfono convencional</label>
-        <br />
-        <input type="tel" class="border border-black px-2 py-1 rounded w-full" placeholder="Ej.: 02 123 4567 "/>
-      </div>
-       <!-- whatsapp (sistema.illarli) -->
-       <div>
-        <label>Teléfono celular/whatsapp</label>
-        <br />
-        <input type="tel" class="border border-black px-2 py-1 rounded w-full" placeholder="+593"/>
-      </div>
-
-      <!-- Rol en la empresa (sistema.illarli)-->
-      <div>
-        <label>Selecciona tu rol en la empresa</label>
-        <br />
-        <select v-model="RolSeleccionado" class="border border-black px-2 py-1 rounded w-full">
-          <option disabled value="" selected>Seleccionar</option>
-          <option v-for="opcion in opcionesRol" :key="opcion.value" :value="opcion.value" >
-            {{ opcion.label }}
-          </option>
-        </select>
-      </div>
-    </form>
-  </div>
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </form>
+    </ion-card-content>
+  </ion-card>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import {
+  IonCard,
+  IonCardContent,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonSelect,
+  IonSelectOption
+} from '@ionic/vue';
 
 // Definimos la interfaz para las opciones de tipo de ID
 interface TipoIDOpcion {
@@ -97,11 +136,47 @@ const opcionesRol = ref<RolOpcion[]>([
   { label: 'Dueño', value: 'dueno' },
   { label: 'Encargado', value: 'encargado' },
 ]);
+
 // Variable para almacenar el tipo de ID seleccionado
 const tipoIDSeleccionado = ref('');
 const RolSeleccionado = ref('');
-
-
-// El resto del formulario sigue siendo simple sin validaciones ni estilos adicionales
 </script>
 
+<style scoped>
+.personal-data-card {
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.scrollable-content {
+  overflow-y: auto;
+  max-height: 70vh; /* Altura máxima para permitir scroll */
+  padding-bottom: 20px; /* Espacio adicional al final */
+}
+
+.custom-select-input {
+  display: flex;
+  gap: 10px;
+}
+
+.id-type-select {
+  flex: 1;
+  max-width: 33%;
+}
+
+.id-number-input {
+  flex: 2;
+}
+
+ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 16px;
+}
+
+ion-select, ion-input {
+  width: 100%;
+}
+</style>

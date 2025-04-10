@@ -2,7 +2,7 @@
   <div class="wizard-master-container">
     <div class="wizard-container w-full">
       <!-- Título simplificado -->
-      <h1 class="wizard-title" v-if="showTitle">{{title }}</h1>
+      <h1 class="wizard-title" v-if="showTitle">{{ title }}</h1>
       
       <!-- Contenedor de pasos -->
       <div class="steps-timeline">
@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import {defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 
 interface Step {
   label: string;
@@ -350,4 +350,3 @@ const goToStep = (index: number) => {
   }
 }
 </style>
-

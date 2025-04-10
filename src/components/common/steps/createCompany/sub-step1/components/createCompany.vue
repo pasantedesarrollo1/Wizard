@@ -1,56 +1,80 @@
 <template>
-  <form>
+  <ion-list class="ion-padding">
     <!-- Nombre empresa (central.illarli)-->
-    <div>
-      <label>Nombre de tu Empresa</label>
-      <br />
-      <input
+    <ion-item>
+      <ion-label position="stacked">Nombre de tu Empresa</ion-label>
+      <ion-input
         type="text"
-        class="border border-black px-2 py-1 rounded w-full"
         placeholder="Nombre de tu empresa"
-      />
-    </div>
+        fill="outline"
+      ></ion-input>
+    </ion-item>
 
     <!-- RUC (central y sistema .illarli)-->
-    <div>
-      <label>RUC</label>
-      <br />
-      <input type="text" class="border border-black px-2 py-1 rounded w-full" />
-    </div>
+    <ion-item>
+      <ion-label position="stacked">RUC</ion-label>
+      <ion-input
+        type="text"
+        fill="outline"
+      ></ion-input>
+    </ion-item>
 
     <!-- Razon social (sistema.illarli)-->
-    <div>
-      <label>Razon social</label>
-      <br />
-      <input type="text" class="border border-black px-2 py-1 rounded w-full" />
-    </div>
-    <!-- Dirección de la Empresa -->
-    <div>
-      <label>Dirección de tu Empresa</label>
-      <br />
-      <input
+    <ion-item>
+      <ion-label position="stacked">Razón social</ion-label>
+      <ion-input
         type="text"
-        class="border border-black px-2 py-1 rounded w-full"
+        fill="outline"
+      ></ion-input>
+    </ion-item>
+
+    <!-- Dirección de la Empresa -->
+    <ion-item>
+      <ion-label position="stacked">Dirección de tu Empresa</ion-label>
+      <ion-input
+        type="text"
         placeholder="Dirección de tu empresa"
-      />
-    </div>
+        fill="outline"
+      ></ion-input>
+    </ion-item>
 
     <!-- Teléfonos -->
-    <div>
-      <label>Teléfonos de tu empresa</label>
-      <br />
-      <input type="tel" class="border border-black px-2 py-1 rounded w-full" />
-    </div>
+    <ion-item>
+      <ion-label position="stacked">Teléfonos de tu empresa</ion-label>
+      <ion-input
+        type="tel"
+        fill="outline"
+      ></ion-input>
+    </ion-item>
+
     <!-- Correo Electrónico -->
-    <div>
-      <label>Correo Electrónico Empresarial</label>
-      <br />
-      <input
+    <ion-item>
+      <ion-label position="stacked">Correo Electrónico Empresarial</ion-label>
+      <ion-input
         type="email"
-        class="border border-black px-2 py-1 rounded w-full"
-      />
-    </div>
-  </form>
+        fill="outline"
+      ></ion-input>
+    </ion-item>
+  </ion-list>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { 
+  IonList, 
+  IonItem, 
+  IonLabel, 
+  IonInput 
+} from '@ionic/vue';
+</script>
+
+<style scoped>
+ion-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: 16px;
+}
+
+ion-input {
+  margin-top: 8px;
+}
+</style>
