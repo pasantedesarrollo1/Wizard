@@ -1,19 +1,31 @@
 <template>
-  <div class="ion-padding">
-    <ion-text color="medium" class="ion-text-center">
+  <div class="p-4">
+    <ion-text color="medium" class="text-center">
       <h5>Selecciona el plan de tu preferencia</h5>
     </ion-text>
     
-    <!-- Switch para alternar entre Mensual y Anual -->
-    <div class="period-toggle-container ion-margin-vertical">
-      <ion-segment v-model="periodoSeleccionado" mode="ios">
-        <ion-segment-button value="mensual">
-          <ion-label>Mensual</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="anual">
-          <ion-label>Anual</ion-label>
-        </ion-segment-button>
-      </ion-segment>
+    <!-- Switch personalizado para alternar entre Mensual y Anual -->
+    <div class="flex justify-center my-5">
+      <div class="flex items-center justify-center gap-2.5">
+        <span :class="{ 'text-black font-semibold': periodoSeleccionado === 'mensual', 'text-gray-500 font-medium': periodoSeleccionado !== 'mensual' }">
+          Mensual
+        </span>
+        <div class="relative w-[74px] h-[36px] box-border">
+          <div id="button-3" class="button r">
+            <input 
+              class="checkbox" 
+              type="checkbox" 
+              :checked="periodoSeleccionado === 'anual'"
+              @change="togglePeriodo"
+            >
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+        </div>
+        <span :class="{ 'text-black font-semibold': periodoSeleccionado === 'anual', 'text-gray-500 font-medium': periodoSeleccionado !== 'anual' }">
+          Anual
+        </span>
+      </div>
     </div>
     
     <!-- Contenedor de cards -->
@@ -30,28 +42,28 @@
             button 
             :color="tipoPlanSeleccionado === opcion.value ? 'primary' : ''"
             @click="seleccionarPlan(opcion.value)"
-            class="plan-card"
+            class="h-full flex flex-col transition-transform duration-300 hover:-translate-y-1.5"
           >
             <ion-card-header>
-              <ion-card-title class="ion-text-center">{{ opcion.label }}</ion-card-title>
+              <ion-card-title class="text-center">{{ opcion.label }}</ion-card-title>
             </ion-card-header>
-            <ion-card-content class="ion-text-center">
+            <ion-card-content class="text-center">
               <ion-text color="dark">
-                <h2 class="price">
+                <h2 class="text-[1.8rem] font-bold my-[15px]">
                   {{ periodoSeleccionado === 'anual' ? opcion.precioAnual : opcion.precioMensual }}
                 </h2>
               </ion-text>
               <ion-badge 
                 v-if="opcion.value === 'pg'" 
                 color="success"
-                class="ion-margin-top"
+                class="mt-4"
               >
                 Gratis
               </ion-badge>
               <ion-badge 
                 v-if="periodoSeleccionado === 'anual'" 
                 color="tertiary"
-                class="ion-margin-top"
+                class="mt-4"
               >
                 Ahorro anual
               </ion-badge>
@@ -74,10 +86,7 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
-  IonBadge,
-  IonSegment,
-  IonSegmentButton,
-  IonLabel
+  IonBadge
 } from '@ionic/vue';
   
 // Definimos la interfaz para las opciones de tipo de plan con precios
@@ -126,34 +135,12 @@ const tipoPlanSeleccionado = ref<string>('');
 const seleccionarPlan = (value: string) => {
   tipoPlanSeleccionado.value = value;
 };
+
+// Función para alternar entre periodos (mensual/anual)
+const togglePeriodo = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  periodoSeleccionado.value = target.checked ? 'anual' : 'mensual';
+};
 </script>
   
-<style scoped>
-.period-toggle-container {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
-.plan-card {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease;
-}
-
-.plan-card:hover {
-  transform: translateY(-5px);
-}
-
-.price {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin: 15px 0;
-}
-
-ion-segment {
-  width: 80%;
-  max-width: 300px;
-}
-</style>
+<style lang="scss" src="@/components/common/steps/dataSales/sub-step1/styles/typePlan.scss" scoped></style>

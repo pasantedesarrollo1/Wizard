@@ -18,12 +18,12 @@
             <!-- Si el paso actual tiene sub-pasos -->
             <div class="sub-step-container">
               <!-- Indicador de sub-paso -->
-              <div class="sub-step-indicator" v-if="currentSubStep">
+              <!-- <div class="sub-step-indicator" v-if="currentSubStep">
                 <p class="text-sm text-center mb-4">
                   Sub-paso {{ currentSubStepIndex + 1 }} de {{ totalSubStepsForCurrentStep }}: 
                   {{ currentSubStep.title }}
                 </p>
-              </div>
+              </div> -->
               <!-- Componente del sub-paso actual -->
               <component 
                 v-if="currentSubStep" 
