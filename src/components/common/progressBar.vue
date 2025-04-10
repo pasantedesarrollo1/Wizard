@@ -1,28 +1,35 @@
 <template>
-  <div class="wizard-master-container">
-    <div class="wizard-container w-full h-full">
+  <div class="w-full mx-auto relative font-sans">
+    <div class="w-full h-full bg-white rounded-2xl shadow-lg pt-5 pb-4 relative z-10 overflow-hidden">
+      <!-- Borde superior con animación de gradiente -->
+      <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 via-blue-400 to-blue-600 bg-[length:200%_100%] animate-gradient"></div>
+      
       <!-- Título simplificado -->
-      <h1 class="wizard-title" v-if="showTitle">{{ title }}</h1>
+      <h1 v-if="showTitle" class="text-xl font-bold text-center text-gray-800 mb-4">{{ title }}</h1>
       
       <!-- Contenedor de pasos -->
-      <div class="steps-timeline">
+      <div class="relative h-[70px]">
         <!-- Contenedor flex para los pasos -->
-        <div class="timeline-steps-container">
+        <div class="flex justify-between w-full box-border relative z-20 gap-[5px]">
           <div 
             v-for="(step, index) in steps" 
             :key="`step-${index}`"
-            class="timeline-step"
+            class="relative cursor-pointer transition-all duration-500 flex flex-col items-center flex-1 min-w-[130px] max-w-[150px] mx-[2px]"
             :class="{
               'completed': index < currentStep,
               'active': index === currentStep,
               'upcoming': index > currentStep,
-              'last-step': index === steps.length - 1 // Añadida clase para identificar el último paso
+              'mb-[10px]': index === steps.length - 1
             }"
             @click="goToStep(index)"
           >
             <!-- Indicador de paso -->
-            <div class="step-node">
-              <div class="node-inner-circle">
+            <div class="relative w-10 h-10 mb-[10px]">
+              <div class="absolute top-0 left-0 w-10 h-10 rounded-full bg-white border-2 border-blue-600/30 flex items-center justify-center font-semibold text-blue-600 transition-all duration-500 z-10 shadow-md"
+                   :class="{
+                     'bg-blue-600 border-blue-600 text-white scale-105': index < currentStep,
+                     'border-blue-600 border-[3px] scale-110 shadow-[0_0_0_4px_rgba(0,60,255,0.1)]': index === currentStep
+                   }">
                 <span v-if="index < currentStep" class="step-icon">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M5 12L10 17L20 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
@@ -33,23 +40,32 @@
             </div>
             
             <!-- Contenido del paso -->
-            <div class="step-content">
-              <!-- Modificado para permitir saltos de línea en el último paso -->
-              <div class="step-title" :class="{ 'last-step-title': index === steps.length - 1 }">{{ step.label }}</div>
-              <div class="step-description" v-if="step.description">{{ step.description }}</div>
+            <div class="text-center w-full px-[5px]">
+              <div class="font-semibold text-sm text-gray-800 mb-1 transition-all duration-300"
+                   :class="{
+                     'text-blue-600': index <= currentStep,
+                     'font-bold': index === currentStep,
+                     'whitespace-normal break-words leading-tight h-auto line-clamp-2': index === steps.length - 1,
+                     'whitespace-nowrap': index !== steps.length - 1
+                   }">
+                {{ step.label }}
+              </div>
+              <div v-if="step.description" class="text-xs text-gray-600 transition-all duration-300 whitespace-normal leading-tight">
+                {{ step.description }}
+              </div>
             </div>
           </div>
         </div>
         
         <!-- Conectores entre pasos -->
-        <div class="step-connectors-container">
+        <div class="absolute top-5 left-0 w-full flex justify-between px-[30px] box-border z-10">
           <div 
             v-for="(_, index) in steps.slice(0, steps.length - 1)" 
             :key="`connector-${index}`"
-            class="step-connector"
+            class="h-[2px] bg-blue-600/10 rounded-[2px] flex-1 mx-[5px] relative overflow-hidden"
           >
             <div 
-              class="connector-progress" 
+              class="absolute top-0 left-0 h-full bg-blue-600 rounded-[2px] transition-all duration-500"
               :style="{ width: index < currentStep ? '100%' : '0%' }"
             ></div>
           </div>
@@ -88,264 +104,37 @@ const goToStep = (index: number) => {
 };
 </script>
 
-<style scoped>
-/* Contenedor principal */
-.wizard-master-container {
-  width: 100%;
-  margin: 0 auto;
-  padding: 0px;
-  position: relative;
-  font-family: var(--ion-font-family, 'Inter', 'Roboto', sans-serif);
-}
-
-/* Contenedor principal del wizard */
-.wizard-container {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 60, 255, 0.1);
-  padding-top: 20px;
-  padding-bottom: 15px;
-  position: relative;
-  z-index: 1;
-  overflow: hidden;
-}
-
-.wizard-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, #003cff, #4d7fff, #003cff);
-  background-size: 200% 100%;
-  animation: gradientMove 3s infinite linear;
-}
-
+<style>
 @keyframes gradientMove {
   0% { background-position: 0% 0%; }
   100% { background-position: 200% 0%; }
 }
 
-/* Línea de tiempo de pasos */
-.steps-timeline {
-  position: relative;
-  height: 70px; /* Aumentado de 100px a 120px para dar más espacio vertical */
+.animate-gradient {
+  animation: gradientMove 3s infinite linear;
 }
 
-/* Contenedor de pasos con flexbox */
-.timeline-steps-container {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  box-sizing: border-box;
-  position: relative;
-  z-index: 2;
-  gap: 5px;
-}
-
-/* Contenedor de conectores */
-.step-connectors-container {
-  position: absolute;
-  top: 20px;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 30px;
-  box-sizing: border-box;
-  z-index: 1;
-}
-
-/* Paso de la línea de tiempo */
-.timeline-step {
-  position: relative;
-  cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
-  min-width: 130px; /* Aumentado de 100px a 130px para evitar saltos de línea */
-  max-width: 150px; /* Aumentado de 100px a 150px para dar más espacio al texto */
-  margin: 0 2px;
-}
-
-/* Conector de pasos */
-.step-connector {
-  height: 2px;
-  background-color: rgba(0, 60, 255, 0.1);
-  border-radius: 2px;
-  flex: 1;
-  margin: 0 5px;
-  position: relative;
-  overflow: hidden;
-}
-
-.connector-progress {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: #003cff;
-  border-radius: 2px;
-  transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* Nodo de paso */
-.step-node {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  margin-bottom: 10px;
-}
-
-.node-inner-circle {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: white;
-  border: 2px solid rgba(0, 60, 255, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  color: #003cff;
-  transition: all 0.5s ease;
-  z-index: 2;
-  box-shadow: 0 2px 6px rgba(0, 60, 255, 0.1);
-}
-
-.step-content {
-  text-align: center;
-  width: 100%;
-  padding: 0 5px; /* Añadido padding horizontal para dar más espacio al texto */
-}
-
-.step-title {
-  font-weight: 600;
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 4px;
-  transition: all 0.3s ease;
-  white-space: nowrap; /* Evita que el título se rompa en múltiples líneas */
-}
-
-/* Nuevo estilo para el título del último paso */
-.last-step-title {
-  white-space: normal; /* Permite que el texto se divida en múltiples líneas */
-  word-break: break-word; /* Permite romper palabras largas si es necesario */
-  line-height: 1.2; /* Ajusta el espacio entre líneas */
-  height: auto; /* Permite que la altura se ajuste al contenido */
-  display: -webkit-box; /* Para compatibilidad con navegadores basados en WebKit */
-  -webkit-line-clamp: 2; /* Limita a 2 líneas como máximo */
-  -webkit-box-orient: vertical; /* Orientación vertical para el texto */
-  overflow: hidden; /* Oculta el texto que exceda las 2 líneas */
-}
-
-.step-description {
-  font-size: 12px;
-  color: #666;
-  transition: all 0.3s ease;
-  /* Permitimos que la descripción se ajuste en múltiples líneas si es necesario */
-  white-space: normal;
-  line-height: 1.2;
-}
-
-/* Estados de los pasos */
-.timeline-step.completed .node-inner-circle {
-  background-color: #003cff;
-  border-color: #003cff;
-  color: white;
-  transform: scale(1.05);
-}
-
-.timeline-step.completed .step-title {
-  color: #003cff;
-}
-
-.timeline-step.active .node-inner-circle {
-  border-color: #003cff;
-  border-width: 3px;
-  transform: scale(1.1);
-  box-shadow: 0 0 0 4px rgba(0, 60, 255, 0.1);
-}
-
-.timeline-step.active .step-title {
-  color: #003cff;
-  font-weight: 700;
-}
-
-/* Ajuste para el último paso */
-.timeline-step.last-step {
-  margin-bottom: 10px; /* Añade espacio adicional en la parte inferior para el texto en dos líneas */
-}
-
-/* Ajustes responsivos */
+/* Estilos responsivos que son difíciles de reemplazar completamente con Tailwind */
 @media (max-width: 768px) {
-  .steps-timeline {
-    height: 140px; /* Aumentado para dar más espacio al texto en dos líneas */
-  }
-  
-  .timeline-step {
-    min-width: 110px; /* Reducido para pantallas medianas */
-    max-width: 130px;
-  }
-  
-  .step-title {
-    white-space: normal; /* Permitimos saltos de línea en pantallas más pequeñas */
-    font-size: 13px;
-  }
-  
-  .timeline-steps-container {
-    padding: 0 10px;
-  }
-  
-  .step-connectors-container {
-    padding: 0 30px;
+  .relative.h-\[70px\] {
+    height: 140px;
   }
 }
 
 @media (max-width: 480px) {
-  .wizard-container {
-    padding: 15px 10px;
+  .min-w-\[130px\] {
+    min-width: 80px;
   }
   
-  .wizard-title {
-    font-size: 20px;
-  }
-  
-  .step-node {
-    width: 30px;
-    height: 30px;
-  }
-  
-  .node-inner-circle {
-    width: 30px;
-    height: 30px;
-  }
-  
-  .step-title {
-    font-size: 12px;
-  }
-  
-  .timeline-step {
-    min-width: 80px; /* Reducido para pantallas muy pequeñas */
+  .max-w-\[150px\] {
     max-width: 100px;
   }
   
-  .step-description {
+  .text-xs {
     display: none;
   }
   
-  .timeline-steps-container {
-    padding: 0 5px;
-  }
-  
-  .step-connectors-container {
+  .absolute.top-5.left-0.w-full.flex.justify-between.px-\[30px\] {
     padding: 0 20px;
   }
 }

@@ -4,17 +4,18 @@
       Selecciona tu Nombre para registrar tu venta
     </ion-label> <br>
     <ion-select 
-      v-model="VendedorSeleccionado" 
+      v-model="vendedorSeleccionado" 
       interface="popover" 
       placeholder="Selecciona un vendedor"
       fill="outline"
+      @ionFocus="cargarVendedores"
     >
       <ion-select-option
-        v-for="opcion in opcionesVendedor"
-        :key="opcion.value"
-        :value="opcion.value"
+        v-for="vendedor in vendedores"
+        :key="vendedor.id"
+        :value="vendedor.id"
       >
-        {{ opcion.label }}
+        {{ vendedor.nombre }}
       </ion-select-option>
     </ion-select>
   </ion-item>
@@ -28,21 +29,24 @@ import {
   IonSelect,
   IonSelectOption
 } from '@ionic/vue'
+import { salesService } from '@/services/salesService'
 
-// Interfaz para las opciones de vendedor
-interface VendedorOpcion {
-  label: string
-  value: string
-}
-
-// Opciones de vendedores
-const opcionesVendedor = ref<VendedorOpcion[]>([
-  { label: 'Vendedor 1', value: 'vendedor1' },
-  { label: 'Vendedor 2', value: 'vendedor2' },
-  { label: 'Vendedor 3', value: 'vendedor3' },
-  { label: 'Vendedor 4', value: 'vendedor4' }
-])
+// Estado para almacenar los vendedores
+const vendedores = ref<{ id: number, nombre: string }[]>([])
 
 // Vendedor seleccionado
-const VendedorSeleccionado = ref('')
+const vendedorSeleccionado = ref<number | null>(null)
+
+// Función para cargar los vendedores cuando se hace clic en el dropdown
+const cargarVendedores = async () => {
+  try {
+    // Solo cargamos los datos si aún no se han cargado
+    if (vendedores.value.length === 0) {
+      const data = await salesService.getVendedores()
+      vendedores.value = data
+    }
+  } catch (error) {
+    console.log('Error al cargar vendedores')
+  }
+}
 </script>

@@ -10,7 +10,9 @@
     "test:e2e": "cypress run",
     "test:unit": "vitest",
     "lint": "eslint .",
-    "api": "json-server --watch db.json --port 3001"
+    "api": "json-server --watch db.json --port 3001",
+    "salesService": "json-server --watch dbSales.json --port 3002"
+
   },
   "dependencies": {
     "@capacitor/app": "7.0.1",
@@ -26,6 +28,7 @@
     "@vueuse/core": "^13.0.0",
     "axios": "^1.8.4",
     "ionicons": "^7.4.0",
+    "json-server": "^0.17.4",
     "pinia": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
     "vue": "^3.5.13",
@@ -42,7 +45,6 @@
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^9.33.0",
     "jsdom": "^22.1.0",
-    "json-server": "^1.0.0-beta.3",
     "postcss": "^8.5.3",
     "sass": "^1.86.3",
     "sass-loader": "^16.0.5",
