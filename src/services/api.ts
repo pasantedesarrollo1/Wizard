@@ -1,64 +1,29 @@
-import axios from 'axios';
+import axios from "axios"
 
-// Crear una instancia de axios con la URL base
+// Instancia básica de axios
 const api = axios.create({
-  baseURL: 'http://localhost:3001',
-});
+  baseURL: "http://localhost:3001",
+})
 
-// Tipos para los datos
-export interface WizardData {
-  wizardType: string;
-  currentStep: number;
-  proofPaymanet: string;
-  personalInfo: {
-    identification: {
-      type: string;
-      number: string;
-    };
-    name: {
-      first: string;
-      last: string;
-    };
-    contact: {
-      email: string;
-      phone: string;
-      whatsapp: string;
-    };
-    roleInCompany: string;
-  };
-  consultant: {
-    sellerId: string;
-  };
-  companyCreation: {
-    name: string;
-    ruc: string;
-    legalName: string;
-    // ... otros campos
-  };
-  // ... otros campos
+// Interfaz básica para los datos del wizard
+interface WizardData {
+  proofPayment: string
+  // Puedes agregar otros campos si los necesitas en el futuro
 }
 
-// Servicio para obtener los datos del wizard
+// Servicio simplificado con tipos
 export const wizardService = {
-  // Obtener todos los datos del wizard
-  getWizardData: async (): Promise<WizardData> => {
-    const response = await api.get('/wizardData');
-    return response.data;
-  },
-  
-  // Obtener solo el número de comprobante de pago
+  // Obtener el comprobante de pago
   getProofPayment: async (): Promise<string> => {
-    const response = await api.get('/wizardData');
-    return response.data.proofPaymanet;
+    const response = await api.get<WizardData>("/wizardData")
+    return response.data.proofPayment
   },
-  
-  // Actualizar el número de comprobante de pago
-  updateProofPayment: async (proofPayment: string): Promise<WizardData> => {
-    const currentData = await wizardService.getWizardData();
-    const updatedData = { ...currentData, proofPaymanet: proofPayment };
-    const response = await api.put('/wizardData', updatedData);
-    return response.data;
-  }
-};
 
-export default api;
+  // Actualizar el comprobante de pago
+  updateProofPayment: async (proofPayment: string): Promise<void> => {
+    const response = await api.get<WizardData>("/wizardData")
+    const currentData = response.data
+    const updatedData = { ...currentData, proofPaymanet: proofPayment }
+    await api.put("/wizardData", updatedData)
+  },
+}

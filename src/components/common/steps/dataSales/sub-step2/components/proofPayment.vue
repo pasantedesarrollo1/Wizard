@@ -11,17 +11,12 @@
             placeholder="Nro. comprobante pago"
             v-model="proofPaymentValue"
           />
-          <div v-if="isLoading" class="loading-indicator">Cargando...</div>
-          <div v-if="isError" class="error-message">Error al cargar datos</div>
-          <div v-if="isSuccess && !isLoading" class="success-message">Datos cargados correctamente</div>
         </div>
         <div class="button-container">
           <button 
             type="submit" 
             class="save-button"
-            :disabled="isSaving"
           >
-            {{ isSaving ? 'Guardando...' : 'Guardar' }}
           </button>
         </div>
       </div>
@@ -30,45 +25,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query';
-import { wizardService } from '@/services/api';
-import { onMounted } from 'vue';
+import { ref, onMounted } from "vue"
+import { wizardService } from "@/services/api.ts"
 
 // Estado local para el valor del comprobante de pago
-const proofPaymentValue = ref('');
+const proofPaymentValue = ref("")
 
-// Obtener el cliente de consulta
-const queryClient = useQueryClient();
-
-// Consulta para obtener el comprobante de pago
-const { isLoading, isError, isSuccess, data } = useQuery({
-  queryKey: ['proofPayment'],
-  queryFn: wizardService.getProofPayment,
-  initialData: ''
-});
-
-onMounted(() => {
-  // Observar cambios en los datos y actualizar el valor local
-  if (data.value) {
-    proofPaymentValue.value = data.value;
+// Cargar el valor inicial
+onMounted(async () => {
+  try {
+    const data = await wizardService.getProofPayment()
+    proofPaymentValue.value = data
+  } catch (error) {
+    console.log("Error al cargar datos")
   }
 })
 
-
-// Mutación para actualizar el comprobante de pago
-const { mutate, isPending: isSaving } = useMutation({
-  mutationFn: (newValue: string) => wizardService.updateProofPayment(newValue),
-  onSuccess: () => {
-    // Invalidar la consulta para refrescar los datos
-    queryClient.invalidateQueries({ queryKey: ['proofPayment'] });
-  }
-});
-
 // Función para actualizar el comprobante de pago
-const updateProofPayment = () => {
-  mutate(proofPaymentValue.value);
-};
+const updateProofPayment = async () => {
+  try {
+    await wizardService.updateProofPayment(proofPaymentValue.value)
+    console.log("Comprobante actualizado correctamente")
+  } catch (error) {
+    console.log("Error al actualizar")
+  }
+}
+
 </script>
 
 <style scoped>
