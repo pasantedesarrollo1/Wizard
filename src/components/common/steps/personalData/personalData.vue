@@ -1,5 +1,5 @@
 <template>
-  <ion-card class="shadow-md h-full flex flex-col w-3/4 sm:w-3/4 w-full mx-auto">
+  <ion-card class="shadow-md h-full flex flex-col sm:w-3/4  mx-auto">
     <ion-card-content class="overflow-y-auto h-full pb-5">
       <form>
         <!-- Tipo de identificación -->
