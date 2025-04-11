@@ -29,7 +29,8 @@ import { Icon } from '@iconify/vue';
 
 const rucValue = ref('');
 const isFocused = ref(false);
-const rucInput = ref(null);
+// Corregir el tipo del ref para el input
+const rucInput = ref<HTMLInputElement | null>(null);
 
 // Definir los eventos que este componente puede emitir
 const emit = defineEmits(['ruc-searched']);
