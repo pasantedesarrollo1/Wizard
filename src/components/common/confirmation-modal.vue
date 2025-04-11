@@ -30,7 +30,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
 import { IonCard, IonCardContent, IonButton } from '@ionic/vue';
 
 // Propiedades que recibe el componente

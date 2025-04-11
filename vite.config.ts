@@ -29,5 +29,15 @@ export default defineConfig({
   server: {
     host: true, 
     //port: 5174
-  }
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // Usar la nueva API de Sass
+        sassOptions: {
+          outputStyle: "expanded",
+        },
+      },
+    },
+  },
 })

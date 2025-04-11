@@ -1,10 +1,5 @@
 <template>
   <div class="p-2 relative">
-    <!-- Título mejorado con Tailwind -->
-    <ion-label class="block text-base font-medium mb-3 text-gray-800 animate-fade-in">
-      Selecciona tu Nombre para registrar tu venta
-    </ion-label>
-    
     <!-- Contenedor del selector con Tailwind -->
     <div class="relative mb-2" :class="{ 'opacity-80': isLoading }">
       <!-- Botón mejorado con Tailwind -->
@@ -18,7 +13,7 @@
         <div class="w-full flex justify-between items-center">
           <div class="text-left normal-case font-normal whitespace-nowrap overflow-hidden text-ellipsis">
             <span v-if="vendedorSeleccionadoNombre">{{ vendedorSeleccionadoNombre }}</span>
-            <span v-else class="text-gray-500 opacity-80">Selecciona un vendedor</span>
+            <span v-else class="text-gray-500 opacity-80">Identifícate y registra la venta</span>
           </div>
           <div class="flex items-center">
             <ion-icon 

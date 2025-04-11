@@ -19,11 +19,14 @@
             @click="seleccionarTipoCompania(opcion.value)"
           >
             <ion-card-content class="ion-text-center">
-              <ion-icon
-                :icon="getIconForPaymentType(opcion.value)"
-                size="large"
-                class="ion-margin-bottom"
-              ></ion-icon>
+              <!-- Mostrar imágenes PNG para todos los métodos de pago -->
+              <div class="payment-icon-container">
+                <img 
+                  :src="getImageForPaymentType(opcion.value)" 
+                  :alt="opcion.label" 
+                  class="payment-icon" 
+                />
+              </div>
               <ion-text>
                 <p>{{ opcion.label }}</p>
               </ion-text>
@@ -43,15 +46,8 @@ import {
   IonRow,
   IonCol,
   IonCard,
-  IonCardContent,
-  IonIcon
+  IonCardContent
 } from '@ionic/vue'
-import { 
-  cardOutline, 
-  receiptOutline, 
-  cashOutline, 
-  swapHorizontalOutline 
-} from 'ionicons/icons'
 
 interface TipoPagoOpcion {
   label: string
@@ -72,18 +68,19 @@ const seleccionarTipoCompania = (value: string) => {
   console.log('Tipo de Pago seleccionado:', value)
 }
 
-// Función para obtener el icono según el tipo de pago
-const getIconForPaymentType = (paymentType: string) => {
+// Función para obtener la imagen según el tipo de pago
+const getImageForPaymentType = (paymentType: string): string => {
   switch (paymentType) {
     case 'tarjeta-nuevi':
+      return new URL('@/assets/icons/card.png', import.meta.url).href
     case 'datafast-voucher':
-      return cardOutline
+      return new URL('@/assets/icons/datafast.png', import.meta.url).href
     case 'transferencia':
-      return swapHorizontalOutline
+      return new URL('@/assets/icons/transfer.png', import.meta.url).href
     case 'efectivo':
-      return cashOutline
+      return new URL('@/assets/icons/efectivo.png', import.meta.url).href
     default:
-      return receiptOutline
+      return new URL('@/assets/icons/efectivo.png', import.meta.url).href
   }
 }
 </script>
@@ -102,5 +99,20 @@ ion-card {
 ion-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el contenedor de la imagen */
+.payment-icon-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  height: 32px; /* Altura fija para mantener consistencia */
+}
+
+/* Estilos para la imagen del ícono */
+.payment-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
 }
 </style>

@@ -12,7 +12,6 @@
     "lint": "eslint .",
     "api": "json-server --watch db.json --port 3001",
     "salesService": "json-server --watch dbSales.json --port 3002"
-
   },
   "dependencies": {
     "@capacitor/app": "7.0.1",
