@@ -1,19 +1,19 @@
 <template>
-  <ion-card class="shadow-md h-full flex flex-col w-3/4 ">
-    <ion-card-content class=" overflow-y-auto h-full pb-5">
+  <ion-card class="shadow-md h-full flex flex-col w-3/4 sm:w-3/4 w-full mx-auto">
+    <ion-card-content class="overflow-y-auto h-full pb-5">
       <form>
         <!-- Tipo de identificación -->
         <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
           <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Tipo de Identificación</ion-label>
-          <div class="flex gap-2.5 w-full">
+          <div class="flex flex-col sm:flex-row gap-2.5 w-full">
             <!-- Select personalizado con estilos de Tailwind -->
-            <div class="relative flex flex-col gap-2.5 my-2.5 w-1/3">
+            <div class="relative flex flex-col gap-2.5 my-2.5 w-full sm:w-1/3">
               <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10">
                 <Icon icon="mdi:cards" width="20" height="20" />
               </div>
               <select 
                 v-model="tipoIDSeleccionado" 
-                class="w-full p-3 pl-10 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 appearance-none
+                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 appearance-none
                        hover:border-blue-400"
                 :class="{ 
                   'bg-primary-50 border-primary text-primary': tipoIDSeleccionado.length > 0,
@@ -35,7 +35,7 @@
             </div>
             
             <!-- Input personalizado con estilos de Tailwind -->
-            <div class="relative flex flex-col gap-2.5 my-2.5 w-2/3">
+            <div class="relative flex flex-col gap-2.5 my-2.5 w-full sm:w-2/3">
               <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
                 <Icon icon="mdi:card-account-details-outline" width="20" height="20" />
               </div>
@@ -43,7 +43,7 @@
                 type="text"
                 placeholder="Número de identificación"
                 v-model="identificacion"
-                class="w-full p-3 pl-10 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                        hover:border-blue-400"
                 :class="{ 
                   'bg-primary-50 border-primary text-primary': identificacion.length > 0,
@@ -56,7 +56,6 @@
           </div>
         </ion-item>
 
-        <!-- El resto del formulario permanece igual -->
         <!-- Nombres -->
         <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
           <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Nombres <span class="text-blue-600">*</span></ion-label>
@@ -109,7 +108,7 @@
                 type="email"
                 placeholder="Email"
                 v-model="email"
-                class="w-full p-3 pl-10 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                        hover:border-blue-400"
                 :class="{ 
                   'bg-primary-50 border-primary text-primary': email.length > 0,
@@ -134,7 +133,7 @@
                 type="tel"
                 placeholder="+593"
                 v-model="telefono"
-                class="w-full p-3 pl-10 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                        hover:border-blue-400"
                 :class="{ 
                   'bg-primary-50 border-primary text-primary': telefono.length > 0,
@@ -265,32 +264,15 @@ input:focus, select:focus {
   box-shadow: 0 0 0 1px rgba(26, 115, 232, 0.1);
 }
 
-// Estilos para la etiqueta con animación (esto es difícil de hacer con Tailwind)
-.usernameLabel {
-  position: absolute;
-  top: -25px;
-  left: 5px;
-  color: #555;
-  font-size: 14px;
-  font-weight: 400;
-  font-family: Whitney, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  overflow: hidden;
-  transition: .2s linear;
-  opacity: 0;
-}
-
-// Animación de la etiqueta cuando el input está enfocado o tiene valor
-.custom-input:focus ~ .usernameLabel,
-.custom-input:valid ~ .usernameLabel {
-  transform: translateX(0px);
-  opacity: 1;
-  color: #000000;
-}
-
-// Media queries para responsividad específica que no se puede hacer con Tailwind
-@media (max-width: 576px) {
+// Media queries para responsividad específica
+@media (max-width: 640px) {
   input, select {
-    padding: 0.6rem 1rem !important;
+    padding: 0.6rem 1rem 0.6rem 2.5rem !important;
+  }
+  
+  .ion-card {
+    width: 100% !important;
+    margin: 0 auto;
   }
 }
 </style>
