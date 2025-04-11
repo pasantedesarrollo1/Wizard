@@ -1,18 +1,16 @@
 <template>
-  <ion-card>
+  <ion-card class="w-full">
     <ion-card-content>
       <!-- lista de empleados que realizan la venta -->
-      <salesListe />
-      
-      <ion-item-divider></ion-item-divider>
+      <ion-item-divider>  <salesListe /> </ion-item-divider>
       
       <!-- comporbante de pago -->
-      <proofPayment />
       
-      <ion-item-divider></ion-item-divider>
+      <ion-item-divider><proofPayment /></ion-item-divider>
       
       <!-- tipos de metodo de pago  -->
-      <typePayments />
+      <ion-item-divider ><typePayments class="w-full"/></ion-item-divider>
+      
     </ion-card-content>
   </ion-card>
 </template>
