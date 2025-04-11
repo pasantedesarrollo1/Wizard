@@ -1,7 +1,7 @@
 <template>
   <div class="input-container">
     <input 
-      required="required" 
+      :required="true" 
       id="inputField" 
       placeholder="Comprobante de pago" 
       type="text"
@@ -23,7 +23,7 @@
 import { ref } from 'vue'
 import { IonButton, IonIcon } from '@ionic/vue'
 import { saveOutline } from 'ionicons/icons'
-import { wizardService } from '@/services/api.ts'
+import { wizardService } from '@/services/api'
 
 const proofPaymentValue = ref('')
 
