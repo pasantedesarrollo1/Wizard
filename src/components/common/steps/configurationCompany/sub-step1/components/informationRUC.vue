@@ -11,7 +11,7 @@
             <ion-label class="info-label">RUC</ion-label>
           </div>
           <div class="value-container">
-            <div class="info-value">{{ rucData.ruc }}</div>
+            <div class="info-value">{{ props.rucData.ruc }}</div>
           </div>
         </div>
         
@@ -21,7 +21,7 @@
             <ion-label class="info-label">Razón social</ion-label>
           </div>
           <div class="value-container">
-            <div class="info-value">{{ rucData.razonSocial }}</div>
+            <div class="info-value">{{ props.rucData.razonSocial }}</div>
           </div>
         </div>
         
@@ -31,8 +31,8 @@
             <ion-label class="info-label">Estado contribuyente en el RUC</ion-label>
           </div>
           <div class="value-container">
-            <div class="info-value" :class="{ 'estado-activo': rucData.estado === 'ACTIVO' }">
-              {{ rucData.estado }}
+            <div class="info-value" :class="{ 'estado-activo': props.rucData.estado === 'ACTIVO' }">
+              {{ props.rucData.estado }}
             </div>
           </div>
         </div>
@@ -44,7 +44,7 @@
   import { IonLabel } from '@ionic/vue';
   
   // Recibir los datos del RUC como prop desde el componente padre
-    props = defineProps({
+  const props = defineProps({
     rucData: {
       type: Object,
       default: () => ({
