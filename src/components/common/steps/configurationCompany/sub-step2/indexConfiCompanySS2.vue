@@ -1,5 +1,5 @@
 <template>
-  <ion-card>
+  <ion-card class="w-full">
     <ion-card-content>
       <!-- Contenedor para los componentes importados -->
       <div class="components-container">
