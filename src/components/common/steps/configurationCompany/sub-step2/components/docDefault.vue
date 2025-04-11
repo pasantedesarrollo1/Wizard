@@ -1,6 +1,7 @@
 <template>
   <div class="p-2 py-2 bg-white rounded-xl">
     <!-- Grid mejorado con animaciones y efectos -->
+    <span >Documento por defecto</span>
     <ion-grid class="document-grid">
       <ion-row class="ion-justify-content-center">
         <ion-col
