@@ -1,14 +1,5 @@
 <template>
   <div class="p-2 py-2 bg-white rounded-xl">
-    <!-- Título con mejor estilo y animación -->
-    <div class="text-center">
-      <ion-text color="dark">
-        <h4 class="relative inline-block text-xl font-semibold m-0 title-heading">
-          Seleccione el método de pago del Servicio
-        </h4>
-      </ion-text>
-    </div>
-
     <!-- Grid mejorado con animaciones y efectos -->
     <ion-grid class="payment-grid">
       <ion-row class="ion-justify-content-center">
@@ -51,7 +42,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import {
-  IonText,
   IonGrid,
   IonRow,
   IonCol

@@ -11,7 +11,6 @@
       class="custom-input select-style"
       :class="{ 'has-value': proofPaymentValue.length > 0 }"
     >
-    <label class="usernameLabel" for="inputField">Ingresa el número del comprobante</label>
   </div>
 
 </template>
