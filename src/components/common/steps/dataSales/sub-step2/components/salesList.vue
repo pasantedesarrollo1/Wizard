@@ -125,10 +125,23 @@ import {
   IonSpinner,
 } from "@ionic/vue"
 import { chevronDownOutline, checkmarkCircle, personOutline, alertCircleOutline } from "ionicons/icons"
-import { salesService } from "@/services/salesService"
+
+// Datos de vendedores implementados directamente desde dbSales.json
+const vendedoresData = [
+  { id: 1, nombre: "Carlos Gómez" },
+  { id: 2, nombre: "María Rodríguez" },
+  { id: 3, nombre: "Luis Fernández" },
+  { id: 4, nombre: "Ana Torres" },
+  { id: 5, nombre: "Jorge Ramírez" },
+  { id: 6, nombre: "Elena Martínez" },
+  { id: 7, nombre: "Pedro Sánchez" },
+  { id: 8, nombre: "Laura Morales" },
+  { id: 9, nombre: "Andrés Herrera" },
+  { id: 10, nombre: "Sofía Castro" }
+]
 
 // Estado para almacenar los vendedores
-const vendedores = ref<{ id: number; nombre: string }[]>([])
+const vendedores = ref(vendedoresData)
 
 // Vendedor seleccionado
 const vendedorSeleccionado = ref<number | null>(null)
@@ -168,24 +181,12 @@ const getInitials = (nombre: string): string => {
     .toUpperCase()
 }
 
-// Función para cargar los vendedores
-const cargarVendedores = async () => {
-  try {
-    isLoading.value = true
-    error.value = ""
-
-    // Solo cargamos los datos si aún no se han cargado
-    if (vendedores.value.length === 0) {
-      const data = await salesService.getVendedores()
-      vendedores.value = data
-    }
-
+// Simulación de carga para mantener la experiencia de usuario consistente
+const simularCarga = () => {
+  isLoading.value = true
+  setTimeout(() => {
     isLoading.value = false
-  } catch (err) {
-    isLoading.value = false
-    error.value = "Error al cargar vendedores. Intenta nuevamente."
-    console.error("Error al cargar vendedores:", err)
-  }
+  }, 300)
 }
 
 // Abrir el popover
@@ -193,14 +194,11 @@ const abrirPopover = async (event: Event) => {
   popoverEvent.value = event
   popoverAbierto.value = true
 
-  if (vendedores.value.length === 0) {
-    isLoadingPopover.value = true
-    try {
-      await cargarVendedores()
-    } finally {
-      isLoadingPopover.value = false
-    }
-  }
+  // Simulamos brevemente la carga para mantener la experiencia de usuario
+  isLoadingPopover.value = true
+  setTimeout(() => {
+    isLoadingPopover.value = false
+  }, 300)
 }
 
 // Cerrar el popover
@@ -222,9 +220,9 @@ const handleResize = () => {
   }
 }
 
-// Cargar vendedores al montar el componente
+// Simulamos la carga inicial al montar el componente
 onMounted(() => {
-  cargarVendedores()
+  simularCarga()
   window.addEventListener("resize", handleResize)
 })
 
@@ -232,7 +230,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("resize", handleResize)
 })
-
 </script>
 
 <style lang="scss" src="@/components/common/steps/dataSales/sub-step2/styles/salesList.scss" scoped></style>
