@@ -12,7 +12,7 @@
         >
           <!-- Card unificada -->
           <div 
-            class="unified-card w-full h-[180px] rounded-[20px] transition-all duration-300 mx-auto cursor-pointer p-2 flex flex-col justify-between items-center"
+            class="unified-card w-full h-[130px] rounded-[20px] transition-all duration-300 mx-auto cursor-pointer p-2 flex flex-col justify-between items-center"
             :class="{ 'selected-card': TipoPagoSeleccionado === opcion.value }"
             @click="seleccionarTipoCompania(opcion.value)"
           >
@@ -20,7 +20,7 @@
             <div class="flex-grow flex items-center justify-center w-full ">
               <Icon 
                   :icon="getIconForPaymentType(opcion.value)" 
-                  class="w-20 h-20 transition-all duration-300"
+                  class="w-20 h-20 pb-1 transition-all duration-300"
                   :class="{ 'text-white': TipoPagoSeleccionado === opcion.value }"
                 />
             </div>

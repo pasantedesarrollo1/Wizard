@@ -1,44 +1,61 @@
 <template>
   <ion-card class="w-full">
     <ion-card-content class="p-3 sm:p-4 md:p-5">
-      <!-- Contenedor principal con 4 filas -->
-      <div class="flex flex-col gap-3 sm:gap-4 lg:gap-6">
-        <!-- Fila 1: Régimen y Categoría -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-          <div class="w-full">
-            <regimeRUC />
+      <!-- Contenedor principal con dos columnas generales -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Columna 1 - Dividida en 4 filas -->
+        <div class="flex flex-col gap-4">
+          <!-- Fila 1 Columna 1: regimeRUC y categoryRUC t  -->
+          <div className="w-full">
+            <h4 className="font-medium text-lg mb-2">Datos informativos</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="w-full">
+                <regimeRUC />
+              </div>
+              <div className="w-full">
+                <categoryRUC />
+              </div>
+              <div className="w-full">
+                <agentRUC />
+              </div>
+            </div>
           </div>
+
+          <!-- Fila 2 Columna 1: agentRUC -->
           <div class="w-full">
-            <categoryRUC />
+            <h4 class="font-medium text-lg mb-2">
+              Si eres agente de retención es opcional llevar contabilidad
+            </h4>
+            <accountingRUC />
           </div>
-        </div>
-        
-        <!-- Fila 2: Agente de retención y Artesano -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-          <div class="w-full">
-            <agentRUC />
-          </div>
+
+          <!-- Fila 3 Columna 1: artisanRUC -->
           <div class="w-full">
             <artisanRUC />
           </div>
-        </div>
-        
-        <!-- Fila 3: Documento por defecto, Parámetro de búsqueda e Impuestos -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+
+          <!-- Fila 4 Columna 1: dispatch_touris -->
           <div class="w-full">
-            <docDefault />
+            <dispatch_touris />
           </div>
-          <div class="w-full sm:col-span-1">
-            <parameterSearch />
+        </div>
+
+        <!-- Columna 2 - Dividida en 2 filas -->
+        <div class="flex flex-col gap-4">
+          <!-- Fila 1 Columna 2: docDefault y parameterSearch -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="w-full">
+              <docDefault />
+            </div>
+            <div class="w-full">
+              <parameterSearch />
+            </div>
           </div>
-          <div class="w-full sm:col-span-2 lg:col-span-1">
+
+          <!-- Fila 2 Columna 2: taxes -->
+          <div class="w-full">
             <taxesRUC />
           </div>
-        </div>
-        
-        <!-- Fila 4: Despacho posterior y Establecimiento turístico -->
-        <div class="w-full">
-          <dispatch_touris />
         </div>
       </div>
     </ion-card-content>
@@ -46,10 +63,11 @@
 </template>
 
 <script setup lang="ts">
-import { IonCard, IonCardContent } from '@ionic/vue';
+import { IonCard, IonCardContent } from "@ionic/vue";
 import regimeRUC from "./components/regimeRUC.vue";
 import categoryRUC from "./components/categoryRUC.vue";
 import agentRUC from "./components/agentRUC.vue";
+import accountingRUC from "./components/accountingRUC.vue";
 import artisanRUC from "./components/artisanRUC.vue";
 import docDefault from "./components/docDefault.vue";
 import parameterSearch from "./components/parameterSearch.vue";

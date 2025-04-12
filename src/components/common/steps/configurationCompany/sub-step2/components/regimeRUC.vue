@@ -21,6 +21,16 @@ ion-label {
   font-size: 0.95rem;
 }
 
+/* Método 1: Usando CSS personalizado para el componente ion-item */
+:deep(.item-inner) {
+  padding-right: 0 !important;
+}
+
+/* Método 2: Usando variables CSS de Ionic */
+ion-item {
+  --inner-padding-end: 0px;
+}
+
 ion-input {
   font-size: 1rem;
   color: #333;

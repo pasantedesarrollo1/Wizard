@@ -1,6 +1,6 @@
 <template>
   <div class="p-2 py-2 bg-white rounded-xl">
-    <span >Parametro de busqueda por defecto</span>
+    <span >Elige cómo prefieres buscar tus productos por defecto</span>
     <!-- Grid mejorado con animaciones y efectos -->
     <ion-grid class="parameter-grid">
       <ion-row class="ion-justify-content-center">
@@ -13,7 +13,7 @@
         >
           <!-- Card unificada -->
           <div 
-            class="unified-card w-full h-[180px] rounded-[20px] transition-all duration-300 mx-auto cursor-pointer p-2 flex flex-col justify-between items-center"
+            class="unified-card w-full h-[150px] rounded-[20px] transition-all duration-300 mx-auto cursor-pointer p-2 flex flex-col justify-between items-center"
             :class="{ 'selected-card': parametroSeleccionado === opcion.value }"
             @click="seleccionarParametro(opcion.value)"
           >

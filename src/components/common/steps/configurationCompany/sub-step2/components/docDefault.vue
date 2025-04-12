@@ -1,7 +1,7 @@
 <template>
   <div class="p-2 py-2 bg-white rounded-xl">
     <!-- Grid mejorado con animaciones y efectos -->
-    <span >Documento por defecto</span>
+    <span >Selecciona el tipo de documento que deseas emitir por defecto al vender</span>
     <ion-grid class="document-grid">
       <ion-row class="ion-justify-content-center">
         <ion-col
@@ -13,7 +13,7 @@
         >
           <!-- Card unificada -->
           <div 
-            class="unified-card w-full h-[180px] rounded-[20px] transition-all duration-300 mx-auto cursor-pointer p-2 flex flex-col justify-between items-center"
+            class="unified-card w-full h-[150px] rounded-[20px] transition-all duration-300 mx-auto cursor-pointer p-2 flex flex-col justify-between items-center"
             :class="{ 'selected-card': documentoSeleccionado === opcion.value }"
             @click="seleccionarDocumento(opcion.value)"
           >

@@ -202,7 +202,6 @@ interface RolOpcion {
 // Array con las opciones de tipo de identificación
 const opcionesTipoID = ref<TipoIDOpcion[]>([
   { label: 'Cédula', value: 'cedula' },
-  { label: 'Consumidor Final', value: 'cf' },
   { label: 'Pasaporte/Identificación tributaria del exterior', value: 'pasaporte' },
   { label: 'Placa o RAMV/CPM', value: 'placa' },
   { label: 'RUC', value: 'ruc' }

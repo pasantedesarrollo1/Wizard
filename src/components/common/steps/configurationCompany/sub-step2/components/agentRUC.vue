@@ -1,32 +1,40 @@
 <template>
-  <ion-list>
-    <ion-item>
-      <ion-checkbox 
-        slot="start" 
-        v-model="isAgenteRetencion"
-      ></ion-checkbox>
-      <ion-label>Agente de retencion</ion-label>
-    </ion-item>
-    
-    <ion-item v-if="isAgenteRetencion">
-      <ion-checkbox 
-        slot="start"
-        v-model="isObligadoContabilidad"
-      ></ion-checkbox>
-      <ion-label>Obligado a llevar contabiliad</ion-label>
-    </ion-item>
-  </ion-list>
+  <ion-item>
+    <ion-label class="agent-label">Agente de retención: </ion-label>
+    <ion-input class="agent-input" v-model="categoria" readonly></ion-input>
+  </ion-item>
 </template>
-
+    
 <script setup lang="ts">
-import { IonList, IonItem, IonLabel, IonCheckbox } from '@ionic/vue';
+import { IonItem, IonLabel, IonInput } from "@ionic/vue";
 import { ref } from 'vue';
 
-// Reactive state for checkbox values
-const isAgenteRetencion = ref(false);
-const isObligadoContabilidad = ref(false);
+// Valor constante directamente como solicitado
+const categoria = ref('Si');
 </script>
-
+    
 <style scoped>
-/* No additional styles needed as Ionic components provide styling */
+/* Estilos básicos similares al componente informationRUC */
+ion-label.agent-label {
+  font-weight: 500;
+  color: #555;
+  font-size: 0.95rem;
+  flex: 3; /* Hace que el label ocupe más espacio */
+  min-width: 70%; /* Asegura un ancho mínimo para el label */
+}
+
+ion-input.agent-input {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+  --padding-start: 0.5rem;
+  flex: 1; /* Hace que el input ocupe menos espacio */
+  max-width: 80px; /* Limita el ancho máximo del input */
+}
+
+/* Asegura que el ion-item use flexbox correctamente */
+ion-item {
+  --inner-padding-end: 0;
+  display: flex;
+}
 </style>
