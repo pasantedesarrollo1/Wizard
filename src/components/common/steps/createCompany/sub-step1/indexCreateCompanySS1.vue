@@ -1,24 +1,26 @@
 <template>
   <ion-card class="wizard-card">
     <ion-card-content class="wizard-content">
-      <!-- Contenedor principal con grid responsivo -->
-      <div class="wizard-grid">
-        <!-- Sección de Empresa -->
-        <div class="section-container company-section">
-          <h4 class="section-title">Datos de la Empresa</h4>
-          <createCompany />
-        </div>
-        
-        <!-- Contenedor para Sucursal y POS -->
-        <div class="section-container branch-pos-container">
-          <!-- Sección de Sucursal -->
-          <div class="sub-section">
+      <!-- Grid principal con 2 filas -->
+      <div class="grid-container">
+        <!-- Fila 1: Dos columnas para createCompany y companySucursal -->
+        <div class="top-row">
+          <!-- Columna 1: createCompany -->
+          <div class="section-container company-section">
+            <h4 class="section-title">Datos de la Empresa</h4>
+            <createCompany />
+          </div>
+          
+          <!-- Columna 2: companySucursal -->
+          <div class="section-container branch-section">
             <h4 class="section-title">Datos de la Sucursal</h4>
             <companySucursal />
           </div>
-          
-          <!-- Sección de Punto de Venta -->
-          <div class="sub-section">
+        </div>
+        
+        <!-- Fila 2: Una columna centrada para companyPOS -->
+        <div class="bottom-row">
+          <div class="section-container pos-section">
             <h4 class="section-title">Datos del Punto de Emisión</h4>
             <companyPOS />
           </div>
@@ -49,18 +51,24 @@ import createCompany from "@/components/common/steps/createCompany/sub-step1/com
   padding: 16px;
 }
 
-/* Grid responsivo para organizar las secciones */
-.wizard-grid {
-  display: grid;
-  grid-template-columns: 1fr;
+/* Grid principal con 2 filas */
+.grid-container {
+  display: flex;
+  flex-direction: column;
   gap: 20px;
 }
 
-/* En pantallas medianas y grandes, usamos dos columnas */
-@media (min-width: 768px) {
-  .wizard-grid {
-    grid-template-columns: 1fr 1fr;
-  }
+/* Fila superior con 2 columnas */
+.top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Fila inferior con 1 columna centrada */
+.bottom-row {
+  display: flex;
+  justify-content: center;
 }
 
 /* Contenedor de sección con estilos comunes */
@@ -71,17 +79,18 @@ import createCompany from "@/components/common/steps/createCompany/sub-step1/com
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Contenedor específico para sucursal y POS */
-.branch-pos-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+/* Estilos específicos para cada sección */
+.company-section {
+  background-color: #f0f7ff;
 }
 
-/* Subsecciones dentro del contenedor de sucursal y POS */
-.sub-section {
+.branch-section {
   background-color: #f0f7ff;
-  border-radius: 8px;
+}
+
+.pos-section {
+  background-color: #f0f7ff;
+  width: 60%; /* Ancho controlado para centrar sin columnas vacías */
 }
 
 /* Título de sección */
@@ -89,14 +98,18 @@ import createCompany from "@/components/common/steps/createCompany/sub-step1/com
   font-size: 1.1rem;
   font-weight: 600;
   color: #333;
-  margin-top: 0;
-  margin-bottom: 16px;
+  padding-bottom: 5px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding-bottom: 8px;
 }
 
-/* Estilos específicos para cada sección */
-.company-section {
-  background-color: #f0f7ff;
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .top-row {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+  }
+  
+  .pos-section {
+    width: 100%; /* Ancho completo en pantallas pequeñas */
+  }
 }
 </style>

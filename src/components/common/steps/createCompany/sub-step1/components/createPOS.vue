@@ -79,7 +79,6 @@ const clearFocus = () => {
 
 /* Grupo de formulario */
 .form-group {
-  margin-bottom: 16px;
   width: 100%;
 }
 
