@@ -1,6 +1,7 @@
 <template>
   <ion-card class="shadow-md h-auto flex flex-col sm:w-full mx-auto">
     <ion-card-content class="overflow-y-auto h-full pb-5">
+      <span>Llena los datos que faltan para crear tu Empresa</span>
       <form @submit.prevent>
         <!-- RUC y Razón social en la misma fila -->
         <div class="flex flex-col md:flex-row md:gap-4">
@@ -15,7 +16,7 @@
                 <input 
                   type="text"
                   v-model="ruc"
-                  class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                  class="w-full p-3 pl-12 bg-white text-gray-500 border border-gray-300 rounded-lg outline-none transition-all duration-300
                          hover:border-blue-400"
                   :class="{ 
                     'bg-primary-50 border-primary text-primary': ruc.length > 0,
@@ -40,7 +41,7 @@
                 <input 
                   type="text"
                   v-model="razonSocial"
-                  class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                  class="w-full p-3 pl-12 bg-white text-gray-500 border border-gray-300 rounded-lg outline-none transition-all duration-300
                          hover:border-blue-400"
                   :class="{ 
                     'bg-primary-50 border-primary text-primary': razonSocial.length > 0,

@@ -1,10 +1,11 @@
 <template>
   <ion-card class="shadow-md h-auto flex flex-col sm:w-full mx-auto">
     <ion-card-content class="overflow-y-auto h-full pb-5">
+      <span>Llena los datos que faltan para crear tu Punto de Emision</span>
       <form @submit.prevent>
         <!-- Nombre del Punto de Venta -->
         <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Nombre del Punto de Venta <span class="text-blue-600">*</span></ion-label>
+          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Nombre del Punto de Emision <span class="text-blue-600">*</span></ion-label>
           <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
             <div class="relative w-full">
               <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
@@ -12,7 +13,7 @@
               </div>
               <input 
                 type="text"
-                placeholder="Nombre del punto de venta"
+                placeholder="Nombre del punto de Emision"
                 v-model="nombrePOS"
                 class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                        hover:border-blue-400"
@@ -29,7 +30,7 @@
 
         <!-- Código del Punto de Venta -->
         <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Código del Punto de Venta <span class="text-blue-600">*</span></ion-label>
+          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Código del Punto de Emision <span class="text-blue-600">*</span></ion-label>
           <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
             <div class="relative w-full">
               <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
@@ -37,7 +38,7 @@
               </div>
               <input 
                 type="text"
-                placeholder="Código del punto de venta"
+                placeholder="Código del punto de Emision"
                 v-model="codigoPOS"
                 class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                        hover:border-blue-400"

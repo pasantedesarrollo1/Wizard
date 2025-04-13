@@ -5,7 +5,7 @@
   </ion-item>
 </template>
     
-<script setup lang="ts">
+<script setup lang="ts"> 
 import { IonItem, IonLabel, IonInput } from "@ionic/vue";
 import { ref, onMounted, watch } from 'vue';
 import { useWizardStore } from "@/stores/wizardStore";

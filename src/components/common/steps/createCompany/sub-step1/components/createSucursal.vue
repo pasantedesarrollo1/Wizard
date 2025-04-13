@@ -1,6 +1,7 @@
 <template>
   <ion-card class="shadow-md h-auto flex flex-col sm:w-full mx-auto">
     <ion-card-content class="overflow-y-auto h-full pb-5">
+      <span>Llena los datos que faltan para crear tu sucursal</span>
       <form @submit.prevent>
         <!-- Nombre de tu Sucursal y Código de Sucursal en la misma fila -->
         <div class="flex flex-col md:flex-row md:gap-4">
@@ -41,7 +42,7 @@
                   type="text"
                   readonly
                   v-model="codigoSucursal"
-                  class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                  class="w-full p-3 pl-12 bg-white text-gray-500 border border-gray-300 rounded-lg outline-none transition-all duration-300
                          hover:border-blue-400"
                   :class="{ 
                     'bg-primary-50 border-primary text-primary': codigoSucursal.length > 0,
@@ -67,7 +68,7 @@
                 type="text"
                 readonly
                 v-model="nombreComercial"
-                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                class="w-full p-3 pl-12 bg-white text-gray-500 border border-gray-300 rounded-lg outline-none transition-all duration-300
                        hover:border-blue-400"
                 :class="{ 
                   'bg-primary-50 border-primary text-primary': nombreComercial.length > 0,
@@ -92,7 +93,7 @@
                 type="text"
                 readonly
                 v-model="direccionSucursal"
-                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                class="w-full p-3 pl-12 bg-white  border border-gray-300 rounded-lg outline-none transition-all duration-300
                        hover:border-blue-400"
                 :class="{ 
                   'bg-primary-50 border-primary text-primary': direccionSucursal.length > 0,

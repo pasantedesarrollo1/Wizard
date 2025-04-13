@@ -1,7 +1,7 @@
 <template>
   <ion-item>
-    <ion-label class="agent-label">Agente de retención: </ion-label>
-    <ion-input class="agent-input" v-model="agentValueText" readonly></ion-input>
+    <ion-label class="agent-label text-gray-500" >Agente de retención: </ion-label>
+    <ion-input class="agent-input text-gray-500" v-model="agentValueText" readonly></ion-input>
   </ion-item>
 </template>
     
