@@ -2,7 +2,7 @@
   <div class="config-company-container">
     <!-- Tarjeta principal con sombra y bordes redondeados -->
     <ion-card class="main-card">
-      <ion-card-header>
+      <ion-card-header class="pb-0">
         <ion-card-title class="card-title">Búsqueda y Validación de RUC</ion-card-title>
         <ion-card-subtitle class="card-subtitle">
           Ingresa tu RUC para validar la información de tu empresa
@@ -78,7 +78,7 @@ const handleRucSearched = (data: any) => {
   font-size: 1.25rem;
   font-weight: 600;
   color: #333;
-  margin-bottom: 8px;
+
 }
 
 .card-subtitle {
@@ -87,7 +87,7 @@ const handleRucSearched = (data: any) => {
 }
 
 .search-section, .info-section {
-  padding: 16px;
+  padding: 0px 16px 16px;
 }
 
 .info-card {

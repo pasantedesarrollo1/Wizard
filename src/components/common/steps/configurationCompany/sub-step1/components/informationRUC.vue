@@ -59,55 +59,55 @@ defineProps<{
 <style scoped>
 .information-ruc-container {
   width: 100%;
-  padding: 0.5rem 0;
+  padding: 0;
 }
 
 .ruc-info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .info-card {
   background-color: white;
   border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
 }
 
 .info-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
 
 .info-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 6px;
 }
 
 .info-icon {
   color: var(--ion-color-primary);
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .info-title {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #555;
   margin: 0;
 }
 
 .info-value {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
   color: #333;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .estado-activo {
@@ -116,8 +116,8 @@ defineProps<{
 }
 
 .status-indicator {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: #ef4444;
 }
@@ -129,28 +129,34 @@ defineProps<{
 .confirmation-message {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   background-color: rgba(16, 185, 129, 0.1);
   border-radius: 8px;
-  padding: 12px 16px;
-  margin-top: 16px;
+  padding: 8px 12px;
+  margin-top: 8px;
 }
 
 .confirmation-icon {
   color: #10b981;
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .confirmation-message p {
   margin: 0;
   color: #10b981;
   font-weight: 500;
+  font-size: 0.9rem;
 }
 
 /* Estilos responsivos */
 @media (max-width: 768px) {
   .ruc-info-grid {
     grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .info-card {
+    padding: 8px;
   }
 }
 </style>

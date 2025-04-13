@@ -1,5 +1,5 @@
 <template>
-  <ion-item lines="none" class="ion-margin-vertical custom-item">
+  <ion-item lines="none" class="custom-item">
     <div class="search-container">
       <div class="input-container" :class="{ 'input-focused': isFocused }" @click="focusInput">
         <Icon icon="material-symbols:search" class="search-icon" />
@@ -149,9 +149,8 @@ onMounted(() => {
 .search-container {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
-  margin-top: 8px;
 }
 
 .input-container {
@@ -164,6 +163,7 @@ onMounted(() => {
   background-color: white;
   transition: all 0.2s ease;
   cursor: text;
+  height: 40px;
 }
 
 .input-focused {
@@ -188,9 +188,9 @@ onMounted(() => {
   font-size: 16px;
   font-family: inherit;
   color: #333;
-  padding: 10px 0;
+  padding: 0;
   width: 100%;
-  caret-color: #0054e9; /* Color del cursor */
+  caret-color: #0054e9;
 }
 
 .native-input::placeholder {
@@ -205,6 +205,7 @@ onMounted(() => {
   --padding-start: 16px;
   --padding-end: 16px;
   height: 40px;
+  margin: 0;
   text-transform: none;
   font-weight: 500;
 }
