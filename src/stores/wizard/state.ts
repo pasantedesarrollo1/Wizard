@@ -3,9 +3,9 @@ import type { WizardInterface } from "@/types/wizardTypes"
 // Estado inicial del wizard
 export const initialState = (): WizardInterface => ({
   wizardState: {
-    type: "ventas",
-    currentStep: "create-company",
-    currentSubStep: 1,
+    type: "",
+    currentStep: "",
+    currentSubStep: 0,
   },
   formData: {
     personalInfo: {
