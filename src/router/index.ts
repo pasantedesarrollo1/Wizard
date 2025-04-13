@@ -12,8 +12,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/pages/wizards/ventas/indexVentas.vue"),
     beforeEnter: (to, from, next) => {
       const wizardStore = useWizardStore()
-      wizardStore.updateWizardState({ type: "sales" })
-      // Mostrar el estado completo, no solo formData
+      // Actualizamos type y currentStep
+      wizardStore.updateWizardState({ 
+        type: "sales",
+        currentStep: "data-sales" // Este es el primer paso para el wizard de ventas
+      })
+      // Mostrar el estado completo en consola
       console.log("Wizard state actualizado:", {
         wizardState: wizardStore.getCurrentWizardState,
         formData: wizardStore.getAllFormData
@@ -26,8 +30,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/pages/wizards/soporte/indexSoporte.vue"),
     beforeEnter: (to, from, next) => {
       const wizardStore = useWizardStore()
-      wizardStore.updateWizardState({ type: "support" })
-      // Mostrar el estado completo, no solo formData
+      // Actualizamos type y currentStep
+      wizardStore.updateWizardState({ 
+        type: "support",
+        currentStep: "personal-info" // Este es el primer paso para el wizard de soporte
+      })
+      // Mostrar el estado completo en consola
       console.log("Wizard state actualizado:", {
         wizardState: wizardStore.getCurrentWizardState,
         formData: wizardStore.getAllFormData
@@ -40,8 +48,12 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/pages/wizards/cliente/indexCliente.vue"),
     beforeEnter: (to, from, next) => {
       const wizardStore = useWizardStore()
-      wizardStore.updateWizardState({ type: "client" })
-      // Mostrar el estado completo, no solo formData
+      // Actualizamos type y currentStep
+      wizardStore.updateWizardState({ 
+        type: "client",
+        currentStep: "personal-info" // Este es el primer paso para el wizard de cliente
+      })
+      // Mostrar el estado completo en consola
       console.log("Wizard state actualizado:", {
         wizardState: wizardStore.getCurrentWizardState,
         formData: wizardStore.getAllFormData
