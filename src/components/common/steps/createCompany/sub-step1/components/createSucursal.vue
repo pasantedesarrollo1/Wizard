@@ -1,174 +1,146 @@
 <template>
-  <ion-card class="shadow-md h-auto flex flex-col sm:w-full mx-auto">
-    <ion-card-content class="overflow-y-auto h-full pb-5">
-      <span>Llena los datos que faltan para crear tu sucursal</span>
-      <form @submit.prevent>
-        <!-- Nombre de tu Sucursal y Código de Sucursal en la misma fila -->
-        <div class="flex flex-col md:flex-row md:gap-4">
-          <!-- Nombre de tu Sucursal -->
-          <ion-item class="--padding-start: 0; --inner-padding-end: 0; flex-1">
-            <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Nombre de tu Sucursal <span class="text-blue-600">*</span></ion-label>
-            <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-              <div class="relative w-full">
-                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                  <Icon icon="mdi:home-city" width="20" height="20" />
-                </div>
-                <input 
-                  type="text"
-                  placeholder="Nombre de la sucursal"
-                  v-model="nombreSucursal"
-                  class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                         hover:border-blue-400"
-                  :class="{ 
-                    'bg-primary-50 border-primary text-primary': nombreSucursal.length > 0,
-                    'border-blue-500 border-2 shadow-md': focusedField === 'nombreSucursal'
-                  }"
-                  @focus="setFocus('nombreSucursal')"
-                  @blur="clearFocus"
-                >
-              </div>
-            </div>
-          </ion-item>
-
-          <!-- Código de Sucursal -->
-          <ion-item class="--padding-start: 0; --inner-padding-end: 0; flex-1">
-            <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Código de Sucursal <span class="text-blue-600">*</span></ion-label>
-            <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-              <div class="relative w-full">
-                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                  <Icon icon="mdi:barcode" width="20" height="20" />
-                </div>
-                <input 
-                  type="text"
-                  readonly
-                  v-model="codigoSucursal"
-                  class="w-full p-3 pl-12 bg-white text-gray-500 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                         hover:border-blue-400"
-                  :class="{ 
-                    'bg-primary-50 border-primary text-primary': codigoSucursal.length > 0,
-                    'border-blue-500 border-2 shadow-md': focusedField === 'codigoSucursal'
-                  }"
-                  @focus="setFocus('codigoSucursal')"
-                  @blur="clearFocus"
-                >
-              </div>
-            </div>
-          </ion-item>
+  <form @submit.prevent class="form-container">
+    <!-- Nombre de tu Sucursal y Código de Sucursal en la misma fila -->
+    <div class="form-row">
+      <!-- Nombre de tu Sucursal -->
+      <div class="form-group">
+        <ion-label position="stacked" class="form-label">Nombre de tu Sucursal <span class="required">*</span></ion-label>
+        <div class="input-container">
+          <div class="input-icon">
+            <Icon icon="mdi:home-city" width="20" height="20" />
+          </div>
+          <input 
+            type="text"
+            placeholder="Nombre de la sucursal"
+            v-model="nombreSucursal"
+            class="form-input"
+            :class="{ 
+              'has-value': nombreSucursal.length > 0,
+              'is-focused': focusedField === 'nombreSucursal'
+            }"
+            @focus="setFocus('nombreSucursal')"
+            @blur="clearFocus"
+          >
         </div>
+      </div>
 
-        <!-- Nombre Comercial -->
-        <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Nombre Comercial <span class="text-blue-600">*</span></ion-label>
-          <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-            <div class="relative w-full">
-              <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                <Icon icon="mdi:store-marker" width="20" height="20" />
-              </div>
-              <input 
-                type="text"
-                readonly
-                v-model="nombreComercial"
-                class="w-full p-3 pl-12 bg-white text-gray-500 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                       hover:border-blue-400"
-                :class="{ 
-                  'bg-primary-50 border-primary text-primary': nombreComercial.length > 0,
-                  'border-blue-500 border-2 shadow-md': focusedField === 'nombreComercial'
-                }"
-                @focus="setFocus('nombreComercial')"
-                @blur="clearFocus"
-              >
-            </div>
+      <!-- Código de Sucursal -->
+      <div class="form-group">
+        <ion-label position="stacked" class="form-label">Código de Sucursal <span class="required">*</span></ion-label>
+        <div class="input-container">
+          <div class="input-icon">
+            <Icon icon="mdi:barcode" width="20" height="20" />
           </div>
-        </ion-item>
+          <input 
+            type="text"
+            readonly
+            v-model="codigoSucursal"
+            class="form-input"
+            :class="{ 
+              'has-value': codigoSucursal.length > 0,
+              'is-focused': focusedField === 'codigoSucursal'
+            }"
+            @focus="setFocus('codigoSucursal')"
+            @blur="clearFocus"
+          >
+        </div>
+      </div>
+    </div>
 
-        <!-- Dirección de la Sucursal -->
-        <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Dirección de la Sucursal <span class="text-blue-600">*</span></ion-label>
-          <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-            <div class="relative w-full">
-              <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                <Icon icon="mdi:map-marker" width="20" height="20" />
-              </div>
-              <input 
-                type="text"
-                readonly
-                v-model="direccionSucursal"
-                class="w-full p-3 pl-12 bg-white text-gray-500  border border-gray-300 rounded-lg outline-none transition-all duration-300
-                       hover:border-blue-400"
-                :class="{ 
-                  'bg-primary-50 border-primary text-primary': direccionSucursal.length > 0,
-                  'border-blue-500 border-2 shadow-md': focusedField === 'direccionSucursal'
-                }"
-                @focus="setFocus('direccionSucursal')"
-                @blur="clearFocus"
-              >
-            </div>
-          </div>
-        </ion-item>
+    <!-- Nombre Comercial -->
+    <div class="form-group">
+      <ion-label position="stacked" class="form-label">Nombre Comercial <span class="required">*</span></ion-label>
+      <div class="input-container">
+        <div class="input-icon">
+          <Icon icon="mdi:store-marker" width="20" height="20" />
+        </div>
+        <input 
+          type="text"
+          readonly
+          v-model="nombreComercial"
+          class="form-input"
+          :class="{ 
+            'has-value': nombreComercial.length > 0,
+            'is-focused': focusedField === 'nombreComercial'
+          }"
+          @focus="setFocus('nombreComercial')"
+          @blur="clearFocus"
+        >
+      </div>
+    </div>
 
-        <!-- Teléfono de la sucursal -->
-        <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Teléfono de la sucursal <span class="text-blue-600">*</span></ion-label>
-          <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-            <div class="relative w-full">
-              <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                <Icon icon="mdi:phone" width="20" height="20" />
-              </div>
-              <input 
-                type="tel"
-                placeholder="+593"
-                v-model="telefonoSucursal"
-                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                       hover:border-blue-400"
-                :class="{ 
-                  'bg-primary-50 border-primary text-primary': telefonoSucursal.length > 0,
-                  'border-blue-500 border-2 shadow-md': focusedField === 'telefonoSucursal'
-                }"
-                @focus="setFocus('telefonoSucursal')"
-                @blur="clearFocus"
-              >
-            </div>
-          </div>
-        </ion-item>
+    <!-- Dirección de la Sucursal -->
+    <div class="form-group">
+      <ion-label position="stacked" class="form-label">Dirección de la Sucursal <span class="required">*</span></ion-label>
+      <div class="input-container">
+        <div class="input-icon">
+          <Icon icon="mdi:map-marker" width="20" height="20" />
+        </div>
+        <input 
+          type="text"
+          readonly
+          v-model="direccionSucursal"
+          class="form-input"
+          :class="{ 
+            'has-value': direccionSucursal.length > 0,
+            'is-focused': focusedField === 'direccionSucursal'
+          }"
+          @focus="setFocus('direccionSucursal')"
+          @blur="clearFocus"
+        >
+      </div>
+    </div>
 
-        <!-- Correo de la Sucursal -->
-        <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Correo de la Sucursal <span class="text-blue-600">*</span></ion-label>
-          <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-            <div class="relative w-full">
-              <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                <Icon icon="mdi:email" width="20" height="20" />
-              </div>
-              <input 
-                type="email"
-                placeholder="Email de la sucursal"
-                v-model="correoSucursal"
-                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                       hover:border-blue-400"
-                :class="{ 
-                  'bg-primary-50 border-primary text-primary': correoSucursal.length > 0,
-                  'border-blue-500 border-2 shadow-md': focusedField === 'correoSucursal'
-                }"
-                @focus="setFocus('correoSucursal')"
-                @blur="clearFocus"
-              >
-            </div>
-          </div>
-        </ion-item>
-      </form>
-    </ion-card-content>
-  </ion-card>
+    <!-- Teléfono de la sucursal -->
+    <div class="form-group">
+      <ion-label position="stacked" class="form-label">Teléfono de la sucursal <span class="required">*</span></ion-label>
+      <div class="input-container">
+        <div class="input-icon">
+          <Icon icon="mdi:phone" width="20" height="20" />
+        </div>
+        <input 
+          type="tel"
+          placeholder="+593"
+          v-model="telefonoSucursal"
+          class="form-input"
+          :class="{ 
+            'has-value': telefonoSucursal.length > 0,
+            'is-focused': focusedField === 'telefonoSucursal'
+          }"
+          @focus="setFocus('telefonoSucursal')"
+          @blur="clearFocus"
+        >
+      </div>
+    </div>
+
+    <!-- Correo de la Sucursal -->
+    <div class="form-group">
+      <ion-label position="stacked" class="form-label">Correo de la Sucursal <span class="required">*</span></ion-label>
+      <div class="input-container">
+        <div class="input-icon">
+          <Icon icon="mdi:email" width="20" height="20" />
+        </div>
+        <input 
+          type="email"
+          placeholder="Email de la sucursal"
+          v-model="correoSucursal"
+          class="form-input"
+          :class="{ 
+            'has-value': correoSucursal.length > 0,
+            'is-focused': focusedField === 'correoSucursal'
+          }"
+          @focus="setFocus('correoSucursal')"
+          @blur="clearFocus"
+        >
+      </div>
+    </div>
+  </form>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { useWizardStore } from "@/stores/wizardStore";
-import {
-  IonCard,
-  IonCardContent,
-  IonItem,
-  IonLabel,
-} from '@ionic/vue';
+import { IonLabel} from '@ionic/vue';
 import { Icon } from '@iconify/vue'; // Importación de Iconify
 
 // Obtener la instancia del store
@@ -222,42 +194,94 @@ const clearFocus = () => {
 };
 </script>
 
-<style lang="scss" scoped>
-// Variables para colores y estilos que no se pueden implementar fácilmente con Tailwind
-$primary-color: var(--ion-color-primary);
-$primary-light: rgba(var(--ion-color-primary-rgb), 0.1);
-$primary-lighter: rgba(var(--ion-color-primary-rgb), 0.05);
-
-// Estilos específicos para ion-item que no se pueden hacer con Tailwind
-ion-item {
-  --padding-start: 0;
-  --inner-padding-end: 0;
+<style scoped>
+/* Contenedor del formulario */
+.form-container {
+  width: 100%;
 }
 
-// Estilos para inputs enfocados
-input:focus, select:focus {
-  outline: none;
-  border-color: #1a73e8 !important;
-  border-width: 2px !important;
-  box-shadow: 0 0 0 1px rgba(26, 115, 232, 0.1);
+/* Fila de formulario para elementos en línea */
+.form-row {
+  display: flex;
+  gap: 12px;
 }
 
-// Clase para mantener el estilo de enfoque
-.border-blue-500 {
-  border-color: rgb(0,60,255) !important;
-  border-width: 2px !important;
-  box-shadow: 0 0 0 1px rgba(26, 115, 232, 0.1);
-}
-
-// Media queries para responsividad específica
 @media (max-width: 640px) {
-  input, select {
-    padding: 0.6rem 1rem 0.6rem 2.5rem !important;
+  .form-row {
+    flex-direction: column;
+
   }
-  
-  .ion-card {
-    width: 100% !important;
-    margin: 0 auto;
-  }
+}
+
+/* Grupo de formulario */
+.form-group {
+  width: 100%;
+}
+
+/* Etiqueta de formulario */
+.form-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* Indicador de campo requerido */
+.required {
+  color: var(--ion-color-primary);
+}
+
+/* Contenedor de input con icono */
+.input-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Icono dentro del input */
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  z-index: 1;
+}
+
+/* Estilos del input */
+.form-input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.form-input:hover {
+  border-color: #aaa;
+}
+
+.form-input.has-value {
+  background-color: rgba(var(--ion-color-primary-rgb), 0.05);
+  border-color: var(--ion-color-primary);
+}
+
+.form-input.is-focused {
+  border-color: var(--ion-color-primary);
+  border-width: 2px;
+  box-shadow: 0 0 0 2px rgba(var(--ion-color-primary-rgb), 0.1);
+}
+
+.form-input::placeholder {
+  color: #999;
+}
+
+/* Estilos para inputs de solo lectura */
+.form-input[readonly] {
+  background-color: #f5f5f5;
+  color: #666;
 }
 </style>
