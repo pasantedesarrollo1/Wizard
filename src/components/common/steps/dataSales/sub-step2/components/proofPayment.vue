@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import {
   IonCard,
   IonCardContent,
@@ -41,6 +41,10 @@ import {
   IonLabel,
 } from '@ionic/vue';
 import { Icon } from '@iconify/vue'; // Importación de Iconify
+import { useWizardStore } from "@/stores/wizardStore";
+
+// Obtener la instancia del store
+const wizardStore = useWizardStore();
 
 // Variable reactiva para almacenar el valor del comprobante
 const proofPaymentValue = ref('');
@@ -56,6 +60,19 @@ const setFocus = (fieldName: string) => {
 const clearFocus = () => {
   focusedField.value = '';
 };
+
+// Cargar datos del store si existen
+onMounted(() => {
+  const salesData = wizardStore.getStepData("salesData");
+  if (salesData && salesData.proofPayment) {
+    proofPaymentValue.value = salesData.proofPayment;
+  }
+});
+
+// Actualizar el store cuando cambie el valor
+watch(proofPaymentValue, (newValue) => {
+  wizardStore.updateFormSection("salesData", { proofPayment: newValue });
+});
 </script>
 
 <style lang="scss" scoped>

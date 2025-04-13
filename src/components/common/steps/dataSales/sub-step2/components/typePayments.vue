@@ -13,22 +13,22 @@
           <!-- Card unificada -->
           <div 
             class="unified-card w-full h-[130px] rounded-[20px] transition-all duration-300 mx-auto cursor-pointer p-2 flex flex-col justify-between items-center"
-            :class="{ 'selected-card': TipoPagoSeleccionado === opcion.value }"
-            @click="seleccionarTipoCompania(opcion.value)"
+            :class="{ 'selected-card': tipoPagoSeleccionado === opcion.value }"
+            @click="seleccionarTipoPago(opcion.value)"
           >
             <!-- Contenedor del icono grande -->
             <div class="flex-grow flex items-center justify-center w-full ">
               <Icon 
                   :icon="getIconForPaymentType(opcion.value)" 
                   class="w-20 h-20 pb-1 transition-all duration-300"
-                  :class="{ 'text-white': TipoPagoSeleccionado === opcion.value }"
+                  :class="{ 'text-white': tipoPagoSeleccionado === opcion.value }"
                 />
             </div>
             
             <!-- Texto del método de pago con mejor estilo -->
             <div class="text-center w-full mt-auto">
               <p class="m-0 text-lg font-medium text-gray-800 transition-all duration-300"
-                 :class="{ 'text-white font-semibold': TipoPagoSeleccionado === opcion.value }">
+                 :class="{ 'text-white font-semibold': tipoPagoSeleccionado === opcion.value }">
                 {{ opcion.label }}
               </p>
             </div>
@@ -40,13 +40,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import {
   IonGrid,
   IonRow,
   IonCol
 } from '@ionic/vue'
 import { Icon } from '@iconify/vue'
+import { useWizardStore } from "@/stores/wizardStore";
+
+// Obtener la instancia del store
+const wizardStore = useWizardStore();
 
 interface TipoPagoOpcion {
   label: string
@@ -60,12 +64,29 @@ const opcionesTipoPago = ref<TipoPagoOpcion[]>([
   { label: 'Efectivo', value: 'efectivo' }
 ])
 
-const TipoPagoSeleccionado = ref('')
+const tipoPagoSeleccionado = ref('')
 
-const seleccionarTipoCompania = (value: string) => {
-  TipoPagoSeleccionado.value = value
-  console.log('Tipo de Pago seleccionado:', value)
+// Cargar datos del store si existen
+onMounted(() => {
+  const salesData = wizardStore.getStepData("salesData");
+  if (salesData && salesData.paymentMethod) {
+    tipoPagoSeleccionado.value = salesData.paymentMethod;
+  }
+});
+
+const seleccionarTipoPago = (value: string) => {
+  tipoPagoSeleccionado.value = value;
+  // Actualizar el store con el método de pago seleccionado
+  wizardStore.updateFormSection("salesData", { paymentMethod: value });
+  console.log('Tipo de Pago seleccionado:', value);
 }
+
+// Observar cambios en la selección para actualizar el store
+watch(tipoPagoSeleccionado, (newValue) => {
+  if (newValue) {
+    wizardStore.updateFormSection("salesData", { paymentMethod: newValue });
+  }
+});
 
 // Función para obtener el icono según el tipo de pago
 const getIconForPaymentType = (paymentType: string): string => {
