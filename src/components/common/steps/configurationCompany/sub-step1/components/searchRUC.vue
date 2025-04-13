@@ -66,10 +66,29 @@ const updateStoreWithSRIData = () => {
     legalName: dataSRI.legalName,
   })
 
+  // Actualizar los datos de branchAndPOS.branch con los datos de dataSRI
+  wizardStore.updateFormSection("branchAndPOS", {
+    branch: {
+      ...wizardStore.getStepData("branchAndPOS")?.branch,
+      idBranch: dataSRI.idBranch,
+      commercialName: dataSRI.commercialName,
+      address: dataSRI.address,
+    },
+  })
+
   // Mostrar en consola para debug
   console.log("Datos actualizados en el store desde searchRUC:", {
-    ruc: dataSRI.ruc,
-    legalName: dataSRI.legalName,
+    companyCreation: {
+      ruc: dataSRI.ruc,
+      legalName: dataSRI.legalName,
+    },
+    branchAndPOS: {
+      branch: {
+        idBranch: dataSRI.idBranch,
+        commercialName: dataSRI.commercialName,
+        address: dataSRI.address,
+      },
+    },
   })
 }
 
@@ -100,6 +119,7 @@ onMounted(() => {
     rucValue.value = companyData.ruc
   }
 })
+
 
 </script>
 
