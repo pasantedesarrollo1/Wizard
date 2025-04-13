@@ -21,6 +21,7 @@
                 }"
                 @focus="setFocus('tipoID')"
                 @blur="clearFocus"
+                @change="updateStore"
               >
                 <option value="" disabled selected>Seleccionar</option>
                 <option 
@@ -51,6 +52,7 @@
                 }"
                 @focus="setFocus('identificacion')"
                 @blur="clearFocus"
+                @input="updateStore"
               >
             </div>
           </div>
@@ -72,6 +74,7 @@
               }"
               @focus="setFocus('nombres')"
               @blur="clearFocus"
+              @input="updateStore"
             >
           </div>
         </ion-item>
@@ -92,6 +95,7 @@
               }"
               @focus="setFocus('apellidos')"
               @blur="clearFocus"
+              @input="updateStore"
             >
           </div>
         </ion-item>
@@ -116,6 +120,7 @@
                 }"
                 @focus="setFocus('email')"
                 @blur="clearFocus"
+                @input="updateStore"
               >
             </div>
           </div>
@@ -141,6 +146,7 @@
                 }"
                 @focus="setFocus('telefono')"
                 @blur="clearFocus"
+                @input="updateStore"
               >
             </div>
           </div>
@@ -160,6 +166,7 @@
               }"
               @focus="setFocus('rol')"
               @blur="clearFocus"
+              @change="updateStore"
             >
               <option value="" disabled selected>Seleccionar</option>
               <option
@@ -179,7 +186,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import {
   IonCard,
   IonCardContent,
@@ -187,6 +194,10 @@ import {
   IonLabel,
 } from '@ionic/vue';
 import { Icon } from '@iconify/vue'; // Importación de Iconify
+import { useWizardStore } from "@/stores/wizardStore";
+
+// Obtener la instancia del store
+const wizardStore = useWizardStore();
 
 // Definimos la interfaz para las opciones de tipo de ID
 interface TipoIDOpcion {
@@ -234,6 +245,58 @@ const setFocus = (fieldName: string) => {
 const clearFocus = () => {
   focusedField.value = '';
 };
+
+// Función para actualizar el store con los valores actuales
+const updateStore = () => {
+  wizardStore.updateFormSection("personalInfo", {
+    identification: {
+      type: tipoIDSeleccionado.value,
+      number: identificacion.value
+    },
+    name: {
+      first: nombres.value,
+      last: apellidos.value
+    },
+    contact: {
+      email: email.value,
+      phone: {
+        mobile: telefono.value,
+        landline: "" // No tenemos un campo para teléfono fijo, lo dejamos vacío
+      }
+    },
+    roleInCompany: rolSeleccionado.value
+  });
+};
+
+// Cargar datos del store si existen
+onMounted(() => {
+  const personalInfo = wizardStore.getStepData("personalInfo");
+  if (personalInfo) {
+    if (personalInfo.identification) {
+      tipoIDSeleccionado.value = personalInfo.identification.type || '';
+      identificacion.value = personalInfo.identification.number || '';
+    }
+    if (personalInfo.name) {
+      nombres.value = personalInfo.name.first || '';
+      apellidos.value = personalInfo.name.last || '';
+    }
+    if (personalInfo.contact) {
+      email.value = personalInfo.contact.email || '';
+      if (personalInfo.contact.phone) {
+        telefono.value = personalInfo.contact.phone.mobile || '';
+      }
+    }
+    rolSeleccionado.value = personalInfo.roleInCompany || '';
+  }
+});
+
+// Observar cambios en todos los campos para actualizar el store
+watch(
+  [tipoIDSeleccionado, identificacion, nombres, apellidos, email, telefono, rolSeleccionado],
+  () => {
+    updateStore();
+  }
+);
 </script>
 
 <style lang="scss" scoped>
