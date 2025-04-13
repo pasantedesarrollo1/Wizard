@@ -1,8 +1,7 @@
 <template>
   <ion-item lines="none" class="ion-margin-vertical custom-item">
-    <ion-label position="stacked">RUC</ion-label>
-    <div class="ruc-search-container">
-      <div class="input-wrapper" :class="{ 'input-focused': isFocused }" @click="focusInput">
+    <div class="search-container">
+      <div class="input-container" :class="{ 'input-focused': isFocused }" @click="focusInput">
         <Icon icon="material-symbols:search" class="search-icon" />
         <input
           id="ruc"
@@ -24,7 +23,7 @@
 
 <script setup lang="ts">
 import { ref, defineEmits, onMounted } from "vue"
-import { IonItem, IonLabel, IonButton } from "@ionic/vue"
+import { IonItem, IonButton } from "@ionic/vue"
 import { Icon } from "@iconify/vue"
 import { useWizardStore } from "@/stores/wizardStore"
 
@@ -133,8 +132,8 @@ const searchRuc = () => {
 
 // Al montar el componente, verificar si ya hay datos en el store y actualizar el input
 onMounted(() => {
-  const companyData = wizardStore.getStepData("companyCreation")
-  if (companyData && companyData.ruc) {
+  const companyData = wizardStore.getStepData("companyCreation") || {};
+  if (companyData.ruc) {
     rucValue.value = companyData.ruc
   }
 })
@@ -147,7 +146,7 @@ onMounted(() => {
   --inner-padding-end: 0;
 }
 
-.ruc-search-container {
+.search-container {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -155,7 +154,7 @@ onMounted(() => {
   margin-top: 8px;
 }
 
-.input-wrapper {
+.input-container {
   display: flex;
   align-items: center;
   flex: 1;

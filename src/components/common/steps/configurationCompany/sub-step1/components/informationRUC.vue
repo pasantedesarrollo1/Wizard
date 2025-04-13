@@ -1,47 +1,47 @@
 <template>
   <div class="information-ruc-container">
-    <!-- Título del componente -->
-    <h4 class="title-heading">Validación de RUC</h4>
-    
     <!-- Contenedor de la información del RUC -->
-    <div class="ruc-info-container">
+    <div class="ruc-info-grid">
       <!-- RUC -->
-      <div class="info-item">
-        <div class="label-container">
-          <ion-label class="info-label">RUC</ion-label>
+      <div class="info-card">
+        <div class="info-header">
+          <Icon icon="mdi:file-document-outline" class="info-icon" />
+          <h5 class="info-title">RUC</h5>
         </div>
-        <div class="value-container">
-          <div class="info-value">{{ rucData.ruc }}</div>
-        </div>
+        <div class="info-value">{{ rucData.ruc }}</div>
       </div>
       
       <!-- Razón social -->
-      <div class="info-item">
-        <div class="label-container">
-          <ion-label class="info-label">Razón social</ion-label>
+      <div class="info-card">
+        <div class="info-header">
+          <Icon icon="mdi:domain" class="info-icon" />
+          <h5 class="info-title">Razón social</h5>
         </div>
-        <div class="value-container">
-          <div class="info-value">{{ rucData.razonSocial }}</div>
-        </div>
+        <div class="info-value">{{ rucData.razonSocial }}</div>
       </div>
       
       <!-- Estado contribuyente -->
-      <div class="info-item">
-        <div class="label-container">
-          <ion-label class="info-label">Estado contribuyente en el RUC</ion-label>
+      <div class="info-card">
+        <div class="info-header">
+          <Icon icon="mdi:check-circle-outline" class="info-icon" />
+          <h5 class="info-title">Estado contribuyente</h5>
         </div>
-        <div class="value-container">
-          <div class="info-value" :class="{ 'estado-activo': rucData.estado === 'ACTIVO' }">
-            {{ rucData.estado }}
-          </div>
+        <div class="info-value" :class="{ 'estado-activo': rucData.estado === 'ACTIVO' }">
+          <div class="status-indicator" :class="{ 'active': rucData.estado === 'ACTIVO' }"></div>
+          {{ rucData.estado }}
         </div>
       </div>
+    </div>
+    
+    <!-- Mensaje de confirmación -->
+    <div class="confirmation-message" v-if="rucData.estado === 'ACTIVO'">
+      <Icon icon="mdi:check-circle" class="confirmation-icon" />
+      <p>La información del RUC ha sido validada correctamente</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { IonLabel } from '@ionic/vue';
 
 // Definición de la interfaz para los datos del RUC
 interface RucData {
@@ -62,69 +62,95 @@ defineProps<{
   padding: 0.5rem 0;
 }
 
-.title-heading {
-  font-size: 1.25rem;
+.ruc-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.info-card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.info-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.info-icon {
+  color: var(--ion-color-primary);
+  font-size: 20px;
+}
+
+.info-title {
+  font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 1.5rem;
-  color: #333;
-  padding-left: 0.5rem;
-}
-
-.ruc-info-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-}
-
-.info-item {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 0.5rem;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.label-container {
-  margin-bottom: 0.5rem;
-}
-
-.info-label {
-  font-weight: 500;
   color: #555;
-  font-size: 0.95rem;
-}
-
-.value-container {
-  padding: 0.5rem 0;
+  margin: 0;
 }
 
 .info-value {
-  font-size: 1rem;
-  color: #333;
+  font-size: 1.1rem;
   font-weight: 500;
-  padding: 0.25rem 0;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .estado-activo {
-  color: #10b981; /* Color verde para estado activo */
+  color: #10b981;
   font-weight: 600;
 }
 
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ef4444;
+}
+
+.status-indicator.active {
+  background-color: #10b981;
+}
+
+.confirmation-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: rgba(16, 185, 129, 0.1);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 16px;
+}
+
+.confirmation-icon {
+  color: #10b981;
+  font-size: 24px;
+}
+
+.confirmation-message p {
+  margin: 0;
+  color: #10b981;
+  font-weight: 500;
+}
+
 /* Estilos responsivos */
-@media (min-width: 768px) {
-  .info-item {
-    flex-direction: row;
-    align-items: center;
-  }
-  
-  .label-container {
-    width: 40%;
-    margin-bottom: 0;
-  }
-  
-  .value-container {
-    width: 60%;
+@media (max-width: 768px) {
+  .ruc-info-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>
