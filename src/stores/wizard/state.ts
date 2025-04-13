@@ -45,9 +45,8 @@ export const initialState = (): WizardInterface => ({
       proofPayment: "",
       billingFrequency: "",
       paymentMethod: "",
-      plans: {
-        commerces: "",
-      },
+      plan: "",
+      
     },
     companyConfig: {
       defaultDocument: {

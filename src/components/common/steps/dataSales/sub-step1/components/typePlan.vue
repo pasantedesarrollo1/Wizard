@@ -52,12 +52,12 @@
             :class="[
               'plan-card',
               tipoPlanSeleccionado === opcion.value ? 'selected-plan' : '',
-              opcion.value === 'pp' ? 'popular-plan' : ''
+              opcion.value === 'pymeplan' ? 'popular-plan' : ''
             ]"
             @click="seleccionarPlan(opcion.value)"
           >
             <!-- Etiqueta de popular si corresponde -->
-            <div v-if="opcion.value === 'pp'" class="popular-tag">
+            <div v-if="opcion.value === 'pymeplan'" class="popular-tag">
               <ion-icon :icon="star" class="popular-icon"></ion-icon>
               Popular
             </div>
@@ -76,7 +76,7 @@
                   <span class="period">/{{ periodoSeleccionado === 'anual' ? 'año' : 'mes' }}</span>
                 </div>
                 
-                <div v-if="periodoSeleccionado === 'anual' && opcion.value !== 'pg'" class="savings-text">
+                <div v-if="periodoSeleccionado === 'anual' && opcion.value !== 'freeplan'" class="savings-text">
                   <span class="original-price">{{ opcion.precioMensual }}×12</span>
                 </div>
               </div>
@@ -92,14 +92,14 @@
               <!-- Etiquetas adicionales -->
               <div class="badges-container">
                 <ion-badge 
-                  v-if="opcion.value === 'pg'" 
+                  v-if="opcion.value === 'freeplan'" 
                   color="success"
                   class="plan-badge"
                 >
                   Gratis
                 </ion-badge>
                 <ion-badge 
-                  v-if="periodoSeleccionado === 'anual' && opcion.value !== 'pg'" 
+                  v-if="periodoSeleccionado === 'anual' && opcion.value !== 'freeplan'" 
                   color="tertiary"
                   class="plan-badge annual-badge"
                 >
@@ -146,7 +146,7 @@ const periodoSeleccionado = ref<string>('mensual');
 const opcionesTipoPlanes = ref<TipoPlanesOpcion[]>([
   { 
     label: 'Plan Gratuito', 
-    value: 'pg',
+    value: 'freeplan',
     precioMensual: '0',
     precioAnual: '0',
     caracteristicas: [
@@ -157,7 +157,7 @@ const opcionesTipoPlanes = ref<TipoPlanesOpcion[]>([
   },
   { 
     label: 'Plan Lite', 
-    value: 'pl',
+    value: 'liteplan',
     precioMensual: '10',
     precioAnual: '96',
     caracteristicas: [
@@ -169,7 +169,7 @@ const opcionesTipoPlanes = ref<TipoPlanesOpcion[]>([
   },
   { 
     label: 'Plan Básico', 
-    value: 'pb',
+    value: 'basicplan',
     precioMensual: '20',
     precioAnual: '192',
     caracteristicas: [
@@ -182,7 +182,7 @@ const opcionesTipoPlanes = ref<TipoPlanesOpcion[]>([
   },
   { 
     label: 'Plan Pyme', 
-    value: 'pp',
+    value: 'pymeplan',
     precioMensual: '30',
     precioAnual: '288',
     caracteristicas: [

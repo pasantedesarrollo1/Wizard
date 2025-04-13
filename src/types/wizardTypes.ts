@@ -49,9 +49,8 @@ export interface WizardState {
     proofPayment: string
     billingFrequency: string
     paymentMethod: string
-    plans: {
-      commerces: string
-    }
+    plan: string
+    
   }
   
   // Interfaces para configuración de la empresa
