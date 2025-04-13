@@ -189,11 +189,17 @@ onMounted(() => {
   if (companyCreation && companyCreation.ruc) {
     ruc.value = companyCreation.ruc;
   }
+  if (companyCreation && companyCreation.legalName) {
+    razonSocial.value = companyCreation.legalName;
+  }
 });
 
 // Observar cambios en el valor para actualizar el store
 watch(ruc, (newValue) => {
   wizardStore.updateFormSection("companyCreation", { ruc, value: newValue });
+});
+watch(razonSocial, (newValue) => {
+  wizardStore.updateFormSection("companyCreation", { razonSocial, value: newValue });
 });
 
 // Funciones para manejar el enfoque
