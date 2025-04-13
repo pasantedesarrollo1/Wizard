@@ -14,7 +14,6 @@
                 </div>
                 <input 
                   type="text"
-                  placeholder="Ingresa el RUC"
                   v-model="ruc"
                   class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                          hover:border-blue-400"
@@ -24,6 +23,7 @@
                   }"
                   @focus="setFocus('ruc')"
                   @blur="clearFocus"
+                  readonly
                 >
               </div>
             </div>
@@ -39,7 +39,6 @@
                 </div>
                 <input 
                   type="text"
-                  placeholder="Ingresa la razón social"
                   v-model="razonSocial"
                   class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                          hover:border-blue-400"
@@ -49,6 +48,7 @@
                   }"
                   @focus="setFocus('razonSocial')"
                   @blur="clearFocus"
+                  readonly
                 >
               </div>
             </div>
@@ -160,7 +160,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { useWizardStore } from "@/stores/wizardStore";
 import {
   IonCard,
   IonCardContent,
@@ -169,6 +170,8 @@ import {
 } from '@ionic/vue';
 import { Icon } from '@iconify/vue'; // Importación de Iconify
 
+// Obtener la instancia del store
+const wizardStore = useWizardStore();
 // Variables reactivas para almacenar los valores de los campos
 const nombreEmpresa = ref('');
 const ruc = ref('');
@@ -179,6 +182,19 @@ const email = ref('');
 
 // Variable para controlar qué campo está enfocado
 const focusedField = ref('');
+
+// Cargar datos del store si existen
+onMounted(() => {
+  const companyCreation = wizardStore.getStepData("companyCreation");
+  if (companyCreation && companyCreation.ruc) {
+    ruc.value = companyCreation.ruc;
+  }
+});
+
+// Observar cambios en el valor para actualizar el store
+watch(ruc, (newValue) => {
+  wizardStore.updateFormSection("companyCreation", { ruc, value: newValue });
+});
 
 // Funciones para manejar el enfoque
 const setFocus = (fieldName: string) => {
