@@ -10,7 +10,7 @@ import { IonItem, IonLabel, IonInput } from "@ionic/vue";
 import { ref } from 'vue';
 
 // Valor constante directamente como solicitado
-const categoria = ref('Si');
+const categoria = ref('');
 </script>
     
 <style scoped>

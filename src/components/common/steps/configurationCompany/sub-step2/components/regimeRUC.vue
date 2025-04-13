@@ -1,16 +1,33 @@
 <template>
   <ion-item>
     <ion-label>Regimen: </ion-label>
-    <ion-input v-model="regimen" readonly></ion-input>
+    <ion-input v-model="regimeRUCValue" readonly></ion-input>
   </ion-item>
 </template>
     
 <script setup lang="ts">
 import { IonItem, IonLabel, IonInput } from "@ionic/vue";
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { useWizardStore } from "@/stores/wizardStore";
 
-// Valor constante directamente como solicitado
-const regimen = ref('General');
+// Obtener la instancia del store
+const wizardStore = useWizardStore();
+
+// Variable reactiva para almacenar el valor del régimen
+const regimeRUCValue = ref('');
+
+// Cargar datos del store si existen
+onMounted(() => {
+  const companyConfig = wizardStore.getStepData("companyConfig");
+  if (companyConfig && companyConfig.regimeRUC) {
+    regimeRUCValue.value = companyConfig.regimeRUC;
+  }
+});
+
+// Observar cambios en el valor para actualizar el store
+watch(regimeRUCValue, (newValue) => {
+  wizardStore.updateFormSection("companyConfig", { regimeRUC: newValue });
+});
 </script>
     
 <style scoped>

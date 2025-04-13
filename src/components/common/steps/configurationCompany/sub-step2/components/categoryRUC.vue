@@ -7,10 +7,27 @@
     
 <script setup lang="ts">
 import { IonItem, IonLabel, IonInput } from "@ionic/vue";
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { useWizardStore } from "@/stores/wizardStore";
 
-// Valor constante directamente como solicitado
-const categoria = ref('Negocio Popular');
+// Obtener la instancia del store
+const wizardStore = useWizardStore();
+
+// Variable reactiva para almacenar el valor del régimen
+const categoria = ref('');
+
+// Cargar datos del store si existen
+onMounted(() => {
+  const companyConfig = wizardStore.getStepData("companyConfig");
+  if (companyConfig && companyConfig.categoryRUC) {
+    categoria.value = companyConfig.categoryRUC;
+  }
+});
+
+// Observar cambios en el valor para actualizar el store
+watch(categoria, (newValue) => {
+  wizardStore.updateFormSection("companyConfig", { categoryRUC: newValue });
+});
 </script>
     
 <style scoped>
