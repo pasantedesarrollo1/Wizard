@@ -27,9 +27,22 @@ import { ref, defineEmits } from 'vue';
 import { IonItem, IonLabel, IonButton } from '@ionic/vue';
 import { Icon } from '@iconify/vue';
 
+// Datos simulados del SRI que se utilizarán para la consulta
+const dataSRI = {
+  "ruc": "1792780241001",
+  "legalName": "TODONEG S.A.",
+  "status": "ACTIVO",
+  "regimeRUC": "General",
+  "isAgent": true,
+  "accountingRequired": true,
+  "categoryRUC": "Negocio Popular",
+  "idBranch": "001",
+  "commercialName": "Wanqara",
+  "address": "PICHINCHA / QUITO / IÑAQUITO / 10 DE AGOSTO N33-62 Y N33 GUAYANAS",
+};
+
 const rucValue = ref('');
 const isFocused = ref(false);
-// Corregir el tipo del ref para el input
 const rucInput = ref<HTMLInputElement | null>(null);
 
 // Definir los eventos que este componente puede emitir
@@ -44,12 +57,14 @@ const focusInput = () => {
 const searchRuc = () => {
   console.log('Buscando RUC:', rucValue.value);
   
-  // En un caso real, aquí se haría una llamada a una API
-  // Para este ejemplo, simulamos una respuesta con datos ficticios
+  // Usar el RUC ingresado o por defecto usar el valor del dataSRI
+  const rucToSearch = rucValue.value || dataSRI.ruc;
+  
+  // Preparamos los datos que necesita el componente informationRUC
   const rucData = {
-    ruc: rucValue.value || '1792780241001',
-    razonSocial: 'TODONEG S.A.',
-    estado: 'ACTIVO'
+    ruc: rucToSearch,
+    razonSocial: dataSRI.legalName,
+    estado: dataSRI.status
   };
   
   // Emitir el evento con los datos del RUC

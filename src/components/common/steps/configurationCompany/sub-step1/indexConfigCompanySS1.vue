@@ -14,8 +14,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { IonCard, IonCardContent } from '@ionic/vue'
-import searchRUC from "@/components/common/steps/configurationCompany/sub-step1/components/searchRUC.vue";
-import informationRUC from "@/components/common/steps/configurationCompany/sub-step1/components/informationRUC.vue";
+import searchRUC from "./components/searchRUC.vue";
+import informationRUC from "./components/informationRUC.vue";
 
 // Estado para controlar la visibilidad del componente informationRUC
 const showRucInfo = ref(false);
