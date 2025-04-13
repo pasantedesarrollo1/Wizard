@@ -112,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from "vue"
+import { ref, computed, onMounted, onUnmounted, watch } from "vue"
 import {
   IonLabel,
   IonButton,
@@ -125,6 +125,10 @@ import {
   IonSpinner,
 } from "@ionic/vue"
 import { chevronDownOutline, checkmarkCircle, personOutline, alertCircleOutline } from "ionicons/icons"
+import { useWizardStore } from "@/stores/wizardStore"
+
+// Obtener la instancia del store
+const wizardStore = useWizardStore()
 
 // Datos de vendedores implementados directamente desde dbSales.json
 const vendedoresData = [
@@ -137,7 +141,7 @@ const vendedoresData = [
   { id: 7, nombre: "Pedro Sánchez" },
   { id: 8, nombre: "Laura Morales" },
   { id: 9, nombre: "Andrés Herrera" },
-  { id: 10, nombre: "Sofía Castro" }
+  { id: 10, nombre: "Sofía Castro" },
 ]
 
 // Estado para almacenar los vendedores
@@ -210,8 +214,26 @@ const cerrarPopover = () => {
 // Seleccionar un vendedor
 const seleccionarVendedor = (vendedor: { id: number; nombre: string }) => {
   vendedorSeleccionado.value = vendedor.id
+
+  // Actualizar el store con el ID y nombre del vendedor seleccionado
+  wizardStore.updateFormSection("consultant", {
+    sellerId: vendedor.id.toString(),
+    sellerName: vendedor.nombre,
+  })
+
   cerrarPopover()
 }
+
+// Cargar datos del store si existen
+onMounted(() => {
+  const consultantData = wizardStore.getStepData("consultant")
+  if (consultantData && consultantData.sellerId) {
+    vendedorSeleccionado.value = parseInt(consultantData.sellerId)
+  }
+
+  simularCarga()
+  window.addEventListener("resize", handleResize)
+})
 
 // Función para manejar el cambio de tamaño de la ventana
 const handleResize = () => {
@@ -220,16 +242,24 @@ const handleResize = () => {
   }
 }
 
-// Simulamos la carga inicial al montar el componente
-onMounted(() => {
-  simularCarga()
-  window.addEventListener("resize", handleResize)
-})
-
 // Limpiar event listeners al desmontar
 onUnmounted(() => {
   window.removeEventListener("resize", handleResize)
 })
+
+// Observar cambios en el vendedor seleccionado para actualizar el store
+watch(vendedorSeleccionado, (newValue) => {
+  if (newValue !== null) {
+    const vendedor = vendedores.value.find((v) => v.id === newValue)
+    if (vendedor) {
+      wizardStore.updateFormSection("consultant", {
+        sellerId: vendedor.id.toString(),
+        sellerName: vendedor.nombre,
+      })
+    }
+  }
+})
+
 </script>
 
 <style lang="scss" src="@/components/common/steps/dataSales/sub-step2/styles/salesList.scss" scoped></style>
