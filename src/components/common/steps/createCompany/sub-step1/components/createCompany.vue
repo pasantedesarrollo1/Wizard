@@ -1,7 +1,7 @@
 <template>
   <ion-card class="shadow-md h-auto flex flex-col sm:w-full mx-auto">
     <ion-card-content class="overflow-y-auto h-full pb-5">
-      <form>
+      <form @submit.prevent>
         <!-- RUC y Razón social en la misma fila -->
         <div class="flex flex-col md:flex-row md:gap-4">
           <!-- RUC -->

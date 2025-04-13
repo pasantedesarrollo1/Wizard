@@ -1,7 +1,7 @@
 <template>
   <ion-card class="shadow-md h-auto flex flex-col sm:w-full mx-auto">
     <ion-card-content class="overflow-y-auto h-full pb-5">
-      <form>
+      <form @submit.prevent>
         <!-- Nombre del Punto de Venta -->
         <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
           <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Nombre del Punto de Venta <span class="text-blue-600">*</span></ion-label>

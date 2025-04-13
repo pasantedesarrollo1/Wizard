@@ -1,7 +1,7 @@
 <template>
   <ion-card class="shadow-md h-full flex flex-col sm:w-3/4  mx-auto">
     <ion-card-content class="overflow-y-auto h-full pb-5">
-      <form>
+      <form @submit.prevent>
         <!-- Tipo de identificación -->
         <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
           <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Tipo de Identificación</ion-label>

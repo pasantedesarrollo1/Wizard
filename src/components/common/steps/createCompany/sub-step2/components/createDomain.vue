@@ -1,7 +1,7 @@
 <template>
   <ion-card>
     <ion-card-content>
-      <form>
+      <form @submit.prevent>
         <!-- Título e instrucción -->
         <ion-text color="dark">
           <h5>Ingresa tu Dominio con el cual podrás acceder a tu empresa</h5>

@@ -1,7 +1,7 @@
 <template>
     <ion-card>
       <ion-card-content>
-        <form>
+        <form @submit.prevent>
           <ion-item lines="none">
             <ion-label>Carga tu logo aquí</ion-label>
           </ion-item>
