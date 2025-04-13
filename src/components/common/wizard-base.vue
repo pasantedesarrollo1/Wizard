@@ -17,13 +17,6 @@
           <template v-if="hasSubStepsForCurrentStep">
             <!-- Si el paso actual tiene sub-pasos -->
             <div class="sub-step-container">
-              <!-- Indicador de sub-paso -->
-              <!-- <div class="sub-step-indicator" v-if="currentSubStep">
-                <p class="text-sm text-center mb-4">
-                  Sub-paso {{ currentSubStepIndex + 1 }} de {{ totalSubStepsForCurrentStep }}: 
-                  {{ currentSubStep.title }}
-                </p>
-              </div> -->
               <!-- Componente del sub-paso actual -->
               <component 
                 v-if="currentSubStep" 
@@ -59,6 +52,7 @@
     />
   </IonPage>
 </template>
+
 <script setup lang="ts">
 import { IonPage, IonContent, IonButton } from "@ionic/vue"
 import { computed, ref, PropType, watch, onMounted } from "vue"
@@ -112,6 +106,12 @@ const handleStart = () => {
   wizardStore.updateWizardState({
     type: props.wizardType,
   })
+  
+  // Mostrar el estado completo en consola
+  console.log("Wizard state actualizado (handleStart):", {
+    wizardState: wizardStore.getCurrentWizardState,
+    formData: wizardStore.getAllFormData
+  })
 }
 
 // Obtenemos las funciones del composable useWizardSubSteps
@@ -135,6 +135,12 @@ watch(currentStepKey, (newStepKey) => {
   wizardStore.updateWizardState({
     currentStep: newStepKey,
     currentSubStep: currentSubStepIndex.value + 1,
+  })
+  
+  // Mostrar el estado completo en consola
+  console.log("Wizard state actualizado (watch currentStepKey):", {
+    wizardState: wizardStore.getCurrentWizardState,
+    formData: wizardStore.getAllFormData
   })
 })
 
@@ -183,6 +189,12 @@ const handleNext = () => {
     wizardStore.updateWizardState({
       currentSubStep: currentSubStepIndex.value + 1,
     })
+    
+    // Mostrar el estado completo en consola
+    console.log("Wizard state actualizado (handleNext - subpaso):", {
+      wizardState: wizardStore.getCurrentWizardState,
+      formData: wizardStore.getAllFormData
+    })
 
     // Si hemos completado todos los sub-pasos, avanzamos al siguiente paso principal
     if (completed) {
@@ -193,6 +205,12 @@ const handleNext = () => {
 
   // Para pasos sin sub-pasos, comportamiento normal
   nextStep()
+  
+  // Mostrar el estado completo en consola
+  console.log("Wizard state actualizado (handleNext - paso principal):", {
+    wizardState: wizardStore.getCurrentWizardState,
+    formData: wizardStore.getAllFormData
+  })
 }
 
 // Función para manejar la confirmación del modal
@@ -202,7 +220,10 @@ const handleConfirmFinish = () => {
 
   // Obtener todos los datos del formulario para procesar
   const formData = wizardStore.getAllFormData
-  console.log("Wizard finalizado con datos:", formData)
+  console.log("Wizard finalizado con datos:", {
+    wizardState: wizardStore.getCurrentWizardState,
+    formData: formData
+  })
 
   // Navegamos a la página de finishedCompany
   router.push("/finished-company")
@@ -224,6 +245,12 @@ const handlePrevious = () => {
     wizardStore.updateWizardState({
       currentSubStep: currentSubStepIndex.value + 1,
     })
+    
+    // Mostrar el estado completo en consola
+    console.log("Wizard state actualizado (handlePrevious - subpaso):", {
+      wizardState: wizardStore.getCurrentWizardState,
+      formData: wizardStore.getAllFormData
+    })
 
     // Si estamos en el primer sub-paso, retrocedemos al paso principal anterior
     if (goToPrevStep) {
@@ -233,6 +260,12 @@ const handlePrevious = () => {
   }
   // Para pasos sin sub-pasos, comportamiento normal
   prevStep()
+  
+  // Mostrar el estado completo en consola
+  console.log("Wizard state actualizado (handlePrevious - paso principal):", {
+    wizardState: wizardStore.getCurrentWizardState,
+    formData: wizardStore.getAllFormData
+  })
 }
 
 // Maneja la actualización manual del paso
@@ -242,6 +275,18 @@ const updateStep = (step: number) => {
     resetSubStep()
   }
   goToStep(step)
+  
+  // Actualizar el estado del wizard cuando se cambia de paso mediante la barra de navegación
+  wizardStore.updateWizardState({
+    currentStep: steps.value[step]?.key || "",
+    currentSubStep: 1, // Reseteamos al primer subpaso
+  })
+  
+  // Mostrar el estado completo en consola
+  console.log("Wizard state actualizado (updateStep - navegación):", {
+    wizardState: wizardStore.getCurrentWizardState,
+    formData: wizardStore.getAllFormData
+  })
 }
 
 //Cargamos los datos iniciales si existen
@@ -254,6 +299,12 @@ onMounted(() => {
     const savedData = localStorage.getItem("wizardData")
     if (savedData) {
       wizardStore.loadInitialData(JSON.parse(savedData))
+      
+      // Mostrar el estado cargado en consola
+      console.log("Wizard state cargado desde localStorage:", {
+        wizardState: wizardStore.getCurrentWizardState,
+        formData: wizardStore.getAllFormData
+      })
     }
   } catch (error) {
     console.error("Error cargando datos guardados:", error)
