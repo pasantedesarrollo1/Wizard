@@ -10,7 +10,7 @@ export interface WizardStepsConfig {
   [type: string]: WizardStep[]
 }
 
-export function useWizardProgress(type: "ventas" | "soporte" | "cliente" | "general") {
+export function useWizardProgress(type: "sales" | "soporte" | "cliente" | "general") {
   // Definir los pasos comunes
   const commonSteps: WizardStep[] = [
     { label: "Datos Personales", key: "personal-info" },
@@ -22,7 +22,7 @@ export function useWizardProgress(type: "ventas" | "soporte" | "cliente" | "gene
   // Configuración centralizada de pasos para cada tipo de wizard
   // Esto permite agregar o modificar pasos específicos para cada flujo
   const wizardStepsConfig: WizardStepsConfig = {
-    ventas: [{ label: "Datos de venta", key: "data-sales" }, ...commonSteps],
+    sales: [{ label: "Datos de venta", key: "data-sales" }, ...commonSteps],
     soporte: [...commonSteps],
     cliente: [...commonSteps],
     general: [...commonSteps],

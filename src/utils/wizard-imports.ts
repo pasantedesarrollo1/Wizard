@@ -94,7 +94,7 @@ export function getClienteSubStepsConfig() {
 // Función para obtener la configuración de sub-pasos según el tipo de wizard
 export function getSubStepsConfigByType(type: string) {
   switch (type) {
-    case "ventas":
+    case "sales":
       return getVentasSubStepsConfig()
     case "soporte":
       return getSoporteSubStepsConfig()

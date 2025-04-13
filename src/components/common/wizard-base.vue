@@ -75,7 +75,7 @@ const wizardStore = useWizardStore()
 const props = defineProps({
   // Tipo de wizard (ventas, soporte, cliente, general)
   wizardType: {
-    type: String as PropType<"ventas" | "soporte" | "cliente" | "general">,
+    type: String as PropType<"sales" | "soporte" | "cliente" | "general">,
     required: true,
   },
   // Mapeo de componentes para cada paso principal

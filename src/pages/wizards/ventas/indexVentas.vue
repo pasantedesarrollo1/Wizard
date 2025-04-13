@@ -2,7 +2,7 @@
   <ion-page>
     <ion-content>
       <wizard-base
-        wizard-type="ventas"
+        wizard-type="sales"
         :step-components="stepComponents"
         :sub-steps-config="subStepsConfig"
       />
