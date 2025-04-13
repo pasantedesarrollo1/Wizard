@@ -30,14 +30,13 @@ export interface WizardState {
   
   // Interfaces para la creación de la empresa
   export interface CompanyCreation {
+    ruc: string
     name: string
     legalName: string
     ticketEmail: string
     domain: string
     address: string
-    phones: {
-      number: string
-    }
+    phones: string
     businessEmail: string
   }
   

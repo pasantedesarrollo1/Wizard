@@ -28,14 +28,13 @@ export const initialState = (): WizardInterface => ({
       sellerName: "",
     },
     companyCreation: {
+      ruc: "",
       name: "",
       legalName: "",
       ticketEmail: "",
       domain: "",
       address: "",
-      phones: {
-        number: "",
-      },
+      phones: "",
       businessEmail: "",
     },
     salesData: {
