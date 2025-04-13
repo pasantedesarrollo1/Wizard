@@ -115,10 +115,10 @@
 </template>
   
 <script setup lang="ts">
-import { ref} from 'vue';
-import { 
-  IonText, 
-  IonCard, 
+import { ref, watch, onMounted } from "vue"
+import {
+  IonText,
+  IonCard,
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
@@ -127,94 +127,119 @@ import {
   IonGrid,
   IonRow,
   IonCol,
-} from '@ionic/vue';
-import { checkmarkCircle, star } from 'ionicons/icons';
-  
+} from "@ionic/vue"
+import { checkmarkCircle, star } from "ionicons/icons"
+import { useWizardStore } from "@/stores/wizardStore"
+
 // Definimos la interfaz para las opciones de tipo de plan con precios
 interface TipoPlanesOpcion {
-  label: string;
-  value: string;
-  precioMensual: string;
-  precioAnual: string;
-  caracteristicas?: string[];
+  label: string
+  value: string
+  precioMensual: string
+  precioAnual: string
+  caracteristicas?: string[]
 }
-  
+
+// Obtenemos la instancia del store
+const wizardStore = useWizardStore()
+
 // Estado para controlar si se muestra el precio anual o mensual
-const periodoSeleccionado = ref<string>('mensual');
-  
+const periodoSeleccionado = ref<string>("mensual")
+
 // Array con las opciones de tipo de plan incluyendo precios
 const opcionesTipoPlanes = ref<TipoPlanesOpcion[]>([
-  { 
-    label: 'Plan Gratuito', 
-    value: 'freeplan',
-    precioMensual: '0',
-    precioAnual: '0',
-    caracteristicas: [
-      'Acceso básico',
-      'Funciones limitadas',
-      'Soporte por email'
-    ]
+  {
+    label: "Plan Gratuito",
+    value: "freeplan",
+    precioMensual: "0",
+    precioAnual: "0",
+    caracteristicas: ["Acceso básico", "Funciones limitadas", "Soporte por email"],
   },
-  { 
-    label: 'Plan Lite', 
-    value: 'liteplan',
-    precioMensual: '10',
-    precioAnual: '96',
+  {
+    label: "Plan Lite",
+    value: "liteplan",
+    precioMensual: "10",
+    precioAnual: "96",
     caracteristicas: [
-      'Todo lo del plan gratuito',
-      'Funciones adicionales',
-      'Soporte prioritario',
-      'Acceso a API básica'
-    ]
+      "Todo lo del plan gratuito",
+      "Funciones adicionales",
+      "Soporte prioritario",
+      "Acceso a API básica",
+    ],
   },
-  { 
-    label: 'Plan Básico', 
-    value: 'basicplan',
-    precioMensual: '20',
-    precioAnual: '192',
+  {
+    label: "Plan Básico",
+    value: "basicplan",
+    precioMensual: "20",
+    precioAnual: "192",
     caracteristicas: [
-      'Todo lo del plan Lite',
-      'Características avanzadas',
-      'Soporte telefónico',
-      'Reportes personalizados',
-      'API completa'
-    ]
+      "Todo lo del plan Lite",
+      "Características avanzadas",
+      "Soporte telefónico",
+      "Reportes personalizados",
+      "API completa",
+    ],
   },
-  { 
-    label: 'Plan Pyme', 
-    value: 'pymeplan',
-    precioMensual: '30',
-    precioAnual: '288',
+  {
+    label: "Plan Pyme",
+    value: "pymeplan",
+    precioMensual: "30",
+    precioAnual: "288",
     caracteristicas: [
-      'Todo lo del plan Básico',
-      'Funciones empresariales',
-      'Soporte 24/7',
-      'Integraciones avanzadas',
-      'Usuarios ilimitados',
-      'Personalización completa'
-    ]
+      "Todo lo del plan Básico",
+      "Funciones empresariales",
+      "Soporte 24/7",
+      "Integraciones avanzadas",
+      "Usuarios ilimitados",
+      "Personalización completa",
+    ],
   },
-]);
-  
-// Variable para almacenar el plan seleccionado
-const tipoPlanSeleccionado = ref<string>('');
+])
 
+// Variable para almacenar el plan seleccionado
+const tipoPlanSeleccionado = ref<string>("")
+
+// Cargar datos del store si existen al montar el componente
+onMounted(() => {
+  const salesData = wizardStore.getStepData("salesData")
+  if (salesData) {
+    if (salesData.plan) {
+      tipoPlanSeleccionado.value = salesData.plan
+    }
+    if (salesData.billingFrequency) {
+      periodoSeleccionado.value = salesData.billingFrequency
+    }
+  }
+})
 
 // Función para obtener el precio según el periodo seleccionado
 const getPlanPrice = (plan: TipoPlanesOpcion): string => {
-  return periodoSeleccionado.value === 'anual' ? plan.precioAnual : plan.precioMensual;
-};
-  
+  return periodoSeleccionado.value === "anual" ? plan.precioAnual : plan.precioMensual
+}
+
 // Función para seleccionar un plan
 const seleccionarPlan = (value: string) => {
-  tipoPlanSeleccionado.value = value;
-};
+  tipoPlanSeleccionado.value = value
+  // Actualizar el store con el plan seleccionado
+  wizardStore.updateFormSection("salesData", { plan: value })
+}
 
 // Función para alternar entre periodos (mensual/anual)
 const togglePeriodo = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  periodoSeleccionado.value = target.checked ? 'anual' : 'mensual';
-};
+  const target = event.target as HTMLInputElement
+  periodoSeleccionado.value = target.checked ? "anual" : "mensual"
+  // Actualizar el store con la frecuencia de facturación seleccionada
+  wizardStore.updateFormSection("salesData", { billingFrequency: periodoSeleccionado.value })
+}
+
+// Observar cambios en el plan y periodo seleccionados para actualizar el store
+watch([tipoPlanSeleccionado, periodoSeleccionado], () => {
+  // Actualizar el store con los valores actuales
+  wizardStore.updateFormSection("salesData", {
+    plan: tipoPlanSeleccionado.value,
+    billingFrequency: periodoSeleccionado.value,
+  })
+})
 
 </script>
   

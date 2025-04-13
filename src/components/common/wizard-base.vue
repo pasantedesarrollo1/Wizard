@@ -99,21 +99,6 @@ const showConfirmationModal = ref(false)
 // Inicializamos el wizard con el tipo proporcionado
 const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress(props.wizardType)
 
-// Función para manejar el evento de inicio desde welcomeGeneral
-const handleStart = () => {
-  started.value = true
-  // Actualizar el tipo de wizard en el store
-  wizardStore.updateWizardState({
-    type: props.wizardType,
-  })
-  
-  // Mostrar el estado completo en consola
-  console.log("Wizard state actualizado (handleStart):", {
-    wizardState: wizardStore.getCurrentWizardState,
-    formData: wizardStore.getAllFormData
-  })
-}
-
 // Obtenemos las funciones del composable useWizardSubSteps
 const {
   currentSubStepIndex,
@@ -136,11 +121,11 @@ watch(currentStepKey, (newStepKey) => {
     currentStep: newStepKey,
     currentSubStep: currentSubStepIndex.value + 1,
   })
-  
+
   // Mostrar el estado completo en consola
   console.log("Wizard state actualizado (watch currentStepKey):", {
     wizardState: wizardStore.getCurrentWizardState,
-    formData: wizardStore.getAllFormData
+    formData: wizardStore.getAllFormData,
   })
 })
 
@@ -172,8 +157,41 @@ const isLastStepAndSubStep = computed(() => {
   )
 })
 
+// Función para manejar el evento de inicio desde welcomeGeneral
+const handleStart = () => {
+  started.value = true
+  // Actualizar el tipo de wizard en el store
+  wizardStore.updateWizardState({
+    type: props.wizardType,
+  })
+
+  // Mostrar el estado completo en consola
+  console.log("Wizard state actualizado (handleStart):", {
+    wizardState: wizardStore.getCurrentWizardState,
+    formData: wizardStore.getAllFormData,
+  })
+}
+
+// Función para actualizar los datos de plan y billingFrequency si estamos en el paso data-sales
+const updateSalesDataIfNeeded = () => {
+  // Verificar si estamos en el paso data-sales y el subpaso 1 (indexSalesDataSS1)
+  if (currentStepKey.value === "data-sales" && currentSubStepIndex.value === 0) {
+    // Obtener los datos actuales de salesData
+    const salesData = wizardStore.getStepData("salesData")
+
+    // Verificar si tenemos datos de plan y billingFrequency para actualizar
+    if (salesData && (salesData.plan || salesData.billingFrequency)) {
+      // No es necesario hacer nada aquí, ya que los datos se actualizan directamente
+      // desde el componente typePlan.vue mediante el watch y las funciones
+    }
+  }
+}
+
 // Maneja la lógica de navegación "siguiente"
 const handleNext = () => {
+  // Actualizar datos de salesData si es necesario
+  updateSalesDataIfNeeded()
+
   // Si estamos en el último paso y sub-paso y el botón dice "Finalizado"
   if (isLastStepAndSubStep.value) {
     // Mostramos el modal de confirmación en lugar de avanzar
@@ -189,11 +207,11 @@ const handleNext = () => {
     wizardStore.updateWizardState({
       currentSubStep: currentSubStepIndex.value + 1,
     })
-    
+
     // Mostrar el estado completo en consola
     console.log("Wizard state actualizado (handleNext - subpaso):", {
       wizardState: wizardStore.getCurrentWizardState,
-      formData: wizardStore.getAllFormData
+      formData: wizardStore.getAllFormData,
     })
 
     // Si hemos completado todos los sub-pasos, avanzamos al siguiente paso principal
@@ -205,11 +223,11 @@ const handleNext = () => {
 
   // Para pasos sin sub-pasos, comportamiento normal
   nextStep()
-  
+
   // Mostrar el estado completo en consola
   console.log("Wizard state actualizado (handleNext - paso principal):", {
     wizardState: wizardStore.getCurrentWizardState,
-    formData: wizardStore.getAllFormData
+    formData: wizardStore.getAllFormData,
   })
 }
 
@@ -222,7 +240,7 @@ const handleConfirmFinish = () => {
   const formData = wizardStore.getAllFormData
   console.log("Wizard finalizado con datos:", {
     wizardState: wizardStore.getCurrentWizardState,
-    formData: formData
+    formData: formData,
   })
 
   // Navegamos a la página de finishedCompany
@@ -245,11 +263,11 @@ const handlePrevious = () => {
     wizardStore.updateWizardState({
       currentSubStep: currentSubStepIndex.value + 1,
     })
-    
+
     // Mostrar el estado completo en consola
     console.log("Wizard state actualizado (handlePrevious - subpaso):", {
       wizardState: wizardStore.getCurrentWizardState,
-      formData: wizardStore.getAllFormData
+      formData: wizardStore.getAllFormData,
     })
 
     // Si estamos en el primer sub-paso, retrocedemos al paso principal anterior
@@ -260,11 +278,11 @@ const handlePrevious = () => {
   }
   // Para pasos sin sub-pasos, comportamiento normal
   prevStep()
-  
+
   // Mostrar el estado completo en consola
   console.log("Wizard state actualizado (handlePrevious - paso principal):", {
     wizardState: wizardStore.getCurrentWizardState,
-    formData: wizardStore.getAllFormData
+    formData: wizardStore.getAllFormData,
   })
 }
 
@@ -275,17 +293,17 @@ const updateStep = (step: number) => {
     resetSubStep()
   }
   goToStep(step)
-  
+
   // Actualizar el estado del wizard cuando se cambia de paso mediante la barra de navegación
   wizardStore.updateWizardState({
     currentStep: steps.value[step]?.key || "",
     currentSubStep: 1, // Reseteamos al primer subpaso
   })
-  
+
   // Mostrar el estado completo en consola
   console.log("Wizard state actualizado (updateStep - navegación):", {
     wizardState: wizardStore.getCurrentWizardState,
-    formData: wizardStore.getAllFormData
+    formData: wizardStore.getAllFormData,
   })
 }
 
@@ -299,17 +317,18 @@ onMounted(() => {
     const savedData = localStorage.getItem("wizardData")
     if (savedData) {
       wizardStore.loadInitialData(JSON.parse(savedData))
-      
+
       // Mostrar el estado cargado en consola
       console.log("Wizard state cargado desde localStorage:", {
         wizardState: wizardStore.getCurrentWizardState,
-        formData: wizardStore.getAllFormData
+        formData: wizardStore.getAllFormData,
       })
     }
   } catch (error) {
     console.error("Error cargando datos guardados:", error)
   }
 })
+
 </script>
 <style scoped>
 .ion-content {
