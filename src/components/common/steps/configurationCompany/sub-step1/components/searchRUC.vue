@@ -23,53 +23,84 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
-import { IonItem, IonLabel, IonButton } from '@ionic/vue';
-import { Icon } from '@iconify/vue';
+import { ref, defineEmits, onMounted } from "vue"
+import { IonItem, IonLabel, IonButton } from "@ionic/vue"
+import { Icon } from "@iconify/vue"
+import { useWizardStore } from "@/stores/wizardStore"
+
+// Obtener la instancia del store
+const wizardStore = useWizardStore()
 
 // Datos simulados del SRI que se utilizarán para la consulta
 const dataSRI = {
-  "ruc": "1792780241001",
-  "legalName": "TODONEG S.A.",
-  "status": "ACTIVO",
-  "regimeRUC": "General",
-  "isAgent": true,
-  "accountingRequired": true,
-  "categoryRUC": "Negocio Popular",
-  "idBranch": "001",
-  "commercialName": "Wanqara",
-  "address": "PICHINCHA / QUITO / IÑAQUITO / 10 DE AGOSTO N33-62 Y N33 GUAYANAS",
-};
+  ruc: "1792780241001",
+  legalName: "TODONEG S.A.",
+  status: "ACTIVO",
+  regimeRUC: "General",
+  isAgent: true,
+  accountingRequired: true,
+  categoryRUC: "Negocio Popular",
+  idBranch: "001",
+  commercialName: "Wanqara",
+  address: "PICHINCHA / QUITO / IÑAQUITO / 10 DE AGOSTO N33-62 Y N33 GUAYANAS",
+}
 
-const rucValue = ref('');
-const isFocused = ref(false);
-const rucInput = ref<HTMLInputElement | null>(null);
+const rucValue = ref("")
+const isFocused = ref(false)
+const rucInput = ref<HTMLInputElement | null>(null)
 
 // Definir los eventos que este componente puede emitir
-const emit = defineEmits(['ruc-searched']);
+const emit = defineEmits(["ruc-searched"])
 
 const focusInput = () => {
   if (rucInput.value) {
-    rucInput.value.focus();
+    rucInput.value.focus()
   }
-};
+}
+
+// Actualizar el store cuando se busca un RUC
+const updateStoreWithSRIData = () => {
+  // Actualizar los datos de companyCreation con los datos de dataSRI
+  wizardStore.updateFormSection("companyCreation", {
+    ruc: dataSRI.ruc,
+    legalName: dataSRI.legalName,
+  })
+
+  // Mostrar en consola para debug
+  console.log("Datos actualizados en el store desde searchRUC:", {
+    ruc: dataSRI.ruc,
+    legalName: dataSRI.legalName,
+  })
+}
 
 const searchRuc = () => {
-  console.log('Buscando RUC:', rucValue.value);
-  
+  console.log("Buscando RUC:", rucValue.value)
+
   // Usar el RUC ingresado o por defecto usar el valor del dataSRI
-  const rucToSearch = rucValue.value || dataSRI.ruc;
-  
+  const rucToSearch = rucValue.value || dataSRI.ruc
+
   // Preparamos los datos que necesita el componente informationRUC
   const rucData = {
     ruc: rucToSearch,
     razonSocial: dataSRI.legalName,
-    estado: dataSRI.status
-  };
-  
+    estado: dataSRI.status,
+  }
+
+  // Actualizar el store con los datos del SRI
+  updateStoreWithSRIData()
+
   // Emitir el evento con los datos del RUC
-  emit('ruc-searched', rucData);
-};
+  emit("ruc-searched", rucData)
+}
+
+// Al montar el componente, verificar si ya hay datos en el store y actualizar el input
+onMounted(() => {
+  const companyData = wizardStore.getStepData("companyCreation")
+  if (companyData && companyData.ruc) {
+    rucValue.value = companyData.ruc
+  }
+})
+
 </script>
 
 <style scoped>
