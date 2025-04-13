@@ -83,8 +83,8 @@ const updateStoreWithSRIData = () => {
     taxAgent: {
       ...wizardStore.getStepData("companyConfig")?.taxAgent,
       isAgent: dataSRI.isAgent,
+      accountingRequired: dataSRI.accountingRequired,
     },
-    accountingRequired: dataSRI.accountingRequired,
   })
 
   // Mostrar en consola para debug
@@ -105,8 +105,8 @@ const updateStoreWithSRIData = () => {
       categoryRUC: dataSRI.categoryRUC,
       taxAgent: {
         isAgent: dataSRI.isAgent,
+        accountingRequired: dataSRI.accountingRequired,
       },
-      accountingRequired: dataSRI.accountingRequired,
     }
   })
 }
