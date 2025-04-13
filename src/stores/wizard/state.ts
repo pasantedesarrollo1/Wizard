@@ -10,7 +10,7 @@ export const initialState = (): WizardInterface => ({
   formData: {
     personalInfo: {
       identification: {
-        type: "ruc",
+        type: "",
         number: "",
       },
       name: {
