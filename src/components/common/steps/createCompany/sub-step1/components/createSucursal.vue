@@ -93,7 +93,7 @@
                 type="text"
                 readonly
                 v-model="direccionSucursal"
-                class="w-full p-3 pl-12 bg-white  border border-gray-300 rounded-lg outline-none transition-all duration-300
+                class="w-full p-3 pl-12 bg-white text-gray-500  border border-gray-300 rounded-lg outline-none transition-all duration-300
                        hover:border-blue-400"
                 :class="{ 
                   'bg-primary-50 border-primary text-primary': direccionSucursal.length > 0,
