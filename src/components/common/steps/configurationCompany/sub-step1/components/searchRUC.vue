@@ -76,6 +76,17 @@ const updateStoreWithSRIData = () => {
     },
   })
 
+  // Actualizar los datos de companyConfig con los datos de dataSRI
+  wizardStore.updateFormSection("companyConfig", {
+    regimeRUC: dataSRI.regimeRUC,
+    categoryRUC: dataSRI.categoryRUC,
+    taxAgent: {
+      ...wizardStore.getStepData("companyConfig")?.taxAgent,
+      isAgent: dataSRI.isAgent,
+    },
+    accountingRequired: dataSRI.accountingRequired,
+  })
+
   // Mostrar en consola para debug
   console.log("Datos actualizados en el store desde searchRUC:", {
     companyCreation: {
@@ -89,6 +100,14 @@ const updateStoreWithSRIData = () => {
         address: dataSRI.address,
       },
     },
+    companyConfig: {
+      regimeRUC: dataSRI.regimeRUC,
+      categoryRUC: dataSRI.categoryRUC,
+      taxAgent: {
+        isAgent: dataSRI.isAgent,
+      },
+      accountingRequired: dataSRI.accountingRequired,
+    }
   })
 }
 
@@ -119,7 +138,6 @@ onMounted(() => {
     rucValue.value = companyData.ruc
   }
 })
-
 
 </script>
 
