@@ -12,10 +12,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/pages/wizards/ventas/indexVentas.vue"),
     beforeEnter: (to, from, next) => {
       const wizardStore = useWizardStore()
-      // Actualizamos type y currentStep
+      // Actualizamos type, currentStep y currentSubStep
       wizardStore.updateWizardState({ 
         type: "sales",
-        currentStep: "data-sales" // Este es el primer paso para el wizard de ventas
+        currentStep: "data-sales", // Este es el primer paso para el wizard de ventas
+        currentSubStep: 1 // Inicializamos en el primer sub-paso (1-indexed como se usa en el componente)
       })
       // Mostrar el estado completo en consola
       console.log("Wizard state actualizado:", {
@@ -30,10 +31,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/pages/wizards/soporte/indexSoporte.vue"),
     beforeEnter: (to, from, next) => {
       const wizardStore = useWizardStore()
-      // Actualizamos type y currentStep
+      // Actualizamos type, currentStep y currentSubStep
       wizardStore.updateWizardState({ 
         type: "support",
-        currentStep: "personal-info" // Este es el primer paso para el wizard de soporte
+        currentStep: "personal-info", // Este es el primer paso para el wizard de soporte
+        currentSubStep: 1 // Inicializamos en el primer sub-paso
       })
       // Mostrar el estado completo en consola
       console.log("Wizard state actualizado:", {
@@ -48,10 +50,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/pages/wizards/cliente/indexCliente.vue"),
     beforeEnter: (to, from, next) => {
       const wizardStore = useWizardStore()
-      // Actualizamos type y currentStep
+      // Actualizamos type, currentStep y currentSubStep
       wizardStore.updateWizardState({ 
         type: "client",
-        currentStep: "personal-info" // Este es el primer paso para el wizard de cliente
+        currentStep: "personal-info", // Este es el primer paso para el wizard de cliente
+        currentSubStep: 1 // Inicializamos en el primer sub-paso
       })
       // Mostrar el estado completo en consola
       console.log("Wizard state actualizado:", {
