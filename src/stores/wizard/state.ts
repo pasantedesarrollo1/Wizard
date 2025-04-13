@@ -19,10 +19,7 @@ export const initialState = (): WizardInterface => ({
       },
       contact: {
         email: "",
-        phone: {
-          landline: "",
-          mobile: "",
-        },
+        phone: "",
       },
       roleInCompany: "",
     },

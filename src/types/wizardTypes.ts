@@ -17,10 +17,7 @@ export interface WizardState {
     }
     contact: {
       email: string
-      phone: {
-        landline: string
-        mobile: string
-      }
+      phone: string
     }
     roleInCompany: string
   }
