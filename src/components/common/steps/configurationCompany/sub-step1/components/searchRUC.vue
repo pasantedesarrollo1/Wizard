@@ -12,6 +12,7 @@
           @blur="isFocused = false"
           class="native-input"
           ref="rucInput"
+          required
         />
       </div>
       <ion-button size="default" @click="searchRuc" class="consultar-button">

@@ -26,6 +26,7 @@
                     @focus="setFocus('tipoID')"
                     @blur="clearFocus"
                     @change="updateStore"
+                    required
                   >
                     <option value="" disabled selected>Seleccionar</option>
                     <option 
@@ -57,6 +58,7 @@
                     @focus="setFocus('identificacion')"
                     @blur="clearFocus"
                     @input="updateStore"
+                    required
                   >
                 </div>
               </div>
@@ -79,6 +81,7 @@
                   @focus="setFocus('nombres')"
                   @blur="clearFocus"
                   @input="updateStore"
+                  required
                 >
               </div>
             </ion-item>
@@ -100,6 +103,7 @@
                   @focus="setFocus('apellidos')"
                   @blur="clearFocus"
                   @input="updateStore"
+                  required
                 >
               </div>
             </ion-item>
@@ -125,6 +129,7 @@
                     @focus="setFocus('email')"
                     @blur="clearFocus"
                     @input="updateStore"
+                    required
                   >
                 </div>
               </div>

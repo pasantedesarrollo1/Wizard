@@ -9,6 +9,7 @@
         @click="abrirPopover($event)" 
         class="select-button"
         :class="{ 'has-selection': vendedorSeleccionado }"
+        required
       >
         <div class="w-full flex justify-between items-center">
           <div class="text-left normal-case font-normal whitespace-nowrap overflow-hidden text-ellipsis">
@@ -47,6 +48,7 @@
       side="bottom"
       alignment="start"
       :style="popoverStyle"
+      required
     >
       <ion-content>
         <div class="flex flex-col max-h-[350px]">
