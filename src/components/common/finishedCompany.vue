@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, computed } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon } from "@ionic/vue";
 import { lockClosed, storefront } from "ionicons/icons";
 import { useWizardStore } from "@/stores/wizardStore";
@@ -67,8 +67,6 @@ const wizardStore = useWizardStore();
 
 // Estados reactivos
 const domainValue = ref("");
-const companyCreation = ref({});
-const initialDomainValue = ref("");
 
 // Computar la URL completa del dominio
 const fullDomainUrl = computed(() => {
@@ -83,28 +81,12 @@ const goToCompany = () => {
 
 // Cargar datos del store si existen
 onMounted(() => {
-  const storedCompanyCreation = wizardStore.getStepData("companyCreation");
-  companyCreation.value = storedCompanyCreation || {};
-
-  let initialValue = "";
-  if (companyCreation.value?.domain) {
-    initialValue = companyCreation.value.domain;
-  } else if (companyCreation.value?.ruc) {
-    // Si no hay dominio pero sí RUC, usamos el RUC como dominio
-    initialValue = companyCreation.value.ruc;
-  }
-  domainValue.value = initialValue;
-  initialDomainValue.value = initialValue;
-});
-
-// Actualizar el store cuando cambie el valor del dominio
-watch(domainValue, (newValue) => {
-  if (newValue !== initialDomainValue.value) {
-    wizardStore.updateFormSection("companyCreation", {
-      domain: newValue,
-    });
+  const companyCreation = wizardStore.getStepData("companyCreation");
+  if (companyCreation && companyCreation.domain) {
+    domainValue.value = companyCreation.domain;
   }
 });
+
 </script>
 
 <style scoped>

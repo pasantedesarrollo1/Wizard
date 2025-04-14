@@ -1,154 +1,68 @@
 <template>
   <ion-content class="ion-padding">
     <div class="welcome-container">
-      <!-- Animated background elements -->
-      <div class="animated-background">
-        <!-- Animated waves -->
-        <div class="wave-container">
-          <div class="wave wave1"></div>
-          <div class="wave wave2"></div>
-          <div class="wave wave3"></div>
-        </div>
-        
-        <!-- Floating circles -->
-        <div v-for="n in 20" :key="`circle-${n}`" class="floating-circle" :style="{ 
-          left: `${Math.random() * 100}%`, 
-          top: `${Math.random() * 100}%`,
-          animationDelay: `${Math.random() * 8}s`,
-          width: `${Math.random() * 150 + 50}px`,
-          height: `${Math.random() * 150 + 50}px`,
-          opacity: 0.03 + Math.random() * 0.07
-        }"></div>
-        
-        <!-- Particles -->
-        <div v-for="n in 40" :key="`particle-${n}`" class="particle" :style="{
-          left: `${Math.random() * 100}%`,
-          top: `${Math.random() * 100}%`,
-          animationDelay: `${Math.random() * 5}s`,
-          animationDuration: `${5 + Math.random() * 10}s`,
-          width: `${Math.random() * 6 + 2}px`,
-          height: `${Math.random() * 6 + 2}px`,
-          opacity: 0.2 + Math.random() * 0.4
-        }"></div>
+      <!-- Fondo minimalista con gradiente sutil -->
+      <div class="minimal-background">
+        <div class="gradient-overlay"></div>
       </div>
   
-      <!-- Main content -->
+      <!-- Contenido principal -->
       <div class="content">
-        <ion-card class="welcome-card">
-          <!-- Logo animation -->
+        <div class="welcome-card">
+          <!-- Logo con soporte para src -->
           <div class="logo-container">
-            <div class="logo-circle">
-              <div class="logo-inner">W</div>
+            <div class="logo-rectangle">
+              <img src="@\assets\icons\logo-horizontal.png" alt="Logo" class="logo-image" />
             </div>
           </div>
           
-          <!-- Main title with letter animation -->
-          <ion-card-header>
-            <ion-card-title class="welcome-title">
-              <span 
-                v-for="(letter, index) in '¡Wanqara te da la bienvenida!'" 
-                :key="`title-${index}`"
-                class="animated-letter"
-                :style="{ 
-                  animationDelay: `${0.5 + index * 0.04}s`
-                }"
-              >
-                {{ letter === ' ' ? '\u00A0' : letter }}
-              </span>
-            </ion-card-title>
-          </ion-card-header>
+          <!-- Título principal -->
+          <h1 class="welcome-title">¡Wanqara te da la bienvenida!</h1>
           
-          <ion-card-content>
-            <!-- Description text with line animation -->
-            <div class="description-container">
-              <ion-text class="description-text first-line">
-                <span 
-                  v-for="(letter, index) in 'Este asistente te guiará paso a paso para configurar'" 
-                  :key="`desc1-${index}`"
-                  class="animated-letter-desc"
-                  :style="{ 
-                    animationDelay: `${1.5 + index * 0.01}s`
-                  }"
-                >
-                  {{ letter === ' ' ? '\u00A0' : letter }}
-                </span>
-              </ion-text>
-              <ion-text class="description-text second-line">
-                <span 
-                  v-for="(letter, index) in 'lo que necesitas de forma rápida y sencilla. ¡Empecemos!'" 
-                  :key="`desc2-${index}`"
-                  class="animated-letter-desc"
-                  :style="{ 
-                    animationDelay: `${2.3 + index * 0.01}s`
-                  }"
-                >
-                  {{ letter === ' ' ? '\u00A0' : letter }}
-                </span>
-              </ion-text>
-            </div>
-            
-            <!-- Call to action text -->
-            <div class="cta-text-container">
-              <ion-text class="cta-text">
-                <span 
-                  v-for="(letter, index) in 'Haz clic en el botón de siguiente para comenzar'" 
-                  :key="`cta-${index}`"
-                  class="animated-letter-cta"
-                  :style="{ 
-                    animationDelay: `${3.2 + index * 0.02}s`
-                  }"
-                >
-                  {{ letter === ' ' ? '\u00A0' : letter }}
-                </span>
-              </ion-text>
-            </div>
-            
-            <!-- Decorative elements -->
-            <div class="decorative-dots">
-              <div v-for="n in 5" :key="`dot-${n}`" class="dot" :style="{
-                animationDelay: `${3.5 + n * 0.2}s`
-              }"></div>
-            </div>
+          <!-- Descripción -->
+          <div class="description-container">
+            <p class="description-text">
+              Este asistente te guiará paso a paso para configurar
+              lo que necesitas de forma rápida y sencilla. ¡Empecemos!
+            </p>
+          </div>
+          
+          <!-- Indicación para continuar -->
+          <div class="cta-container">
+            <p class="cta-text">
+              Haz clic en el siguiente botón para comenzar
+            </p>
+          </div>
 
-            <!-- Botón Comenzar -->
-            <div class="start-button-container">
-              <ion-button 
-                expand="block"
-                class="start-button" 
-                @click="onStartClick"
-                :style="{ animationDelay: '4.5s' }"
-              >
-                Comenzar
-              </ion-button>
-            </div>
-          </ion-card-content>
-        </ion-card>
+          <!-- Botón Comenzar -->
+          <div class="button-container">
+            <ion-button 
+              expand="block"
+              class="start-button" 
+              @click="onStartClick"
+            >
+              Comenzar
+            </ion-button>
+          </div>
+        </div>
       </div>
     </div>
   </ion-content>
 </template>
   
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { 
   IonContent, 
-  IonCard, 
-  IonCardHeader, 
-  IonCardTitle, 
-  IonCardContent, 
-  IonText, 
   IonButton 
 } from '@ionic/vue';
 
 // Definimos el evento que emitirá este componente cuando se haga clic en "Comenzar"
 const emit = defineEmits(['start']);
 
-const animationComplete = ref(false);
-
 onMounted(() => {
-  setTimeout(() => {
-    animationComplete.value = true;
-  }, 4000);
+  // Añadimos la clase para iniciar las animaciones cuando el componente está montado
+  document.querySelector('.welcome-container')?.classList.add('animate');
 });
 
 // Función que se ejecuta cuando se hace clic en el botón "Comenzar"
@@ -159,7 +73,7 @@ const onStartClick = () => {
 </script>
   
 <style scoped>
-/* Base styles */
+/* Estilos base */
 * {
   margin: 0;
   padding: 0;
@@ -177,362 +91,225 @@ const onStartClick = () => {
   justify-content: center;
   align-items: center;
 }
-  
-/* Animated background */
-.animated-background {
+
+/* Fondo minimalista */
+.minimal-background {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
-  overflow: hidden;
+  background-color: #f9f9f9;
 }
-  
-/* Wave animation */
-.wave-container {
+
+.gradient-overlay {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  background: linear-gradient(135deg, rgba(var(--ion-color-primary-rgb), 0.03) 0%, rgba(var(--ion-color-primary-rgb), 0.01) 100%);
 }
   
-.wave {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 200%;
-  height: 100%;
-  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0 0v46.29c47.79 22.2 103.59 32.17 158 28 70.36-5.37 136.33-33.31 206.8-37.5 73.84-4.36 147.54 16.88 218.2 35.26 69.27 18.17 138.3 24.88 209.4 13.08 36.15-6 69.85-17.84 104.45-29.34C989.49 25 1113-14.29 1200 52.47V0z" fill="%23003cff" fill-opacity=".05"/></svg>') repeat-x;
-  background-size: 1200px 100%;
-  animation: wave 20s linear infinite;
-  transform-origin: center bottom;
-}
-  
-.wave1 {
-  animation: wave 20s linear infinite;
-  z-index: 1;
-  opacity: 0.3;
-  animation-delay: 0s;
-  bottom: 0;
-}
-  
-.wave2 {
-  animation: wave 25s linear infinite;
-  z-index: 2;
-  opacity: 0.2;
-  animation-delay: -5s;
-  bottom: 10px;
-}
-  
-.wave3 {
-  animation: wave 30s linear infinite;
-  z-index: 3;
-  opacity: 0.1;
-  animation-delay: -2s;
-  bottom: 20px;
-}
-  
-@keyframes wave {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-  
-/* Floating circles */
-.floating-circle {
-  position: absolute;
-  border-radius: 50%;
-  background-color: var(--ion-color-primary);
-  animation: float 20s infinite ease-in-out;
-}
-  
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0) scale(1) rotate(0deg);
-  }
-  25% {
-    transform: translateY(-30px) scale(1.1) rotate(5deg);
-  }
-  50% {
-    transform: translateY(20px) scale(0.9) rotate(-5deg);
-  }
-  75% {
-    transform: translateY(-25px) scale(1.05) rotate(3deg);
-  }
-}
-  
-/* Particles */
-.particle {
-  position: absolute;
-  border-radius: 50%;
-  background-color: var(--ion-color-primary);
-  animation: floatParticle 10s infinite ease-in-out;
-}
-  
-@keyframes floatParticle {
-  0% {
-    transform: translateY(0) translateX(0);
-    opacity: 0;
-  }
-  25% {
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(-100px) translateX(50px);
-  }
-  75% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(0) translateX(0);
-    opacity: 0;
-  }
-}
-  
-/* Content styles */
+/* Contenido principal */
 .content {
   position: relative;
   z-index: 1;
   text-align: center;
-  padding: 2rem;
   width: 100%;
-  max-width: 800px;
+  max-width: 600px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.welcome-container.animate .content {
+  opacity: 1;
+  transform: translateY(0);
 }
   
-/* Welcome card */
+/* Tarjeta de bienvenida */
 .welcome-card {
   position: relative;
-  padding: 3rem 2rem;
-  border-radius: 24px;
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 20px 80px rgba(var(--ion-color-primary-rgb), 0.15);
+  padding: 1.5rem;
+  border-radius: 16px;
+  background-color: white;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
   overflow: hidden;
-  animation: cardAppear 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  transform: translateY(30px);
-  opacity: 0;
 }
   
-@keyframes cardAppear {
-  0% {
-    transform: translateY(30px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-  
-/* Logo animation */
+/* Logo */
 .logo-container {
-  margin-bottom: 2rem;
-  perspective: 1000px;
+  margin-bottom: 2.5rem;
+  width: 100%;
 }
   
-.logo-circle {
-  width: 80px;
+.logo-rectangle {
+  width: 100%;
   height: 80px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-primary-tint));
+  background: white;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 25px rgba(var(--ion-color-primary-rgb), 0.3);
-  animation: logoRotate 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  transform: rotateY(90deg) scale(0.5);
+  box-shadow: 0 5px 15px rgba(var(--ion-color-primary-rgb), 0.15);
   opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: 0.2s;
+}
+
+.welcome-container.animate .logo-rectangle {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.logo-image {
+  height: 60%;
+  object-fit: contain;
 }
   
-.logo-inner {
-  color: white;
-  font-size: 2.5rem;
-  font-weight: 800;
-  animation: logoInnerPulse 3s 1s ease-in-out infinite;
+.logo-placeholder {
+  color: var(--ion-color-primary);
+  font-size: 2rem;
+  font-weight: 700;
 }
   
-@keyframes logoRotate {
-  0% {
-    transform: rotateY(90deg) scale(0.5);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: rotateY(0) scale(1);
-    opacity: 1;
-  }
-}
-  
-@keyframes logoInnerPulse {
-  0%, 100% {
-    transform: scale(1);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  }
-  50% {
-    transform: scale(1.1);
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-  }
-}
-  
-/* Welcome title */
+/* Título */
 .welcome-title {
-  font-size: 2.5rem;
-  font-weight: 800;
+  font-size: 2rem;
+  font-weight: 700;
   color: var(--ion-color-primary);
   margin-bottom: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: 0.4s;
+}
+
+.welcome-container.animate .welcome-title {
+  opacity: 1;
+  transform: translateY(0);
 }
   
-/* Description text */
+/* Descripción */
 .description-container {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
   
 .description-text {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--ion-color-medium);
   line-height: 1.6;
-  margin-bottom: 0.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: 0.6s;
+}
+
+.welcome-container.animate .description-text {
+  opacity: 1;
+  transform: translateY(0);
 }
   
-/* CTA text */
-.cta-text-container {
-  margin-top: 2.5rem;
-  padding: 1rem;
+/* Sección de llamada a la acción */
+.cta-container {
+  margin-top: 2rem;
+  padding: 1.5rem;
   border-radius: 12px;
-  background-color: rgba(var(--ion-color-primary-rgb), 0.05);
+  background-color: rgba(var(--ion-color-primary-rgb), 0.03);
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: 0.8s;
+}
+
+.welcome-container.animate .cta-container {
+  opacity: 1;
+  transform: translateY(0);
 }
   
 .cta-text {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--ion-color-primary);
-  font-weight: 600;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  font-weight: 500;
 }
-  
-/* Letter animations */
-.animated-letter {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: letterFadeIn 0.5s ease forwards;
-}
-  
-.animated-letter-desc {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(10px);
-  animation: letterFadeIn 0.3s ease forwards;
-}
-  
-.animated-letter-cta {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(5px);
-  animation: letterFadeIn 0.3s ease forwards;
-}
-  
-@keyframes letterFadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-  
-/* Decorative dots */
-.decorative-dots {
+
+/* Indicador visual minimalista */
+.indicator {
   display: flex;
   justify-content: center;
-  gap: 12px;
-  margin-top: 2rem;
+  gap: 8px;
+  margin-top: 1rem;
 }
-  
-.dot {
-  width: 10px;
-  height: 10px;
+
+.indicator span {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background-color: var(--ion-color-primary);
   opacity: 0;
   transform: scale(0);
-  animation: dotAppear 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.welcome-container.animate .indicator span:nth-child(1) {
+  opacity: 0.7;
+  transform: scale(1);
+  transition-delay: 1s;
+}
+
+.welcome-container.animate .indicator span:nth-child(2) {
+  opacity: 0.7;
+  transform: scale(1);
+  transition-delay: 1.2s;
+}
+
+.welcome-container.animate .indicator span:nth-child(3) {
+  opacity: 0.7;
+  transform: scale(1);
+  transition-delay: 1.4s;
 }
   
-@keyframes dotAppear {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.3);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0.7;
-  }
-}
-  
-/* Estilos para el botón de comenzar */
-.start-button-container {
+/* Botón de comenzar */
+.button-container {
   margin-top: 2.5rem;
   opacity: 0;
-  animation: fadeIn 0.5s ease-in-out forwards;
-  animation-delay: 4.5s;
+  transform: translateY(15px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: 1.6s;
+}
+
+.welcome-container.animate .button-container {
+  opacity: 1;
+  transform: translateY(0);
 }
   
 .start-button {
-  --background: linear-gradient(135deg, var(--ion-color-primary), var(--ion-color-primary-tint));
+  --background: var(--ion-color-primary);
   --color: white;
-  --border-radius: 50px;
+  --border-radius: 12px;
   --padding-top: 12px;
   --padding-bottom: 12px;
   --padding-start: 40px;
   --padding-end: 40px;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
   margin: 0 auto;
-  box-shadow: 0 10px 20px rgba(var(--ion-color-primary-rgb), 0.2);
+  box-shadow: 0 8px 16px rgba(var(--ion-color-primary-rgb), 0.15);
   transition: all 0.3s ease;
-  transform: scale(0.95);
 }
   
 .start-button:hover {
-  transform: scale(1);
-  box-shadow: 0 15px 25px rgba(var(--ion-color-primary-rgb), 0.3);
+  --background: var(--ion-color-primary-shade);
+  box-shadow: 0 10px 20px rgba(var(--ion-color-primary-rgb), 0.2);
 }
   
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-  
-/* Responsive adjustments */
+/* Ajustes responsivos */
 @media (max-width: 768px) {
   .welcome-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
     
   .description-text {
@@ -547,13 +324,8 @@ const onStartClick = () => {
     padding: 2rem 1.5rem;
   }
     
-  .logo-circle {
-    width: 60px;
-    height: 60px;
-  }
-    
-  .logo-inner {
-    font-size: 2rem;
+  .logo-rectangle {
+    height: 70px;
   }
 }
   
@@ -570,12 +342,11 @@ const onStartClick = () => {
     padding: 1.5rem 1rem;
   }
     
-  .logo-circle {
-    width: 50px;
-    height: 50px;
+  .logo-rectangle {
+    height: 60px;
   }
     
-  .logo-inner {
+  .logo-placeholder {
     font-size: 1.5rem;
   }
 }
