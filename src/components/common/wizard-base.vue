@@ -37,7 +37,7 @@
           <IonButton fill="outline" @click="handlePrevious" :disabled="currentStep === 0 && currentSubStepIndex === 0">
             Anterior
           </IonButton>
-          <IonButton @click="handleNext">
+          <IonButton @click="handleNext" :disabled="shouldDisableNextButton">
             {{ isLastStepAndSubStep ? 'Finalizado' : 'Siguiente' }}
           </IonButton>
         </div>
@@ -113,6 +113,19 @@ const {
 // Obtenemos la clave del paso actual
 const currentStepKey = computed(() => {
   return steps.value[currentStep.value]?.key || ""
+})
+
+// Verificamos si debemos deshabilitar el botón "Siguiente"
+const shouldDisableNextButton = computed(() => {
+  // Verificar si estamos en el paso data-sales y el subpaso 0 (indexSalesDataSS1)
+  if (currentStepKey.value === "data-sales" && currentSubStepIndex.value === 0) {
+    // Obtener los datos de salesData del store
+    const salesData = wizardStore.getStepData("salesData")
+    // Deshabilitar el botón si no hay plan seleccionado
+    return !salesData?.plan
+  }
+  // En otros pasos, el botón está habilitado normalmente
+  return false
 })
 
 // Actualizamos el estado del wizard cuando cambia el paso
