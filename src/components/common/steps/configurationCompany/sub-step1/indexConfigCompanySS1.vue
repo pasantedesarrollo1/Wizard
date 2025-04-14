@@ -1,29 +1,31 @@
 <template>
-  <div class="config-company-container">
-    <!-- Tarjeta principal con sombra y bordes redondeados -->
-    <ion-card class="main-card">
-      <ion-card-header class="pb-0">
-        <ion-card-title class="card-title">Búsqueda y Validación de RUC</ion-card-title>
-        <ion-card-subtitle class="card-subtitle">
-          Ingresa tu RUC para validar la información de tu empresa
-        </ion-card-subtitle>
-      </ion-card-header>
-      
-      <ion-card-content class="search-section">
-        <searchRUC @ruc-searched="handleRucSearched" />
-      </ion-card-content>
-    </ion-card>
+  <div class="container-wrapper">
+    <div class="config-company-container main-container">
+      <!-- Tarjeta principal con sombra y bordes redondeados -->
+      <ion-card class="main-card">
+        <ion-card-header class="pb-0">
+          <ion-card-title class="card-title">Búsqueda y Validación de RUC</ion-card-title>
+          <ion-card-subtitle class="card-subtitle">
+            Ingresa tu RUC para validar la información de tu empresa
+          </ion-card-subtitle>
+        </ion-card-header>
+        
+        <ion-card-content class="search-section">
+          <searchRUC @ruc-searched="handleRucSearched" />
+        </ion-card-content>
+      </ion-card>
 
-    <!-- Tarjeta de información que aparece cuando se encuentra un RUC -->
-    <ion-card v-if="showRucInfo" class="info-card">
-      <ion-card-header>
-        <ion-card-title class="card-title">Información Validada</ion-card-title>
-      </ion-card-header>
-      
-      <ion-card-content class="info-section">
-        <informationRUC :ruc-data="rucData" />
-      </ion-card-content>
-    </ion-card>
+      <!-- Tarjeta de información que aparece cuando se encuentra un RUC -->
+      <ion-card v-if="showRucInfo" class="info-card">
+        <ion-card-header>
+          <ion-card-title class="card-title">Información Validada</ion-card-title>
+        </ion-card-header>
+        
+        <ion-card-content class="info-section">
+          <informationRUC :ruc-data="rucData" />
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
 </template>
 
@@ -53,10 +55,27 @@ const handleRucSearched = (data: any) => {
 </script>
 
 <style scoped>
+/* Contenedor principal con centrado - NUEVO */
+.container-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Configuración del ancho fijo para pantallas grandes - NUEVO */
+.main-container {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .main-container {
+    max-width: 768px; /* Ancho fijo de 768px en pantallas de 768px en adelante */
+  }
+}
+
 .config-company-container {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 0 16px;
 }
 
@@ -78,7 +97,6 @@ const handleRucSearched = (data: any) => {
   font-size: 1.25rem;
   font-weight: 600;
   color: #333;
-
 }
 
 .card-subtitle {
@@ -92,7 +110,7 @@ const handleRucSearched = (data: any) => {
 
 .info-card {
   background-color: #f0f7ff;
-  border-left: 4px solid var(--ion-color-primary);
+
 }
 
 /* Animación para la tarjeta de información */
