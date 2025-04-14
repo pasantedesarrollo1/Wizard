@@ -74,8 +74,8 @@ import salesListe from "@/components/common/steps/dataSales/sub-step2/components
   }
 }
 
-@media (min-width: 768px) and (max-width: 1199px) {
-  // Diseño tablet: dos filas, primera fila con dos columnas iguales
+@media (min-width: 768px) {
+  // Diseño tablet y desktop: dos filas, primera fila con dos columnas iguales
   .layout-container {
     @apply flex flex-col;
   }
@@ -98,28 +98,5 @@ import salesListe from "@/components/common/steps/dataSales/sub-step2/components
   }
 }
 
-@media (min-width: 1200px) {
-  // Diseño escritorio: dos columnas, izquierda con dos secciones apiladas, derecha con una sección alta
-  .layout-container {
-    @apply flex flex-row;
-    gap: 20px;
-  }
-  
-  .left-column {
-    @apply w-1/2 flex flex-col;
-    gap: 20px;
-  }
-  
-  .right-column {
-    @apply w-1/2;
-  }
-  
-  .payment-section {
-    @apply h-full;
-  }
-  
-  .vendor-section, .proof-section {
-    @apply mb-0;
-  }
-}
+// Se elimina el media query para pantallas grandes (min-width: 1200px)
 </style>
