@@ -11,19 +11,12 @@
         <h3 class="section-title">¿Cómo acceder a mi empresa?</h3>
         <p class="section-description">Este será el enlace donde podrás acceder a tu sistema</p>
         
-        <div class="domain-input-wrapper">
-          <div class="domain-input-container" :class="{ 'is-focused': isFocused, 'has-value': domainValue.length > 0 }">
-            <div class="prefix">https://</div>
-            <input 
-              type="text" 
-              v-model="domainValue" 
-              readonly
-              class="domain-input"
-              @focus="isFocused = true"
-              @blur="handleBlur"
-              maxlength="30"
-            />
-            <div class="suffix">.wanqara.app</div>
+        <!-- Texto concatenado de la URL -->
+        <div class="domain-url-container">
+          <div class="domain-url-text">
+            <span class="domain-prefix">https://</span>
+            <span class="domain-value">{{ domainValue }}</span>
+            <span class="domain-suffix">.illarli.net</span>
           </div>
         </div>
         
@@ -39,7 +32,7 @@
               </div>
               <div class="browser-address">
                 <ion-icon :icon="lockClosed" class="lock-icon"></ion-icon>
-                <span class="domain-url">https://{{ domainValue }}.wanqara.app</span>
+                <span class="domain-url">{{ fullDomainUrl }}</span>
               </div>
             </div>
             <div class="preview-content">
@@ -51,13 +44,10 @@
           </div>
         </div>
         
-        <!-- Botones de acción -->
+        <!-- Botón de acción único -->
         <div class="action-buttons">
-          <ion-button expand="block" color="primary" @click="goToDashboard" class="action-button">
-            Ir al Dashboard
-          </ion-button>
-          <ion-button expand="block" fill="outline" @click="startNewWizard" class="action-button">
-            Crear otra empresa
+          <ion-button expand="block" color="primary" @click="goToCompany" class="action-button">
+            IR A MI EMPRESA
           </ion-button>
         </div>
       </div>
@@ -66,45 +56,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, watch, onMounted, computed } from "vue";
 import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon } from "@ionic/vue";
 import { lockClosed, storefront } from "ionicons/icons";
 import { useWizardStore } from "@/stores/wizardStore";
 
-// Obtener el router para la navegación
-const router = useRouter();
 
 // Obtener la instancia del store
 const wizardStore = useWizardStore();
 
 // Estados reactivos
 const domainValue = ref("");
-const isFocused = ref(false);
-const companyCreation = ref(wizardStore.getStepData("companyCreation"));
+const companyCreation = ref({});
 const initialDomainValue = ref("");
 
-// Función para manejar el evento blur del input
-const handleBlur = () => {
-  isFocused.value = false;
-};
+// Computar la URL completa del dominio
+const fullDomainUrl = computed(() => {
+  return `https://${domainValue.value}.illarli.net`;
+});
 
-// Función para ir al dashboard
-const goToDashboard = () => {
-  // Aquí se implementaría la navegación al dashboard
-  window.open(`https://${domainValue.value}.wanqara.app`, "_blank");
-};
-
-// Función para iniciar un nuevo wizard
-const startNewWizard = () => {
-  // Resetear el store
-  wizardStore.resetState();
-  // Navegar al inicio del wizard
-  router.push("/wizard/sales");
+// Función para ir a la empresa
+const goToCompany = () => {
+  // Abrir la URL completa en una nueva ventana
+  window.open(fullDomainUrl.value, "_blank");
 };
 
 // Cargar datos del store si existen
 onMounted(() => {
+  const storedCompanyCreation = wizardStore.getStepData("companyCreation");
+  companyCreation.value = storedCompanyCreation || {};
+
   let initialValue = "";
   if (companyCreation.value?.domain) {
     initialValue = companyCreation.value.domain;
@@ -154,65 +135,39 @@ watch(domainValue, (newValue) => {
   margin-bottom: 1.5rem;
 }
 
-.domain-input-wrapper {
+/* Nuevo estilo para el texto de la URL */
+.domain-url-container {
+  display: flex;
+  justify-content: center;
   margin-bottom: 1.5rem;
 }
 
-.domain-input-container {
+.domain-url-text {
   display: flex;
   align-items: center;
-  width: 100%;
-  height: 48px;
-  border: 2px solid #d1d5db;
+  padding: 12px 16px;
+  border: 1px solid #0066ff;
   border-radius: 8px;
-  overflow: hidden;
   background-color: white;
-  transition: all 0.3s ease;
+  max-width: 100%;
+  overflow: hidden;
 }
 
-.domain-input-container:hover {
-  border-color: #9ca3af;
+.domain-prefix {
+  color: #666;
+  font-size: 0.95rem;
 }
 
-.domain-input-container.is-focused {
-  border-color: #003cff;
-  box-shadow: 0 0 0 3px rgba(0, 60, 255, 0.1);
-}
-
-.domain-input-container.has-value {
-  border-color: #003cff;
-  background-color: rgba(0, 60, 255, 0.03);
-}
-
-.prefix, .suffix {
-  padding: 0 0.75rem;
-  font-size: 0.9rem;
-  color: #6b7280;
-  background-color: #f3f4f6;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  border-right: 1px solid #e5e7eb;
-}
-
-.suffix {
-  border-right: none;
-  border-left: 1px solid #e5e7eb;
-}
-
-.domain-input {
-  flex: 1;
-  height: 100%;
-  padding: 0 0.75rem;
-  border: none;
-  outline: none;
-  font-size: 1rem;
+.domain-value {
+  font-weight: 500;
   color: #333;
-  background-color: transparent;
+  font-size: 1rem;
+  padding: 0 4px;
 }
 
-.domain-input::placeholder {
-  color: #9ca3af;
+.domain-suffix {
+  color: #666;
+  font-size: 0.95rem;
 }
 
 .domain-preview {
@@ -324,19 +279,22 @@ watch(domainValue, (newValue) => {
   color: #111827;
 }
 
-/* Estilos para los botones de acción */
+/* Estilos para el botón de acción */
 .action-buttons {
   margin-top: 2rem;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  justify-content: center;
 }
 
 .action-button {
   margin: 0;
   height: 48px;
-  font-weight: 500;
+  font-weight: 600;
   --border-radius: 8px;
+  width: 100%;
+  max-width: 300px;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
 }
 
 /* Estilos responsivos */
@@ -345,17 +303,15 @@ watch(domainValue, (newValue) => {
     padding: 1.5rem 1rem;
   }
   
-  .domain-input-container {
-    height: 42px;
+  .domain-url-text {
+    padding: 10px 12px;
   }
   
-  .prefix, .suffix {
-    padding: 0 0.5rem;
-    font-size: 0.8rem;
+  .domain-prefix, .domain-suffix {
+    font-size: 0.85rem;
   }
   
-  .domain-input {
-    padding: 0 0.5rem;
+  .domain-value {
     font-size: 0.9rem;
   }
   
@@ -375,17 +331,6 @@ watch(domainValue, (newValue) => {
   
   .preview-text {
     font-size: 1.1rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .action-buttons {
-    flex-direction: row;
-    justify-content: center;
-  }
-  
-  .action-button {
-    width: 250px;
   }
 }
 </style>
