@@ -1,7 +1,7 @@
 <template>
   <div class="p-2 relative">
     <!-- Contenedor del selector con Tailwind -->
-    <div class="relative mb-2" :class="{ 'opacity-80': isLoading }">
+    <div class="relative mb-2" :class="{ 'opacity-80': isLoading }" ref="selectorRef">
       <!-- Botón mejorado con Tailwind -->
       <ion-button 
         expand="block" 
@@ -46,6 +46,7 @@
       :arrow="false"
       side="bottom"
       alignment="start"
+      :style="popoverStyle"
     >
       <ion-content>
         <div class="flex flex-col max-h-[350px]">
@@ -160,6 +161,10 @@ const isLoading = ref(false)
 const isLoadingPopover = ref(false)
 const error = ref("")
 
+// Referencia al elemento selector para medir su ancho
+const selectorRef = ref<HTMLElement | null>(null)
+const popoverStyle = ref({})
+
 // Computar el nombre del vendedor seleccionado
 const vendedorSeleccionadoNombre = computed(() => {
   const vendedor = vendedores.value.find((v) => v.id === vendedorSeleccionado.value)
@@ -185,6 +190,16 @@ const getInitials = (nombre: string): string => {
     .toUpperCase()
 }
 
+// Función para actualizar el ancho del popover
+const actualizarAnchoPopover = () => {
+  if (selectorRef.value) {
+    const selectorWidth = selectorRef.value.offsetWidth
+    popoverStyle.value = {
+      "--width": `${selectorWidth}px`,
+    }
+  }
+}
+
 // Simulación de carga para mantener la experiencia de usuario consistente
 const simularCarga = () => {
   isLoading.value = true
@@ -196,6 +211,7 @@ const simularCarga = () => {
 // Abrir el popover
 const abrirPopover = async (event: Event) => {
   popoverEvent.value = event
+  actualizarAnchoPopover() // Actualizar el ancho antes de abrir
   popoverAbierto.value = true
 
   // Simulamos brevemente la carga para mantener la experiencia de usuario
@@ -238,6 +254,8 @@ onMounted(() => {
 // Función para manejar el cambio de tamaño de la ventana
 const handleResize = () => {
   if (popoverAbierto.value) {
+    actualizarAnchoPopover()
+  } else {
     cerrarPopover()
   }
 }
@@ -259,7 +277,109 @@ watch(vendedorSeleccionado, (newValue) => {
     }
   }
 })
-
 </script>
 
-<style lang="scss" src="@/components/common/steps/dataSales/sub-step2/styles/salesList.scss" scoped></style>
+<style lang="scss" scoped>
+// Variables
+$primary-color: var(--ion-color-primary);
+$primary-light: rgba(var(--ion-color-primary-rgb), 0.1);
+$primary-lighter: rgba(var(--ion-color-primary-rgb), 0.05);
+$border-radius: 8px;
+
+// Estilo para animación fadeIn (necesario mantenerlo en CSS)
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease;
+}
+
+// Estilos del botón que aún necesitan SCSS
+.select-button {
+  --background: white;
+  --background-hover: #{$primary-lighter};
+  --background-activated: #{$primary-lighter};
+  --border-radius: #{$border-radius};
+  --border-color: #d7d8da;
+  --border-style: solid;
+  --border-width: 1px;
+  --box-shadow: none;
+  --color: var(--ion-color-dark);
+  --padding-top: 0.75rem;
+  --padding-bottom: 0.75rem;
+  --padding-start: 1rem;
+  --padding-end: 1rem;
+  margin: 0;
+  height: auto;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  
+  &:hover {
+    --border-color: #{$primary-color};
+  }
+  
+  &.has-selection {
+    --background: #{$primary-lighter};
+    --border-color: #{$primary-color};
+    --color: #{$primary-color};
+  }
+}
+
+// Estilos del popover que necesitan mantenerse como SCSS
+.vendedor-popover {
+  // Se eliminó el ancho fijo para permitir que se ajuste dinámicamente
+  // El ancho ahora se establece mediante JavaScript
+  --backdrop-opacity: 0.1;
+  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --border-radius: #{$border-radius};
+  
+  &::part(content) {
+    border-radius: $border-radius;
+  }
+}
+
+// Estilos para la barra de búsqueda
+.vendedor-searchbar {
+  --background: #{$primary-lighter};
+  --border-radius: 6px;
+  --box-shadow: none;
+  --placeholder-color: var(--ion-color-medium);
+  --placeholder-opacity: 0.7;
+  --icon-color: var(--ion-color-medium);
+  padding: 0;
+  margin: 0;
+}
+
+// Estilos para los items de vendedor
+.vendedor-item {
+  --padding-start: 0.75rem;
+  --padding-end: 0.75rem;
+  --padding-top: 0.5rem;
+  --padding-bottom: 0.5rem;
+  --background-hover: #{$primary-lighter};
+  --ripple-color: #{$primary-light};
+  transition: all 0.3s ease;
+  
+  &.selected {
+    --background: #{$primary-lighter};
+    --background-hover: #{$primary-lighter};
+    font-weight: 500;
+  }
+}
+
+// Estilo para el avatar
+.avatar-circle {
+  background-color: $primary-light;
+  color: $primary-color;
+}
+
+// Media queries para responsividad
+@media (max-width: 576px) {
+  .select-button {
+    --padding-top: 0.6rem;
+    --padding-bottom: 0.6rem;
+  }
+}
+</style>
