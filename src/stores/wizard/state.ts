@@ -21,7 +21,6 @@ export const initialState = (): WizardInterface => ({
         email: "",
         phone: "",
       },
-      roleInCompany: "",
     },
     consultant: {
       sellerId: "",
@@ -73,9 +72,7 @@ export const initialState = (): WizardInterface => ({
         name: "",
         commercialName: "",
         address: "",
-        phone: {
-          number: "",
-        },
+        phone: "",
         email: "",
         isTouristEstablishment: false,
         delayedDispatch: false,

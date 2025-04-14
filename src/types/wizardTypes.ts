@@ -19,7 +19,6 @@ export interface WizardState {
       email: string
       phone: string
     }
-    roleInCompany: string
   }
   
   // Interfaces para el consultor/vendedor
@@ -81,9 +80,7 @@ export interface WizardState {
       name: string
       commercialName: string
       address: string
-      phone: {
-        number: string
-      }
+      phone: string
       email: string
       isTouristEstablishment: boolean
       delayedDispatch: boolean
