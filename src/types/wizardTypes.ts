@@ -33,7 +33,6 @@ export interface WizardState {
     ruc: string
     name: string
     legalName: string
-    ticketEmail: string
     domain: string
     address: string
     phones: string

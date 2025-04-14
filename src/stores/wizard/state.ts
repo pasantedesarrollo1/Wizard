@@ -31,7 +31,6 @@ export const initialState = (): WizardInterface => ({
       ruc: "",
       name: "",
       legalName: "",
-      ticketEmail: "",
       domain: "",
       address: "",
       phones: "",

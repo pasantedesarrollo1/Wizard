@@ -153,35 +153,6 @@
               </div>
             </div>
           </ion-item>
-
-          <!-- Rol en la empresa -->
-          <ion-item class="ion-item-custom">
-            <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Selecciona tu rol en la empresa <span class="text-blue-600">*</span></ion-label>
-            <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-              <select
-                v-model="rolSeleccionado"
-                class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 appearance-none
-                       hover:border-blue-400"
-                :class="{ 
-                  'bg-primary-50 border-primary text-primary': rolSeleccionado.length > 0,
-                  'border-blue-500 border-2 shadow-md': focusedField === 'rol'
-                }"
-                @focus="setFocus('rol')"
-                @blur="clearFocus"
-                @change="updateStore"
-              >
-                <option value="" disabled selected>Seleccionar</option>
-                <option
-                  v-for="opcion in opcionesRol"
-                  :key="opcion.value"
-                  :value="opcion.value"
-                >
-                  {{ opcion.label }}
-                </option>
-              </select>
-              <div class="absolute right-3 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-transparent border-t-gray-500 pointer-events-none"></div>
-            </div>
-          </ion-item>
         </form>
       </div>
     </ion-card-content>
@@ -207,26 +178,13 @@ interface TipoIDOpcion {
   label: string;
   value: string;
 }
-// Definimos la interfaz para las opciones de rol
-interface RolOpcion {
-  label: string;
-  value: string;
-}
 
 // Array con las opciones de tipo de identificación
 const opcionesTipoID = ref<TipoIDOpcion[]>([
   { label: 'Cédula', value: 'cedula' },
-  { label: 'Pasaporte/Identificación tributaria del exterior', value: 'pasaporte' },
-  { label: 'Placa o RAMV/CPM', value: 'placa' },
   { label: 'RUC', value: 'ruc' }
 ]);
 
-const opcionesRol = ref<RolOpcion[]>([
-  { label: 'Gerente', value: 'gerente' },
-  { label: 'Contador', value: 'contador' },
-  { label: 'Dueño', value: 'dueno' },
-  { label: 'Encargado', value: 'encargado' },
-]);
 
 // Variables reactivas para almacenar los valores de los campos
 const tipoIDSeleccionado = ref('');
@@ -235,7 +193,6 @@ const nombres = ref('');
 const apellidos = ref('');
 const email = ref('');
 const telefono = ref('');
-const rolSeleccionado = ref('');
 
 // Variable para controlar qué campo está enfocado
 const focusedField = ref('');
@@ -267,7 +224,6 @@ const updateStore = () => {
         landline: "" // No tenemos un campo para teléfono fijo, lo dejamos vacío
       }
     },
-    roleInCompany: rolSeleccionado.value
   });
 };
 
@@ -289,13 +245,12 @@ onMounted(() => {
         telefono.value = personalInfo.contact.phone.mobile || '';
       }
     }
-    rolSeleccionado.value = personalInfo.roleInCompany || '';
   }
 });
 
 // Observar cambios en todos los campos para actualizar el store
 watch(
-  [tipoIDSeleccionado, identificacion, nombres, apellidos, email, telefono, rolSeleccionado],
+  [tipoIDSeleccionado, identificacion, nombres, apellidos, email, telefono],
   () => {
     updateStore();
   }
