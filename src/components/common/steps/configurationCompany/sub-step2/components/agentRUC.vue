@@ -70,7 +70,7 @@ watch(
 
 .info-label {
   font-weight: 500;
-  color: #555;
+  color: #333;
   font-size: 0.95rem;
   white-space: nowrap;
   width: auto;
@@ -79,7 +79,7 @@ watch(
 
 .info-input {
   font-size: 1rem;
-  color: #333;
+  color: #555;
   font-weight: 500;
   --padding-start: 2px;
   flex: 1;
