@@ -144,7 +144,7 @@
                     <Icon icon="mdi:phone" width="20" height="20" />
                   </div>
                   <input 
-                    type="tel"
+                    type="phone"
                     placeholder="+593"
                     v-model="telefono"
                     class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
@@ -227,10 +227,7 @@ const updateStore = () => {
     },
     contact: {
       email: email.value,
-      phone: {
-        mobile: telefono.value,
-        landline: "" // No tenemos un campo para teléfono fijo, lo dejamos vacío
-      }
+      phone: telefono.value,
     },
   });
 };

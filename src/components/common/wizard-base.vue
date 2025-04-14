@@ -117,13 +117,61 @@ const currentStepKey = computed(() => {
 
 // Verificamos si debemos deshabilitar el botón "Siguiente"
 const shouldDisableNextButton = computed(() => {
-  // Verificar si estamos en el paso data-sales y el subpaso 0 (indexSalesDataSS1)
-  if (currentStepKey.value === "data-sales" && currentSubStepIndex.value === 0) {
-    // Obtener los datos de salesData del store
-    const salesData = wizardStore.getStepData("salesData")
-    // Deshabilitar el botón si no hay plan seleccionado
-    return !salesData?.plan
-  }
+  // Verificar si estamos en el paso data-sales
+  if (currentStepKey.value === "data-sales") {
+    // Subpaso 0 (indexSalesDataSS1) - Verificar selección de plan
+    if (currentSubStepIndex.value === 0) {
+      const salesData = wizardStore.getStepData("salesData")
+      return !salesData?.plan
+    }
+    
+    // Subpaso 1 (indexSalesDataSS2) - Verificar las tres condiciones
+    if (currentSubStepIndex.value === 1) {
+      const salesData = wizardStore.getStepData("salesData")
+      const consultantData = wizardStore.getStepData("consultant")
+      
+      // Verificar si se ha seleccionado un vendedor
+      const hasSelectedSeller = consultantData?.sellerId ? true : false
+      
+      // Verificar si se ha ingresado un comprobante de pago
+      const hasProofPayment = salesData?.proofPayment ? salesData.proofPayment.trim().length > 0 : false
+      
+      // Verificar si se ha seleccionado un método de pago
+      const hasSelectedPaymentMethod = salesData?.paymentMethod ? true : false
+      
+      // El botón debe estar deshabilitado si alguna de las condiciones no se cumple
+      return !(hasSelectedSeller && hasProofPayment && hasSelectedPaymentMethod)
+    }
+  } else if (currentStepKey.value === "personal-info") {
+      // Subpaso 0 (personalInfo) - Verificar que todos los datos esten seleccionado
+      if (currentSubStepIndex.value === 0) {
+      const personalInfo = wizardStore.getStepData("personalInfo")
+
+      //si se ha seleccionado algun tipo de identifiacion y un numero de identificacion
+      const hasSelectedTypeId = personalInfo?.identification.type ? true : false
+      const hasNumberId = personalInfo?.identification.number ? personalInfo?.identification.number.trim().length > 0 : false
+
+      //si se ha ingresado algun nombre y apellido
+      const hasFirstName = personalInfo?.name.first ? personalInfo?.name.first.trim().length > 0 : false
+      const hasLastName = personalInfo?.name.last ? personalInfo?.name.last.trim().length > 0 : false
+
+      //si se ha ingresado email y telefono
+      const hasEmail = personalInfo?.contact.email ? personalInfo?.contact.email.trim().length > 0 : false
+      const hasPhone = personalInfo?.contact.phone ? personalInfo?.contact.phone.trim().length > 0 : false
+      return !(hasSelectedTypeId && hasNumberId && hasFirstName && hasLastName && hasPhone && hasEmail)
+    }
+  } 
+  // else if (currentStepKey.value === "config-company"){
+  //    if (currentSubStepIndex.value === 1) {
+  //     const companyConfig = wizardStore.getStepData("companyConfig")
+      
+  //     //si se ha seleccionado un documento por default e impuestos
+  //     const hasSelectedDefaultDoc = companyConfig?.defaultDocument.type ? true : false
+  //     const hasSelectedDefaultSearch = companyConfig?.defaultDocument.searchParameter ? true : false
+
+  //     return !(hasSelectedDefaultDoc && hasSelectedDefaultSearch)
+  //   }
+  // }
   // En otros pasos, el botón está habilitado normalmente
   return false
 })
