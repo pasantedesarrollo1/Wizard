@@ -2,121 +2,101 @@
   <ion-page>
     <ion-content class="ion-content">
       <!-- Contenedor principal con animaciones y estilos similares a welcomeGeneral.vue -->
-      <div class="finished-container">
-        <!-- Fondo animado -->
-        <div class="animated-background">
-          <!-- Ondas animadas -->
-          <div class="wave-container">
-            <div class="wave wave1"></div>
-            <div class="wave wave2"></div>
-            <div class="wave wave3"></div>
+      <div class="domain-container">
+    <h3 class="section-title">¿Cómo acceder a mi empresa?</h3>
+    <p class="section-description">Este será el enlace donde podrás acceder a tu sistema</p>
+    
+    <div class="domain-input-wrapper">
+      <div class="domain-input-container" :class="{ 'is-focused': isFocused, 'has-value': domainValue.length > 0 }">
+        <div class="prefix">https://</div>
+        <input 
+          type="text" 
+          v-model="domainValue" 
+          readonly
+          class="domain-input"
+          @focus="isFocused = true"
+          @blur="handleBlur"
+          @input="validateDomain"
+          maxlength="30"
+        />
+        <div class="suffix">.wanqara.app</div>
+      </div>
+    </div>
+    
+    <!-- Vista previa del dominio -->
+    <div class="domain-preview" v-if="domainValue.length > 0 && !errorMessage">
+      <h4 class="preview-title">Vista previa</h4>
+      <div class="preview-box">
+        <div class="preview-browser">
+          <div class="browser-dots">
+            <span class="browser-dot"></span>
+            <span class="browser-dot"></span>
+            <span class="browser-dot"></span>
           </div>
-          
-          <!-- Círculos flotantes -->
-          <div v-for="n in 20" :key="`circle-${n}`" class="floating-circle" :style="{ 
-            left: `${Math.random() * 100}%`, 
-            top: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 8}s`,
-            width: `${Math.random() * 150 + 50}px`,
-            height: `${Math.random() * 150 + 50}px`,
-            opacity: 0.03 + Math.random() * 0.07
-          }"></div>
-          
-          <!-- Partículas -->
-          <div v-for="n in 40" :key="`particle-${n}`" class="particle" :style="{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 5}s`,
-            animationDuration: `${5 + Math.random() * 10}s`,
-            width: `${Math.random() * 6 + 2}px`,
-            height: `${Math.random() * 6 + 2}px`,
-            opacity: 0.2 + Math.random() * 0.4
-          }"></div>
+          <div class="browser-address">
+            <ion-icon :icon="lockClosed" class="lock-icon"></ion-icon>
+            <span class="domain-url">https://{{ domainValue }}.wanqara.com</span>
+          </div>
         </div>
-
-        <!-- Contenido principal -->
-        <div class="content">
-          <ion-card class="success-card">
-            <!-- Animación de éxito -->
-            <div class="success-icon-container">
-              <div class="success-icon">
-                <ion-icon :icon="checkmarkCircleOutline" size="large"></ion-icon>
-              </div>
-            </div>
-            
-            <!-- Título principal con animación de letras -->
-            <ion-card-header>
-              <ion-card-title class="success-title">
-                <span 
-                  v-for="(letter, index) in '¡Felicitaciones has creado tu nueva empresa!'" 
-                  :key="`title-${index}`"
-                  class="animated-letter"
-                  :style="{ 
-                    animationDelay: `${0.5 + index * 0.04}s`
-                  }"
-                >
-                  {{ letter === ' ' ? '\u00A0' : letter }}
-                </span>
-              </ion-card-title>
-            </ion-card-header>
-            
-            <ion-card-content>
-              <!-- Texto descriptivo -->
-              <div class="description-container">
-                <ion-text class="description-text">
-                  <span 
-                    v-for="(letter, index) in 'Tu empresa ha sido creada exitosamente. Ahora puedes comenzar a utilizarla.'" 
-                    :key="`desc-${index}`"
-                    class="animated-letter-desc"
-                    :style="{ 
-                      animationDelay: `${1.5 + index * 0.01}s`
-                    }"
-                  >
-                    {{ letter === ' ' ? '\u00A0' : letter }}
-                  </span>
-                </ion-text>
-              </div>
-              
-              <!-- URL de acceso -->
-              <ion-item lines="none" class="domain-url-container">
-                <ion-label class="domain-url-label">Accede a tu empresa en:</ion-label>
-                <ion-button 
-                  fill="clear"
-                  href="https://tudominio.wanqara.com" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  class="domain-link"
-                >
-                  https://tudominio.wanqara.com
-                </ion-button>
-              </ion-item>
-              
-              <!-- Elementos decorativos -->
-              <div class="confetti-container">
-                <div v-for="n in 30" :key="`confetti-${n}`" class="confetti" :style="{
-                  left: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 5}s`,
-                  animationDuration: `${1 + Math.random() * 3}s`,
-                  backgroundColor: getRandomColor()
-                }"></div>
-              </div>
-            </ion-card-content>
-          </ion-card>
+        <div class="preview-content">
+          <div class="preview-logo">
+            <ion-icon :icon="storefront" class="preview-icon"></ion-icon>
+          </div>
+          <div class="preview-text">{{ domainValue }}</div>
         </div>
       </div>
+    </div>
+
+  </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import { IonPage, IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonText, IonItem, IonLabel, IonButton, IonIcon } from '@ionic/vue';
-import { checkmarkCircleOutline } from 'ionicons/icons';
+import { ref, watch, onMounted } from 'vue';
+import { IonIcon } from '@ionic/vue';
+import { 
+  lockClosed, 
+  storefront,
+} from 'ionicons/icons';
+import { useWizardStore } from "@/stores/wizardStore";
 
-// Función para generar colores aleatorios para los confetis
-const getRandomColor = () => {
-  const colors = ['#003cff', '#4d7fff', '#66a3ff', '#99c2ff', '#cce0ff'];
-  return colors[Math.floor(Math.random() * colors.length)];
+// Obtener la instancia del store
+const wizardStore = useWizardStore();
+
+// Estados reactivos
+const domainValue = ref('');
+const isFocused = ref(false);
+
+// Función para manejar el evento blur del input
+const handleBlur = () => {
+  isFocused.value = false;
+  validateDomain();
 };
+
+// Función para actualizar el store con los valores actuales
+const updateStore = () => {
+  wizardStore.updateFormSection("companyCreation", {
+    companyCreation: {
+      domain: domainValue.value,
+    },
+  });
+};
+
+// Cargar datos del store si existen
+onMounted(() => {
+  const companyCreation = wizardStore.getStepData("companyCreation");
+  if (companyCreation?.domain) {
+    domainValue.value = companyCreation.domain;
+  }
+});
+
+watch(
+  [domainValue,],
+  () => {
+    updateStore();
+  }
+);
 </script>
 
 <style scoped>
@@ -514,6 +494,237 @@ const getRandomColor = () => {
     --padding-end: 0.4rem;
     --padding-top: 0.4rem;
     --padding-bottom: 0.4rem;
+  }
+}
+
+
+.domain-container {
+  width: 100%;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 12px;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.section-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.domain-input-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+.domain-input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.domain-input-container:hover {
+  border-color: #9ca3af;
+}
+
+.domain-input-container.is-focused {
+  border-color: #003cff;
+  box-shadow: 0 0 0 3px rgba(0, 60, 255, 0.1);
+}
+
+.domain-input-container.has-value {
+  border-color: #003cff;
+  background-color: rgba(0, 60, 255, 0.03);
+}
+
+.prefix, .suffix {
+  padding: 0 0.75rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid #e5e7eb;
+}
+
+.suffix {
+  border-right: none;
+  border-left: 1px solid #e5e7eb;
+}
+
+.domain-input {
+  flex: 1;
+  height: 100%;
+  padding: 0 0.75rem;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  color: #333;
+  background-color: transparent;
+}
+
+.domain-input::placeholder {
+  color: #9ca3af;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.domain-preview {
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease;
+}
+
+.preview-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.75rem;
+}
+
+.preview-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.preview-browser {
+  background-color: #f3f4f6;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.browser-dots {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.browser-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #d1d5db;
+}
+
+.browser-dot:nth-child(1) {
+  background-color: #ef4444;
+}
+
+.browser-dot:nth-child(2) {
+  background-color: #f59e0b;
+}
+
+.browser-dot:nth-child(3) {
+  background-color: #10b981;
+}
+
+.browser-address {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: white;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+
+.lock-icon {
+  font-size: 12px;
+  color: #10b981;
+}
+
+.domain-url {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-content {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  min-height: 150px;
+}
+
+.preview-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background-color: #003cff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.preview-icon {
+  font-size: 32px;
+  color: white;
+}
+
+.preview-text {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+
+/* Estilos responsivos */
+@media (max-width: 640px) {
+  .domain-input-container {
+    height: 42px;
+  }
+  
+  .prefix, .suffix {
+    padding: 0 0.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .domain-input {
+    padding: 0 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .examples-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .preview-content {
+    padding: 1.5rem;
+    min-height: 120px;
+  }
+  
+  .preview-logo {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .preview-icon {
+    font-size: 24px;
+  }
+  
+  .preview-text {
+    font-size: 1.1rem;
   }
 }
 </style>

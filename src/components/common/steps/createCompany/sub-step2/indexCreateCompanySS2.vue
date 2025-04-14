@@ -9,18 +9,18 @@
       </ion-card>
       
       <!-- Create Domain Component -->
-      <ion-card class="component-card">
+      <!-- <ion-card class="component-card">
         <ion-card-content>
           <createDomain />
         </ion-card-content>
-      </ion-card>
+      </ion-card> -->
     </div>
   </div>
 </template>
   
   <script setup lang="ts">
   import { IonCard, IonCardContent } from '@ionic/vue';
-  import createDomain from "./components/createDomain.vue";
+  // import createDomain from "./components/createDomain.vue";
   import uploadLogo from "./components/uploadLogo.vue";
   </script>
   

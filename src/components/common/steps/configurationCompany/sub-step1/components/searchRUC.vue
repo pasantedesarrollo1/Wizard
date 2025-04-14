@@ -63,6 +63,7 @@ const updateStoreWithSRIData = () => {
   wizardStore.updateFormSection("companyCreation", {
     ruc: dataSRI.ruc,
     legalName: dataSRI.legalName,
+    domain: dataSRI.ruc,
   })
 
   // Actualizar los datos de branchAndPOS.branch con los datos de dataSRI
