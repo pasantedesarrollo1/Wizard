@@ -1,7 +1,7 @@
 <template>
-  <ion-item>
-    <ion-label class="agent-label text-gray-500" >Agente de retención: </ion-label>
-    <ion-input class="agent-input text-gray-500" v-model="agentValueText" readonly></ion-input>
+  <ion-item class="info-item">
+    <ion-label class="info-label text-gray-500">Agente de retención: </ion-label>
+    <ion-input class="info-input text-gray-500" v-model="agentValueText" readonly></ion-input>
   </ion-item>
 </template>
     
@@ -43,27 +43,26 @@ watch(() => {
 </script>
     
 <style scoped>
-/* Estilos básicos similares al componente informationRUC */
-ion-label.agent-label {
+/* Estilos unificados para componentes informativos */
+.info-item {
+  --inner-padding-end: 0;
+  display: flex;
+}
+
+.info-label {
   font-weight: 500;
   color: #555;
   font-size: 0.95rem;
-  flex: 3; /* Hace que el label ocupe más espacio */
-  min-width: 70%; /* Asegura un ancho mínimo para el label */
+  flex: 3;
+  min-width: 70%;
 }
 
-ion-input.agent-input {
+.info-input {
   font-size: 1rem;
   color: #333;
   font-weight: 500;
   --padding-start: 0.5rem;
-  flex: 1; /* Hace que el input ocupe menos espacio */
-  max-width: 80px; /* Limita el ancho máximo del input */
-}
-
-/* Asegura que el ion-item use flexbox correctamente */
-ion-item {
-  --inner-padding-end: 0;
-  display: flex;
+  flex: 1;
+  max-width: 80px;
 }
 </style>

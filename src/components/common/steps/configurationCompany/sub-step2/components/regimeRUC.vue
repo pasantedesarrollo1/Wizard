@@ -1,7 +1,7 @@
 <template>
-  <ion-item>
-    <ion-label>Regimen: </ion-label>
-    <ion-input v-model="regimeRUCValue" readonly></ion-input>
+  <ion-item class="info-item">
+    <ion-label class="info-label text-gray-500">Regimen: </ion-label>
+    <ion-input class="info-input text-gray-500" v-model="regimeRUCValue" readonly></ion-input>
   </ion-item>
 </template>
     
@@ -31,27 +31,26 @@ watch(regimeRUCValue, (newValue) => {
 </script>
     
 <style scoped>
-/* Estilos básicos similares al componente informationRUC */
-ion-label {
+/* Estilos unificados para componentes informativos */
+.info-item {
+  --inner-padding-end: 0;
+  display: flex;
+}
+
+.info-label {
   font-weight: 500;
   color: #555;
   font-size: 0.95rem;
+  flex: 3;
+  min-width: 70%;
 }
 
-/* Método 1: Usando CSS personalizado para el componente ion-item */
-:deep(.item-inner) {
-  padding-right: 0 !important;
-}
-
-/* Método 2: Usando variables CSS de Ionic */
-ion-item {
-  --inner-padding-end: 0px;
-}
-
-ion-input {
+.info-input {
   font-size: 1rem;
   color: #333;
   font-weight: 500;
   --padding-start: 0.5rem;
-}
+  flex: 1;
+  max-width: 80px;
+  }
 </style>
