@@ -34,7 +34,7 @@
         </div>
         <!-- Botones de navegación -->
         <div class="navigation-controls">
-          <IonButton fill="outline" @click="handlePrevious" :disabled="currentStep === 0">
+          <IonButton fill="outline" @click="handlePrevious" :disabled="currentStep === 0 && currentSubStepIndex === 0">
             Anterior
           </IonButton>
           <IonButton @click="handleNext">
