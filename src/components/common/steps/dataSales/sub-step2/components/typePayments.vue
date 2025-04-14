@@ -4,8 +4,7 @@
     <ion-grid class="payment-grid">
       <ion-row class="ion-justify-content-center">
         <ion-col
-          size="12"
-          size-sm="6"
+          size="6"
           size-md="3"
           v-for="opcion in opcionesTipoPago"
           :key="opcion.value"
@@ -147,15 +146,4 @@ const getIconForPaymentType = (paymentType: string): string => {
   }
 }
 
-@media (max-width: 576px) {
-  .unified-card {
-    height: 140px;
-    margin: 0.25rem auto;
-  }
-  
-  .icon-container svg {
-    width: 4rem;
-    height: 4rem;
-  }
-}
 </style>

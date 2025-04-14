@@ -1,33 +1,35 @@
 <template>
-  <ion-card class="shadow-md rounded-2xl overflow-hidden w-full">
-    <ion-card-content>
-      <div class="layout-container w-full">
-        <!-- Columna izquierda: contiene vendor-section y proof-section -->
-        <div class="left-column">
-          <!-- Sección de selección de vendedor -->
-          <div class="section-container vendor-section">
-            <h4 class="text-lg font-semibold text-gray-800  mt-0 mb-4 pl-3 pb-2 border-b border-opacity-6">Registro de venta</h4>
-            <salesListe />
+  <div class="container-wrapper">
+    <ion-card class="shadow-md rounded-2xl overflow-hidden w-full main-container">
+      <ion-card-content>
+        <div class="layout-container w-full">
+          <!-- Columna izquierda: contiene vendor-section y proof-section -->
+          <div class="left-column">
+            <!-- Sección de selección de vendedor -->
+            <div class="section-container vendor-section">
+              <h4 class="text-lg font-semibold text-gray-800 mt-0 mb-4 pl-3 pb-2 border-b border-opacity-6">Selecciona tu nombre para registrar tu venta</h4>
+              <salesListe />
+            </div>
+            
+            <!-- Sección del comprobante de pago -->
+            <div class="section-container proof-section">
+              <h4 class="text-lg font-semibold text-gray-800 pl-1 mt-0 mb-4 pb-2 border-b border-opacity-6">Ingresa el numero del comprobante de pago</h4>
+              <proofPayment />
+            </div>
           </div>
           
-          <!-- Sección del comprobante de pago -->
-          <div class="section-container proof-section">
-            <h4 class="text-lg font-semibold text-gray-800 pl-1 mt-0 mb-4 pb-2 border-b border-opacity-6">Ingresa el numero del comprobante de pago</h4>
-            <proofPayment />
+          <!-- Columna derecha: contiene payment-section -->
+          <div class="right-column">
+            <!-- Sección del método de pago -->
+            <div class="section-container payment-section">
+              <h4 class="text-lg font-semibold text-gray-800 pl-3 mt-0 mb-4 pb-2 border-b border-opacity-6">Selecciona el método de pago del Servicio</h4>
+              <typePayments />
+            </div>
           </div>
         </div>
-        
-        <!-- Columna derecha: contiene payment-section -->
-        <div class="right-column">
-          <!-- Sección del método de pago -->
-          <div class="section-container payment-section">
-            <h4 class="text-lg font-semibold text-gray-800 pl-3 mt-0 mb-4 pb-2 border-b border-opacity-6">Selecciona el método de pago del Servicio</h4>
-            <typePayments />
-          </div>
-        </div>
-      </div>
-    </ion-card-content>
-  </ion-card>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </template>
   
 <script setup lang="ts">
@@ -38,6 +40,20 @@ import salesListe from "@/components/common/steps/dataSales/sub-step2/components
 </script>
 
 <style lang="scss" scoped>
+// Contenedor principal con ancho máximo
+.container-wrapper {
+  @apply w-full flex justify-center;
+}
+
+.main-container {
+  width: 100%;
+  max-width: 100%;
+  
+  @media (min-width: 768px) {
+    max-width: 768px; // Ancho fijo de 768px en pantallas de 768px en adelante
+  }
+}
+
 // Estilos base para las secciones
 .section-container {
   @apply mb-6 p-2 rounded-xl shadow-sm;
@@ -97,6 +113,4 @@ import salesListe from "@/components/common/steps/dataSales/sub-step2/components
     @apply w-full m-0;
   }
 }
-
-// Se elimina el media query para pantallas grandes (min-width: 1200px)
 </style>
