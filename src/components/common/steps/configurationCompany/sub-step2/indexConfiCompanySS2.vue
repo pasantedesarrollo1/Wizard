@@ -23,9 +23,6 @@
 
           <!-- Fila 2 Columna 1: agentRUC -->
           <div class="w-full">
-            <h4 class="font-medium text-lg mb-2">
-              Si eres agente de retención es opcional llevar contabilidad
-            </h4>
             <accountingRUC />
           </div>
 

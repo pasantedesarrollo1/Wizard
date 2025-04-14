@@ -1,32 +1,179 @@
 <template>
-  <ion-card class="shadow-md h-full flex flex-col sm:w-3/4  mx-auto">
-    <ion-card-content class="overflow-y-auto h-full pb-5">
-      <form @submit.prevent>
-        <!-- Tipo de identificación -->
-        <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Tipo de Identificación</ion-label>
-          <div class="flex flex-col sm:flex-row gap-2.5 w-full">
-            <!-- Select personalizado con estilos de Tailwind -->
-            <div class="relative flex flex-col gap-2.5 my-2.5 w-full sm:w-1/3">
-              <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10">
-                <Icon icon="mdi:cards" width="20" height="20" />
+  <ion-card class="wizard-card">
+    <!-- Aplicamos una altura máxima y habilitamos el scroll, pero de manera controlada -->
+    <ion-card-content class="wizard-content">
+      <div class="form-container">
+        <form @submit.prevent>
+          <!-- Tipo de identificación -->
+          <ion-item class="ion-item-custom">
+            <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Tipo de Identificación</ion-label>
+            <div class="flex flex-col sm:flex-row gap-2.5 w-full">
+              <!-- Select personalizado con estilos de Tailwind -->
+              <div class="relative flex flex-col gap-2.5 my-2.5 w-full sm:w-1/3">
+                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10">
+                  <Icon icon="mdi:cards" width="20" height="20" />
+                </div>
+                <select 
+                  v-model="tipoIDSeleccionado" 
+                  class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 appearance-none
+                         hover:border-blue-400"
+                  :class="{ 
+                    'bg-primary-50 border-primary text-primary': tipoIDSeleccionado.length > 0,
+                    'border-blue-500 border-2 shadow-md': focusedField === 'tipoID'
+                  }"
+                  @focus="setFocus('tipoID')"
+                  @blur="clearFocus"
+                  @change="updateStore"
+                >
+                  <option value="" disabled selected>Seleccionar</option>
+                  <option 
+                    v-for="opcion in opcionesTipoID" 
+                    :key="opcion.value" 
+                    :value="opcion.value"
+                  >
+                    {{ opcion.label }}
+                  </option>
+                </select>
+                <div class="absolute right-3 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-transparent border-t-gray-500 pointer-events-none"></div>
               </div>
-              <select 
-                v-model="tipoIDSeleccionado" 
-                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 appearance-none
+              
+              <!-- Input personalizado con estilos de Tailwind -->
+              <div class="relative flex flex-col gap-2.5 my-2.5 w-full sm:w-2/3">
+                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                  <Icon icon="mdi:card-account-details-outline" width="20" height="20" />
+                </div>
+                <input 
+                  type="text"
+                  placeholder="Número de identificación"
+                  v-model="identificacion"
+                  class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                         hover:border-blue-400"
+                  :class="{ 
+                    'bg-primary-50 border-primary text-primary': identificacion.length > 0,
+                    'border-blue-500 border-2 shadow-md': focusedField === 'identificacion'
+                  }"
+                  @focus="setFocus('identificacion')"
+                  @blur="clearFocus"
+                  @input="updateStore"
+                >
+              </div>
+            </div>
+          </ion-item>
+
+          <!-- Nombres -->
+          <ion-item class="ion-item-custom">
+            <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Nombres <span class="text-blue-600">*</span></ion-label>
+            <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
+              <input 
+                type="text"
+                placeholder="Ingresa tus Nombres"
+                v-model="nombres"
+                class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                        hover:border-blue-400"
                 :class="{ 
-                  'bg-primary-50 border-primary text-primary': tipoIDSeleccionado.length > 0,
-                  'border-blue-500 border-2 shadow-md': focusedField === 'tipoID'
+                  'bg-primary-50 border-primary text-primary': nombres.length > 0,
+                  'border-blue-500 border-2 shadow-md': focusedField === 'nombres'
                 }"
-                @focus="setFocus('tipoID')"
+                @focus="setFocus('nombres')"
+                @blur="clearFocus"
+                @input="updateStore"
+              >
+            </div>
+          </ion-item>
+
+          <!-- Apellidos -->
+          <ion-item class="ion-item-custom">
+            <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Apellidos <span class="text-blue-600">*</span></ion-label>
+            <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
+              <input 
+                type="text"
+                placeholder="Ingresa tus Apellidos"
+                v-model="apellidos"
+                class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                       hover:border-blue-400"
+                :class="{ 
+                  'bg-primary-50 border-primary text-primary': apellidos.length > 0,
+                  'border-blue-500 border-2 shadow-md': focusedField === 'apellidos'
+                }"
+                @focus="setFocus('apellidos')"
+                @blur="clearFocus"
+                @input="updateStore"
+              >
+            </div>
+          </ion-item>
+
+          <!-- Correo Electrónico -->
+          <ion-item class="ion-item-custom">
+            <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Correo Electrónico <span class="text-blue-600">*</span></ion-label>
+            <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
+              <div class="relative w-full">
+                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                  <Icon icon="mdi:email" width="20" height="20" />
+                </div>
+                <input 
+                  type="email"
+                  placeholder="Email"
+                  v-model="email"
+                  class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                         hover:border-blue-400"
+                  :class="{ 
+                    'bg-primary-50 border-primary text-primary': email.length > 0,
+                    'border-blue-500 border-2 shadow-md': focusedField === 'email'
+                  }"
+                  @focus="setFocus('email')"
+                  @blur="clearFocus"
+                  @input="updateStore"
+                >
+              </div>
+            </div>
+          </ion-item>
+
+          <!-- Teléfono celular/whatsapp -->
+          <ion-item class="ion-item-custom">
+            <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Teléfono celular/whatsapp <span class="text-blue-600">*</span></ion-label>
+            <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
+              <div class="relative w-full">
+                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                  <Icon icon="mdi:phone" width="20" height="20" />
+                </div>
+                <input 
+                  type="tel"
+                  placeholder="+593"
+                  v-model="telefono"
+                  class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
+                         hover:border-blue-400"
+                  :class="{ 
+                    'bg-primary-50 border-primary text-primary': focusedField === 'telefono' && telefono.length > 0,
+                    'border-blue-500 border-2 shadow-md': focusedField === 'telefono'
+                  }"
+                  @focus="setFocus('telefono')"
+                  @blur="clearFocus"
+                  @input="updateStore"
+                >
+              </div>
+            </div>
+          </ion-item>
+
+          <!-- Rol en la empresa -->
+          <ion-item class="ion-item-custom">
+            <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Selecciona tu rol en la empresa <span class="text-blue-600">*</span></ion-label>
+            <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
+              <select
+                v-model="rolSeleccionado"
+                class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 appearance-none
+                       hover:border-blue-400"
+                :class="{ 
+                  'bg-primary-50 border-primary text-primary': rolSeleccionado.length > 0,
+                  'border-blue-500 border-2 shadow-md': focusedField === 'rol'
+                }"
+                @focus="setFocus('rol')"
                 @blur="clearFocus"
                 @change="updateStore"
               >
                 <option value="" disabled selected>Seleccionar</option>
-                <option 
-                  v-for="opcion in opcionesTipoID" 
-                  :key="opcion.value" 
+                <option
+                  v-for="opcion in opcionesRol"
+                  :key="opcion.value"
                   :value="opcion.value"
                 >
                   {{ opcion.label }}
@@ -34,153 +181,9 @@
               </select>
               <div class="absolute right-3 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-transparent border-t-gray-500 pointer-events-none"></div>
             </div>
-            
-            <!-- Input personalizado con estilos de Tailwind -->
-            <div class="relative flex flex-col gap-2.5 my-2.5 w-full sm:w-2/3">
-              <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                <Icon icon="mdi:card-account-details-outline" width="20" height="20" />
-              </div>
-              <input 
-                type="text"
-                placeholder="Número de identificación"
-                v-model="identificacion"
-                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                       hover:border-blue-400"
-                :class="{ 
-                  'bg-primary-50 border-primary text-primary': identificacion.length > 0,
-                  'border-blue-500 border-2 shadow-md': focusedField === 'identificacion'
-                }"
-                @focus="setFocus('identificacion')"
-                @blur="clearFocus"
-                @input="updateStore"
-              >
-            </div>
-          </div>
-        </ion-item>
-
-        <!-- Nombres -->
-        <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Nombres <span class="text-blue-600">*</span></ion-label>
-          <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-            <input 
-              type="text"
-              placeholder="Ingresa tus Nombres"
-              v-model="nombres"
-              class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                     hover:border-blue-400"
-              :class="{ 
-                'bg-primary-50 border-primary text-primary': nombres.length > 0,
-                'border-blue-500 border-2 shadow-md': focusedField === 'nombres'
-              }"
-              @focus="setFocus('nombres')"
-              @blur="clearFocus"
-              @input="updateStore"
-            >
-          </div>
-        </ion-item>
-
-        <!-- Apellidos -->
-        <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Apellidos <span class="text-blue-600">*</span></ion-label>
-          <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-            <input 
-              type="text"
-              placeholder="Ingresa tus Apellidos"
-              v-model="apellidos"
-              class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                     hover:border-blue-400"
-              :class="{ 
-                'bg-primary-50 border-primary text-primary': apellidos.length > 0,
-                'border-blue-500 border-2 shadow-md': focusedField === 'apellidos'
-              }"
-              @focus="setFocus('apellidos')"
-              @blur="clearFocus"
-              @input="updateStore"
-            >
-          </div>
-        </ion-item>
-
-        <!-- Correo Electrónico -->
-        <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Correo Electrónico <span class="text-blue-600">*</span></ion-label>
-          <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-            <div class="relative w-full">
-              <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                <Icon icon="mdi:email" width="20" height="20" />
-              </div>
-              <input 
-                type="email"
-                placeholder="Email"
-                v-model="email"
-                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                       hover:border-blue-400"
-                :class="{ 
-                  'bg-primary-50 border-primary text-primary': email.length > 0,
-                  'border-blue-500 border-2 shadow-md': focusedField === 'email'
-                }"
-                @focus="setFocus('email')"
-                @blur="clearFocus"
-                @input="updateStore"
-              >
-            </div>
-          </div>
-        </ion-item>
-
-        <!-- Teléfono celular/whatsapp -->
-        <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Teléfono celular/whatsapp <span class="text-blue-600">*</span></ion-label>
-          <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-            <div class="relative w-full">
-              <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                <Icon icon="mdi:phone" width="20" height="20" />
-              </div>
-              <input 
-                type="tel"
-                placeholder="+593"
-                v-model="telefono"
-                class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                       hover:border-blue-400"
-                :class="{ 
-                  'bg-primary-50 border-primary text-primary': telefono.length > 0,
-                  'border-blue-500 border-2 shadow-md': focusedField === 'telefono'
-                }"
-                @focus="setFocus('telefono')"
-                @blur="clearFocus"
-                @input="updateStore"
-              >
-            </div>
-          </div>
-        </ion-item>
-
-        <!-- Rol en la empresa -->
-        <ion-item class="--padding-start: 0; --inner-padding-end: 0;">
-          <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Selecciona tu rol en la empresa <span class="text-blue-600">*</span></ion-label>
-          <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-            <select
-              v-model="rolSeleccionado"
-              class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 appearance-none
-                     hover:border-blue-400"
-              :class="{ 
-                'bg-primary-50 border-primary text-primary': rolSeleccionado.length > 0,
-                'border-blue-500 border-2 shadow-md': focusedField === 'rol'
-              }"
-              @focus="setFocus('rol')"
-              @blur="clearFocus"
-              @change="updateStore"
-            >
-              <option value="" disabled selected>Seleccionar</option>
-              <option
-                v-for="opcion in opcionesRol"
-                :key="opcion.value"
-                :value="opcion.value"
-              >
-                {{ opcion.label }}
-              </option>
-            </select>
-            <div class="absolute right-3 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-transparent border-t-gray-500 pointer-events-none"></div>
-          </div>
-        </ion-item>
-      </form>
+          </ion-item>
+        </form>
+      </div>
     </ion-card-content>
   </ion-card>
 </template>
@@ -305,10 +308,35 @@ $primary-color: var(--ion-color-primary);
 $primary-light: rgba(var(--ion-color-primary-rgb), 0.1);
 $primary-lighter: rgba(var(--ion-color-primary-rgb), 0.05);
 
+// Estilos para la tarjeta principal
+.wizard-card {
+  width: 100%;
+  margin: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%; // Asegura que la tarjeta ocupe toda la altura disponible
+}
+
+.wizard-content {
+  padding: 16px;
+  flex: 1; // Permite que el contenido ocupe todo el espacio disponible
+  overflow-y: auto; // Habilita el scroll vertical
+  height: 100%; // Asegura que el contenido ocupe toda la altura disponible
+}
+
+// Contenedor del formulario
+.form-container {
+  padding-bottom: 20px; // Espacio adicional al final del formulario
+}
+
 // Estilos específicos para ion-item que no se pueden hacer con Tailwind
-ion-item {
+.ion-item-custom {
   --padding-start: 0;
   --inner-padding-end: 0;
+  margin-bottom: 10px;
 }
 
 // Estilos para inputs enfocados
@@ -330,11 +358,6 @@ input:focus, select:focus {
 @media (max-width: 640px) {
   input, select {
     padding: 0.6rem 1rem 0.6rem 2.5rem !important;
-  }
-  
-  .ion-card {
-    width: 100% !important;
-    margin: 0 auto;
   }
 }
 </style>

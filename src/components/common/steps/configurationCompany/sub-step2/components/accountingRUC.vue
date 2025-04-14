@@ -1,4 +1,5 @@
 <template>
+    <span >Si eres agente de retención es opcional llevar contabilidad</span>
   <ion-list>      
     <ion-item>
       <ion-checkbox 

@@ -1,24 +1,24 @@
 <template>
   <form @submit.prevent class="form-container">
-    <!-- Nombre de tu Sucursal y Código de Sucursal en la misma fila -->
+    <!-- Nombre Comercial y Código de Sucursal en la misma fila -->
     <div class="form-row">
-      <!-- Nombre de tu Sucursal -->
+      <!-- Nombre Comercial -->
       <div class="form-group">
-        <ion-label position="stacked" class="form-label">Nombre de tu Sucursal <span class="required">*</span></ion-label>
+        <ion-label position="stacked" class="form-label">Nombre Comercial <span class="required">*</span></ion-label>
         <div class="input-container">
           <div class="input-icon">
-            <Icon icon="mdi:home-city" width="20" height="20" />
+            <Icon icon="mdi:store-marker" width="20" height="20" />
           </div>
           <input 
             type="text"
-            placeholder="Nombre de la sucursal"
-            v-model="nombreSucursal"
+            readonly
+            v-model="nombreComercial"
             class="form-input"
             :class="{ 
-              'has-value': nombreSucursal.length > 0,
-              'is-focused': focusedField === 'nombreSucursal'
+              'has-value': nombreComercial.length > 0,
+              'is-focused': focusedField === 'nombreComercial'
             }"
-            @focus="setFocus('nombreSucursal')"
+            @focus="setFocus('nombreComercial')"
             @blur="clearFocus"
           >
         </div>
@@ -47,23 +47,23 @@
       </div>
     </div>
 
-    <!-- Nombre Comercial -->
+    <!-- Nombre de tu Sucursal -->
     <div class="form-group">
-      <ion-label position="stacked" class="form-label">Nombre Comercial <span class="required">*</span></ion-label>
+      <ion-label position="stacked" class="form-label">Nombre de tu Sucursal <span class="required">*</span></ion-label>
       <div class="input-container">
         <div class="input-icon">
-          <Icon icon="mdi:store-marker" width="20" height="20" />
+          <Icon icon="mdi:home-city" width="20" height="20" />
         </div>
         <input 
           type="text"
-          readonly
-          v-model="nombreComercial"
+          placeholder="Nombre de la sucursal"
+          v-model="nombreSucursal"
           class="form-input"
           :class="{ 
-            'has-value': nombreComercial.length > 0,
-            'is-focused': focusedField === 'nombreComercial'
+            'has-value': nombreSucursal.length > 0,
+            'is-focused': focusedField === 'nombreSucursal'
           }"
-          @focus="setFocus('nombreComercial')"
+          @focus="setFocus('nombreSucursal')"
           @blur="clearFocus"
         >
       </div>

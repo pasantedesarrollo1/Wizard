@@ -1,4 +1,5 @@
 <template>
+  <span>Selecciona e ingresa tu codigo si eres artesano</span>
   <ion-list>
     <ion-item>
       <ion-checkbox 
