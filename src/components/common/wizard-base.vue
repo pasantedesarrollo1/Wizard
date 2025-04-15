@@ -44,11 +44,18 @@
       </div>
     </IonContent>
     
-    <!-- Modal de confirmación -->
+    <!-- Modal de confirmación para finalizar el wizard -->
     <ConfirmationModal 
       :is-open="showConfirmationModal" 
       @confirm="handleConfirmFinish" 
       @cancel="handleCancelFinish"
+    />
+    
+    <!-- Modal de confirmación para el paso de ventas -->
+    <ConfirmationSales 
+      :is-open="showSalesConfirmationModal" 
+      @confirm="handleConfirmSalesNext" 
+      @cancel="handleCancelSalesNext"
     />
   </IonPage>
 </template>
@@ -60,6 +67,7 @@ import { useRouter } from "vue-router"
 import ProgressBar from "@/components/common/progressBar.vue"
 import welcomeGeneral from "@/components/common/welcomeGeneral.vue"
 import ConfirmationModal from "@/components/common/confirmation-modal.vue"
+import ConfirmationSales from "@/components/common/confirmationSales.vue"
 import { useWizardProgress } from "@/composables/useWizardProgress"
 import { useWizardSubSteps, WizardSubStepsConfig } from "@/composables/useWizardSubSteps"
 import { useWizardStore } from "@/stores/wizardStore"
@@ -96,6 +104,9 @@ const started = ref(false)
 // Variable para controlar la visibilidad del modal de confirmación
 const showConfirmationModal = ref(false)
 
+// Variable para controlar la visibilidad del modal de confirmación de ventas
+const showSalesConfirmationModal = ref(false)
+
 // Inicializamos el wizard con el tipo proporcionado
 const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress(props.wizardType)
 
@@ -117,12 +128,13 @@ const currentStepKey = computed(() => {
 
 // Verificamos si debemos deshabilitar el botón "Siguiente"
 const shouldDisableNextButton = computed(() => {
+  let disableNext = false;
   // Verificar si estamos en el paso data-sales
   if (currentStepKey.value === "data-sales") {
     // Subpaso 0 (indexSalesDataSS1) - Verificar selección de plan
     if (currentSubStepIndex.value === 0) {
       const salesData = wizardStore.getStepData("salesData")
-      return !salesData?.plan
+      disableNext = !salesData?.plan
     }
     
     // Subpaso 1 (indexSalesDataSS2) - Verificar las tres condiciones
@@ -140,7 +152,7 @@ const shouldDisableNextButton = computed(() => {
       const hasSelectedPaymentMethod = salesData?.paymentMethod ? true : false
       
       // El botón debe estar deshabilitado si alguna de las condiciones no se cumple
-      return !(hasSelectedSeller && hasProofPayment && hasSelectedPaymentMethod)
+      disableNext = !(hasSelectedSeller && hasProofPayment && hasSelectedPaymentMethod)
     }
   } else if (currentStepKey.value === "personal-info") {
       // Subpaso 0 (personalInfo) - Verificar que todos los datos esten seleccionado
@@ -158,7 +170,7 @@ const shouldDisableNextButton = computed(() => {
       //si se ha ingresado email y telefono
       const hasEmail = personalInfo?.contact.email ? personalInfo?.contact.email.trim().length > 0 : false
       const hasPhone = personalInfo?.contact.phone ? personalInfo?.contact.phone.trim().length > 0 : false
-      return !(hasSelectedTypeId && hasNumberId && hasFirstName && hasLastName && hasPhone && hasEmail)
+      disableNext = !(hasSelectedTypeId && hasNumberId && hasFirstName && hasLastName && hasPhone && hasEmail)
     }
   } 
   // else if (currentStepKey.value === "config-company"){
@@ -173,7 +185,7 @@ const shouldDisableNextButton = computed(() => {
   //   }
   // }
   // En otros pasos, el botón está habilitado normalmente
-  return false
+  return disableNext
 })
 
 // Actualizamos el estado del wizard cuando cambia el paso
@@ -248,18 +260,8 @@ const updateSalesDataIfNeeded = () => {
   }
 }
 
-// Maneja la lógica de navegación "siguiente"
-const handleNext = () => {
-  // Actualizar datos de salesData si es necesario
-  updateSalesDataIfNeeded()
-
-  // Si estamos en el último paso y sub-paso y el botón dice "Finalizado"
-  if (isLastStepAndSubStep.value) {
-    // Mostramos el modal de confirmación en lugar de avanzar
-    showConfirmationModal.value = true
-    return
-  }
-
+// Función para proceder al siguiente paso/subpaso
+const proceedToNextStep = () => {
   // Si el paso actual tiene sub-pasos
   if (hasSubStepsForCurrentStep.value) {
     // Intentamos avanzar al siguiente sub-paso
@@ -270,7 +272,7 @@ const handleNext = () => {
     })
 
     // Mostrar el estado completo en consola
-    console.log("Wizard state actualizado (handleNext - subpaso):", {
+    console.log("Wizard state actualizado (proceedToNextStep - subpaso):", {
       wizardState: wizardStore.getCurrentWizardState,
       formData: wizardStore.getAllFormData,
     })
@@ -286,10 +288,51 @@ const handleNext = () => {
   nextStep()
 
   // Mostrar el estado completo en consola
-  console.log("Wizard state actualizado (handleNext - paso principal):", {
+  console.log("Wizard state actualizado (proceedToNextStep - paso principal):", {
     wizardState: wizardStore.getCurrentWizardState,
     formData: wizardStore.getAllFormData,
   })
+}
+
+// Maneja la lógica de navegación "siguiente"
+const handleNext = () => {
+  // Actualizar datos de salesData si es necesario
+  updateSalesDataIfNeeded()
+
+  // Si estamos en el último paso y sub-paso y el botón dice "Finalizado"
+  if (isLastStepAndSubStep.value) {
+    // Mostramos el modal de confirmación en lugar de avanzar
+    showConfirmationModal.value = true
+    return
+  }
+
+  // Verificar si estamos en el paso data-sales y subpaso 1 (indexSalesDataSS2)
+  if (currentStepKey.value === "data-sales" && currentSubStepIndex.value === 1) {
+    // Verificar si se cumplen todas las condiciones para habilitar el botón
+    if (!shouldDisableNextButton.value) {
+      // Mostrar el modal de confirmación de ventas
+      showSalesConfirmationModal.value = true
+      return
+    }
+  }
+
+  // Para todos los demás casos, procedemos normalmente
+  proceedToNextStep()
+}
+
+// Función para manejar la confirmación del modal de ventas
+const handleConfirmSalesNext = () => {
+  // Ocultamos el modal
+  showSalesConfirmationModal.value = false
+  
+  // Procedemos al siguiente paso/subpaso
+  proceedToNextStep()
+}
+
+// Función para manejar la cancelación del modal de ventas
+const handleCancelSalesNext = () => {
+  // Simplemente ocultamos el modal sin hacer nada más
+  showSalesConfirmationModal.value = false
 }
 
 // Función para manejar la confirmación del modal
