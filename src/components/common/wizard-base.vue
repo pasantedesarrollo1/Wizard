@@ -34,7 +34,7 @@
         </div>
         <!-- Botones de navegación -->
         <div class="navigation-controls">
-          <IonButton fill="outline" @click="handlePrevious" :disabled="currentStep === 0 && currentSubStepIndex === 0">
+          <IonButton fill="outline" @click="handlePrevious" :disabled="shouldDisablePreviousButton">
             Anterior
           </IonButton>
           <IonButton @click="handleNext" :disabled="shouldDisableNextButton">
@@ -126,15 +126,26 @@ const currentStepKey = computed(() => {
   return steps.value[currentStep.value]?.key || ""
 })
 
+// Verificamos si debemos deshabilitar el botón "Anterior"
+const shouldDisablePreviousButton = computed(() => {
+  // Deshabilitar si estamos en el primer paso y primer subpaso
+  const isFirstStepAndSubStep = currentStep.value === 0 && currentSubStepIndex.value === 0
+  
+  // Deshabilitar si estamos en el paso "personal-info" (independientemente del subpaso)
+  const isPersonalInfoStep = currentStepKey.value === "personal-info"
+  
+  // Retornar true si cualquiera de las condiciones se cumple
+  return isFirstStepAndSubStep || isPersonalInfoStep
+})
+
 // Verificamos si debemos deshabilitar el botón "Siguiente"
 const shouldDisableNextButton = computed(() => {
-  let disableNext = false;
   // Verificar si estamos en el paso data-sales
   if (currentStepKey.value === "data-sales") {
     // Subpaso 0 (indexSalesDataSS1) - Verificar selección de plan
     if (currentSubStepIndex.value === 0) {
       const salesData = wizardStore.getStepData("salesData")
-      disableNext = !salesData?.plan
+      return !salesData?.plan
     }
     
     // Subpaso 1 (indexSalesDataSS2) - Verificar las tres condiciones
@@ -152,7 +163,7 @@ const shouldDisableNextButton = computed(() => {
       const hasSelectedPaymentMethod = salesData?.paymentMethod ? true : false
       
       // El botón debe estar deshabilitado si alguna de las condiciones no se cumple
-      disableNext = !(hasSelectedSeller && hasProofPayment && hasSelectedPaymentMethod)
+      return !(hasSelectedSeller && hasProofPayment && hasSelectedPaymentMethod)
     }
   } else if (currentStepKey.value === "personal-info") {
       // Subpaso 0 (personalInfo) - Verificar que todos los datos esten seleccionado
@@ -170,22 +181,11 @@ const shouldDisableNextButton = computed(() => {
       //si se ha ingresado email y telefono
       const hasEmail = personalInfo?.contact.email ? personalInfo?.contact.email.trim().length > 0 : false
       const hasPhone = personalInfo?.contact.phone ? personalInfo?.contact.phone.trim().length > 0 : false
-      disableNext = !(hasSelectedTypeId && hasNumberId && hasFirstName && hasLastName && hasPhone && hasEmail)
+      return !(hasSelectedTypeId && hasNumberId && hasFirstName && hasLastName && hasPhone && hasEmail)
     }
   } 
-  // else if (currentStepKey.value === "config-company"){
-  //    if (currentSubStepIndex.value === 1) {
-  //     const companyConfig = wizardStore.getStepData("companyConfig")
-      
-  //     //si se ha seleccionado un documento por default e impuestos
-  //     const hasSelectedDefaultDoc = companyConfig?.defaultDocument.type ? true : false
-  //     const hasSelectedDefaultSearch = companyConfig?.defaultDocument.searchParameter ? true : false
-
-  //     return !(hasSelectedDefaultDoc && hasSelectedDefaultSearch)
-  //   }
-  // }
   // En otros pasos, el botón está habilitado normalmente
-  return disableNext
+  return false
 })
 
 // Actualizamos el estado del wizard cuando cambia el paso
@@ -433,6 +433,29 @@ onMounted(() => {
   }
 })
 
+// Define un ref para el estado del wizard
+const wizardState = ref({
+  currentStep: "",
+  currentSubStep: 0,
+})
+
+// Observa los cambios en currentStepKey y currentSubStepIndex
+watch([currentStepKey, currentSubStepIndex], () => {
+  // Actualiza el estado del wizard con los valores actuales
+  wizardState.value = {
+    currentStep: currentStepKey.value,
+    currentSubStep: currentSubStepIndex.value + 1,
+  }
+
+  // Actualiza el estado del wizard en el store
+  wizardStore.updateWizardState(wizardState.value)
+
+  // Muestra el estado completo en la consola
+  console.log("Wizard state actualizado (watch currentStepKey y currentSubStepIndex):", {
+    wizardState: wizardStore.getCurrentWizardState,
+    formData: wizardStore.getAllFormData,
+  })
+})
 </script>
 <style scoped>
 .ion-content {
