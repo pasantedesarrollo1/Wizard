@@ -60,7 +60,6 @@ const opcionesTipoPago = ref<TipoPagoOpcion[]>([
   { label: 'Tarjeta Nuevi', value: 'tarjeta-nuevi' },
   { label: 'Datafast Vouchet', value: 'datafast-voucher' },
   { label: 'Transferencia', value: 'transferencia' },
-  { label: 'Efectivo', value: 'efectivo' }
 ])
 
 const tipoPagoSeleccionado = ref('')
@@ -96,8 +95,6 @@ const getIconForPaymentType = (paymentType: string): string => {
       return 'fontisto:shopping-pos-machine'
     case 'transferencia':
       return 'mdi:bank-transfer'
-    case 'efectivo':
-      return 'mdi:cash'
     default:
       return 'mdi:cash'
   }

@@ -55,11 +55,11 @@ interface ParametroOpcion {
 }
 
 const opcionesParametro = ref<ParametroOpcion[]>([
-  { label: 'Código', value: 'codigo' },
-  { label: 'Nombre', value: 'nombre' }
+{ label: 'Nombre', value: 'nombre' },  
+{ label: 'Código', value: 'codigo' }
 ])
 
-const parametroSeleccionado = ref('')
+const parametroSeleccionado = ref('nombre')
 
 const seleccionarParametro = (value: string) => {
   parametroSeleccionado.value = value

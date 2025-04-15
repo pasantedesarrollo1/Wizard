@@ -1,7 +1,7 @@
 <template>
   <div class="p-2 py-2 bg-white rounded-xl">
     <!-- Grid mejorado con animaciones y efectos -->
-    <span>Elige los impuestos que se aplicarán a las ventas de tu empresa</span>
+    <span>Puedes elegir más de un impuesto a aplicar en tus ventas</span>
     
     <!-- Contenedor centrado para las tarjetas -->
     <div class="flex justify-center items-center gap-4 mt-3">
@@ -22,7 +22,7 @@
     </div>
     
     <!-- Campo de entrada simplificado para el código de 5% -->
-    <div v-if="impuestosSeleccionados.includes('5%')" class="mt-4">
+    <div v-if="impuestosSeleccionados.includes('5')" class="mt-4">
       <div class="text-sm text-gray-700 mb-1">Código para 5%</div>
       <input
         type="text"
@@ -43,13 +43,13 @@ interface ImpuestoOpcion {
 }
 
 const opcionesImpuesto = ref<ImpuestoOpcion[]>([
-  { label: '15%', value: '15%' },
-  { label: '5%', value: '5%' },
-  { label: '0%', value: '0%' }
+  { label: '15%', value: '15' },
+  { label: '5%', value: '5' },
+  { label: '0%', value: '0' }
 ])
 
 // Cambiado a array para permitir selección múltiple
-const impuestosSeleccionados = ref<string[]>([])
+const impuestosSeleccionados = ref<string[]>(['15'])
 const codigoImpuesto = ref('')
 
 const toggleImpuesto = (value: string) => {

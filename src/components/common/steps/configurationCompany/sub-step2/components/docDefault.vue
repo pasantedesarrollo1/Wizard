@@ -1,7 +1,7 @@
 <template>
   <div class="p-2 py-2 bg-white rounded-xl">
     <!-- Grid mejorado con animaciones y efectos -->
-    <span >Selecciona el tipo de documento que deseas emitir por defecto al vender</span>
+    <span>Selecciona el tipo de documento que deseas emitir por defecto al vender</span>
     <ion-grid class="document-grid">
       <ion-row class="ion-justify-content-center">
         <ion-col
@@ -59,7 +59,8 @@ const opcionesDocumento = ref<DocumentoOpcion[]>([
   { label: 'Recibos', value: 'recibos' }
 ])
 
-const documentoSeleccionado = ref('')
+// Inicializamos con 'facturas' seleccionado por defecto
+const documentoSeleccionado = ref('facturas')
 
 const seleccionarDocumento = (value: string) => {
   documentoSeleccionado.value = value
