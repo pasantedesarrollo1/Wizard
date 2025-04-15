@@ -58,7 +58,6 @@ export const initialState = (): WizardInterface => ({
         isArtisan: false,
         artisanNumber: "",
       },
-      inventoryManagement: false,
       taxes: [],
       taxesFiveNumber: "",
       logo: {

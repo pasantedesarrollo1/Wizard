@@ -25,12 +25,59 @@
 </template>
 
 <script setup lang="ts">
-import { IonList, IonItem, IonLabel, IonCheckbox } from '@ionic/vue';
-import { ref } from 'vue';
+import { IonList, IonItem, IonLabel, IonCheckbox } from "@ionic/vue"
+import { ref, watch, onMounted } from "vue"
+import { useWizardStore } from "@/stores/wizardStore"
+
+// Obtener la instancia del store
+const wizardStore = useWizardStore()
 
 // Reactive state for checkbox and input values
-const isArtesano = ref(false);
-const artisanCode = ref('');
+const isArtesano = ref(false)
+const artisanCode = ref("")
+
+// Función para actualizar el store con los valores actuales
+// const updateStore = () => {
+//   const artisanNumber = isArtesano.value ? artisanCode.value: '';
+//   wizardStore.updateFormSection("companyConfig", {
+//       artisan: {
+//         isArtisan: isArtesano.value,
+//         artisanNumber: artisanNumber,
+//       },
+//   });
+// };
+
+// Cargar datos del store si existen
+onMounted(() => {
+  const companyConfig = wizardStore.getStepData("companyConfig")
+  if (companyConfig) {
+    if (companyConfig.artisan) {
+      isArtesano.value = companyConfig.artisan.isArtisan
+      artisanCode.value = companyConfig.artisan.artisanNumber || ""
+    }
+  }
+})
+
+// Reemplazar los dos watchers separados para isArtesano y artisanCode con este código:
+
+// Actualizar el store cuando cambie cualquier valor
+watch([isArtesano, artisanCode], ([newIsArtesano, newArtisanCode]) => {
+  const artisanNumber = newIsArtesano ? newArtisanCode : ""
+  wizardStore.updateFormSection("companyConfig", {
+    artisan: {
+      isArtisan: newIsArtesano,
+      artisanNumber,
+    },
+  })
+})
+
+// Mantener el watcher para limpiar el código cuando se desmarca la casilla
+watch(isArtesano, (newVal) => {
+  if (!newVal) {
+    artisanCode.value = ""
+  }
+})
+
 </script>
 
 <style lang="scss" scoped>

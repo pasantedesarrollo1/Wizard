@@ -246,9 +246,8 @@ onMounted(() => {
     }
     if (personalInfo.contact) {
       email.value = personalInfo.contact.email || '';
-      if (personalInfo.contact.phone) {
-        telefono.value = personalInfo.contact.phone.mobile || '';
-      }
+      telefono.value = personalInfo.contact.phone || '';
+
     }
   }
 });

@@ -64,7 +64,6 @@ export interface WizardState {
       isArtisan: boolean
       artisanNumber: string
     }
-    inventoryManagement: boolean
     taxes: string[]
     taxesFiveNumber: string
     logo: {
