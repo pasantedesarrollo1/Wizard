@@ -11,19 +11,18 @@
               <salesListe />
             </div>
             
-            <!-- Sección del comprobante de pago -->
-            <div class="section-container proof-section">
-              <h4 class="text-lg font-semibold text-gray-800 pl-1 mt-0 mb-4 pb-2 border-b border-opacity-6">Ingresa el numero del comprobante de pago</h4>
-              <proofPayment />
-            </div>
-          </div>
-          
-          <!-- Columna derecha: contiene payment-section -->
-          <div class="right-column">
             <!-- Sección del método de pago -->
             <div class="section-container payment-section">
               <h4 class="text-lg font-semibold text-gray-800 pl-3 mt-0 mb-4 pb-2 border-b border-opacity-6">Selecciona el método de pago del Servicio</h4>
               <typePayments />
+            </div>
+          </div>
+          
+          <!-- Seccion de formularios -->
+          <div class="right-column">
+            <div class="section-container proof-section">
+              <h4 class="text-lg font-semibold text-gray-800 pl-1 mt-0 mb-4 pb-2 border-b border-opacity-6">Llena los siguientes datos</h4>
+              <transferPayment />
             </div>
           </div>
         </div>
@@ -35,7 +34,7 @@
 <script setup lang="ts">
 import { IonCard, IonCardContent } from '@ionic/vue'
 import typePayments from "@/components/common/steps/dataSales/sub-step2/components/typePayments.vue"
-import proofPayment from "@/components/common/steps/dataSales/sub-step2/components/proofPayment.vue"
+import transferPayment from "@/components/common/steps/dataSales/sub-step2/components/transferPayment.vue"
 import salesListe from "@/components/common/steps/dataSales/sub-step2/components/salesList.vue"
 </script>
 

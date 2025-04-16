@@ -1,17 +1,17 @@
 <template>
   <div class="p-2 py-2 bg-white rounded-xl">
-    <!-- Grid mejorado con animaciones y efectos -->
+    <!-- Grid modificado para ocupar todo el ancho -->
     <ion-grid class="payment-grid">
-      <ion-row class="ion-justify-content-center">
+      <ion-row>
         <ion-col
           size="6"
-          size-md="3"
+          size-md="6"
           v-for="opcion in opcionesTipoPago"
           :key="opcion.value"
         >
           <!-- Card unificada -->
           <div 
-            class="unified-card w-full h-[130px] rounded-[20px] transition-all duration-300 mx-auto cursor-pointer p-2 flex flex-col justify-between items-center"
+            class="unified-card w-full h-[130px] rounded-[20px] transition-all duration-300 cursor-pointer p-2 flex flex-col justify-between items-center"
             :class="{ 'selected-card': tipoPagoSeleccionado === opcion.value }"
             @click="seleccionarTipoPago(opcion.value)"
           >
@@ -57,7 +57,7 @@ interface TipoPagoOpcion {
 }
 
 const opcionesTipoPago = ref<TipoPagoOpcion[]>([
-  { label: 'Tarjeta Nuevi', value: 'tarjeta-nuevi' },
+  // { label: 'Tarjeta Nuevi', value: 'tarjeta-nuevi' },
   { label: 'Datafast Vouchet', value: 'datafast-voucher' },
   { label: 'Transferencia', value: 'transferencia' },
 ])
@@ -69,6 +69,8 @@ onMounted(() => {
   const salesData = wizardStore.getStepData("salesData");
   if (salesData && salesData.paymentMethod) {
     tipoPagoSeleccionado.value = salesData.paymentMethod;
+  } else {
+    tipoPagoSeleccionado.value = '';
   }
 });
 
