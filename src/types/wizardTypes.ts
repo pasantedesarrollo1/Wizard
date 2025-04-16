@@ -40,11 +40,25 @@ export interface WizardState {
   
   // Interfaces para datos de venta
   export interface SalesData {
-    proofPayment: string
-    billingFrequency: string
-    paymentMethod: string
-    plan: string
+    plan: string,
+    billingFrequency: string,
+    paymentMethod: string,
     
+    // Datos comunes a todos los métodos de pago
+    payment: {
+      amount: number,
+      date: string,
+      
+      // Datos específicos por método de pago
+      transferData: {
+        financialInstitution: string,
+        proofPayment: string,
+      },
+      datafastData: {
+        typeCard: string,
+        numberLote: string,
+      }
+    }
   }
   
   // Interfaces para configuración de la empresa

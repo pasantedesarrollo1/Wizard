@@ -57,7 +57,7 @@
   
       <!-- Tipo de tarjeta -->
       <div class="relative flex flex-col gap-2.5 my-2.5 w-full">
-        <label for="financialInstitution" class="text-gray-700 font-medium mb-1">
+        <label for="typeCard" class="text-gray-700 font-medium mb-1">
           Tipo de tarjeta
         </label>
         <div class="relative w-full">
@@ -65,17 +65,17 @@
             <Icon icon="famicons:card-outline" width="20" height="20" />
           </div>
           <input
-            id="financialInstitution"
+            id="typeCard"
             type="text"
             placeholder="Ej.: Visa"
-            v-model="financialInstitutionValue"
+            v-model="typeCard"
             required
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
             :class="{
-              'bg-primary-50 border-primary text-primary': financialInstitutionValue.length > 0,
-              'border-blue-500 border-2 shadow-md': focusedField === 'financialInstitution'
+              'bg-primary-50 border-primary text-primary': typeCard.length > 0,
+              'border-blue-500 border-2 shadow-md': focusedField === 'typeCard'
             }"
-            @focus="setFocus('financialInstitution')"
+            @focus="setFocus('typeCard')"
             @blur="clearFocus"
           />
         </div>
@@ -83,7 +83,7 @@
   
       <!-- Input del lote -->
       <div class="relative flex flex-col gap-2.5 my-2.5 w-full">
-        <label for="proofPayment" class="text-gray-700 font-medium mb-1">
+        <label for="numberLote" class="text-gray-700 font-medium mb-1">
           Número de Lote
         </label>
         <div class="relative w-full">
@@ -91,17 +91,17 @@
             <Icon icon="f7:number" width="20" height="20" />
           </div>
           <input
-            id="proofPayment"
+            id="numberLote"
             type="text"
             placeholder="Ingresa el número de lote"
-            v-model="proofPaymentValue"
+            v-model="numberLoteValue"
             required
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
             :class="{
-              'bg-primary-50 border-primary text-primary': proofPaymentValue.length > 0,
-              'border-blue-500 border-2 shadow-md': focusedField === 'proofPayment'
+              'bg-primary-50 border-primary text-primary': numberLoteValue.length > 0,
+              'border-blue-500 border-2 shadow-md': focusedField === 'numberLote'
             }"
-            @focus="setFocus('proofPayment')"
+            @focus="setFocus('numberLote')"
             @blur="clearFocus"
           />
         </div>
@@ -118,9 +118,9 @@
   const wizardStore = useWizardStore();
   
   // Variables reactivas para cada campo
-  const financialInstitutionValue = ref('');
+  const typeCard = ref('');
   const amountValue = ref<number>(0);
-  const proofPaymentValue = ref('');
+  const numberLoteValue = ref('');
   
   // Formatear la fecha actual en formato YYYY-MM-DD para el input date
   const formatCurrentDate = () => {
@@ -153,14 +153,14 @@
     // Usar la fecha del store si existe, de lo contrario mantener la fecha actual
     // dateValue.value = salesData.value.paymentDate || formatCurrentDate();
   
-    // if (salesData.value.financialInstitution) {
-    //   financialInstitutionValue.value = salesData.value.financialInstitution;
+    // if (salesData.value.typeCard) {
+    //   financialInstitutionValue.value = salesData.value.typeCard;
     // }
     // if (salesData.value.paymentAmount !== undefined) {
     //   amountValue.value = salesData.value.paymentAmount;
     // }
-    // if (salesData.value.proofPayment) {
-    //   proofPaymentValue.value = salesData.value.proofPayment;
+    // if (salesData.value.numberLote) {
+    //   numberLoteValue.value = salesData.value.numberLote;
     // }
   
     // // Guardar la fecha actual en el store si no existe
@@ -170,14 +170,14 @@
   });
   
   // Actualizar el store cuando cambie el valor de cada campo
-  watch(financialInstitutionValue, (newValue) => {
-    wizardStore.updateFormSection("salesData", { financialInstitution: newValue });
+  watch(typeCard, (newValue) => {
+    wizardStore.updateFormSection("salesData", { typeCard: newValue });
   });
   watch(amountValue, (newValue) => {
     wizardStore.updateFormSection("salesData", { paymentAmount: newValue });
   });
-  watch(proofPaymentValue, (newValue) => {
-    wizardStore.updateFormSection("salesData", { proofPayment: newValue });
+  watch(numberLoteValue, (newValue) => {
+    wizardStore.updateFormSection("salesData", { numberLote: newValue });
   });
   watch(dateValue, (newValue) => {
     wizardStore.updateFormSection("salesData", { paymentDate: newValue });

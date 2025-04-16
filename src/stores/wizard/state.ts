@@ -36,11 +36,26 @@ export const initialState = (): WizardInterface => ({
       businessEmail: "",
     },
     salesData: {
-      proofPayment: "",
+      // Datos generales de la venta
+      plan: "",
       billingFrequency: "",
       paymentMethod: "",
-      plan: "",
       
+      // Datos comunes a todos los métodos de pago
+      payment: {
+        amount: 0,
+        date: "",
+        
+        // Datos específicos por método de pago
+        transferData: {
+          financialInstitution: "",
+          proofPayment: "",
+        },
+        datafastData: {
+          typeCard: "",
+          numberLote: "",
+        }
+      }
     },
     companyConfig: {
       defaultDocument: {
