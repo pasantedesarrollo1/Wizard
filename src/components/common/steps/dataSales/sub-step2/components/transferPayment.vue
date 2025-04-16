@@ -126,7 +126,7 @@ const proofPaymentValue = ref('');
 const formatCurrentDate = () => {
   const today = new Date();
   const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses van de 0-11
+  const month = String(today.getMonth() + 1).padStart(2, '0');
   const day = String(today.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 };
@@ -145,42 +145,88 @@ const clearFocus = () => {
   focusedField.value = '';
 };
 
-const salesData = ref({});
+// Función para actualizar los datos de pago
+const updatePaymentData = (partialData: Record<string, any>) => {
+  const salesData = wizardStore.getStepData("salesData") || {};
+  const paymentData = salesData.payment || {};
+  
+  // Actualizar los datos de pago manteniendo los valores existentes
+  wizardStore.updateFormSection("salesData", {
+    payment: {
+      ...paymentData,
+      ...partialData
+    }
+  });
+};
 
-onMounted(() => {
-  salesData.value = wizardStore.getStepData("salesData") || {};
-
-  // Usar la fecha del store si existe, de lo contrario mantener la fecha actual
-  // dateValue.value = salesData.value.paymentDate || formatCurrentDate();
-
-  // if (salesData.value.financialInstitution) {
-  //   financialInstitutionValue.value = salesData.value.financialInstitution;
-  // }
-  // if (salesData.value.paymentAmount !== undefined) {
-  //   amountValue.value = salesData.value.paymentAmount;
-  // }
-  // if (salesData.value.proofPayment) {
-  //   proofPaymentValue.value = salesData.value.proofPayment;
-  // }
-
-  // // Guardar la fecha actual en el store si no existe
-  // if (!salesData.value.paymentDate) {
-  //   wizardStore.updateFormSection("salesData", { paymentDate: dateValue.value });
-  // }
-});
+// Función para actualizar los datos de transferencia
+const updateTransferData = (partialData: Record<string, any>) => {
+  const salesData = wizardStore.getStepData("salesData") || {};
+  const paymentData = salesData.payment || {};
+  const transferData = paymentData.transferData || {};
+  
+  // Actualizar los datos de transferencia manteniendo los valores existentes
+  wizardStore.updateFormSection("salesData", {
+    payment: {
+      ...paymentData,
+      transferData: {
+        ...transferData,
+        ...partialData
+      }
+    }
+  });
+};
 
 // Actualizar el store cuando cambie el valor de cada campo
-watch(financialInstitutionValue, (newValue) => {
-  wizardStore.updateFormSection("salesData", { financialInstitution: newValue });
-});
-watch(amountValue, (newValue) => {
-  wizardStore.updateFormSection("salesData", { paymentAmount: newValue });
-});
-watch(proofPaymentValue, (newValue) => {
-  wizardStore.updateFormSection("salesData", { proofPayment: newValue });
-});
-watch(dateValue, (newValue) => {
-  wizardStore.updateFormSection("salesData", { paymentDate: newValue });
+const updateDate = (newValue: string) => {
+  updatePaymentData({ date: newValue });
+};
+
+const updateAmount = (newValue: number) => {
+  updatePaymentData({ amount: newValue });
+};
+
+const updateFinancialInstitution = (newValue: string) => {
+  updateTransferData({ financialInstitution: newValue });
+};
+
+const updateProofPayment = (newValue: string) => {
+  updateTransferData({ proofPayment: newValue });
+};
+
+// Observadores para los campos
+watch(dateValue, updateDate);
+watch(amountValue, updateAmount);
+watch(financialInstitutionValue, updateFinancialInstitution);
+watch(proofPaymentValue, updateProofPayment);
+
+onMounted(() => {
+  // Obtener los datos actuales
+  const salesData = wizardStore.getStepData("salesData") || {};
+  const paymentData = salesData.payment || {};
+  const transferData = paymentData.transferData || {};
+  
+  // Cargar datos si existen
+  if (paymentData.date) {
+    dateValue.value = paymentData.date;
+  }
+  
+  if (paymentData.amount !== undefined && paymentData.amount > 0) {
+    amountValue.value = paymentData.amount;
+  }
+  
+  if (transferData.financialInstitution) {
+    financialInstitutionValue.value = transferData.financialInstitution;
+  }
+  
+  if (transferData.proofPayment) {
+    proofPaymentValue.value = transferData.proofPayment;
+  }
+  
+  // Si no hay fecha definida, guardar la fecha actual
+  if (!paymentData.date) {
+    updateDate(dateValue.value);
+  }
 });
 </script>
 

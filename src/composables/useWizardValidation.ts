@@ -76,19 +76,52 @@ export function useWizardValidation() {
       return !salesData?.plan
     }
     
-    // Subpaso 1 (indexSalesDataSS2) - Verificar las tres condiciones
+    // Subpaso 1 (indexSalesDataSS2) - Verificar condiciones considerando la nueva estructura
     if (subStepIndex === 1) {
-      // Verificar si se ha seleccionado un vendedor
+      // 1. Verificar si se ha seleccionado un vendedor
       const hasSelectedSeller = consultantData?.sellerId ? true : false
       
-      // Verificar si se ha ingresado un comprobante de pago
-      const hasProofPayment = salesData?.proofPayment ? salesData.proofPayment.trim().length > 0 : false
-      
-      // Verificar si se ha seleccionado un método de pago
+      // 2. Verificar si se ha seleccionado un método de pago
       const hasSelectedPaymentMethod = salesData?.paymentMethod ? true : false
       
-      // El botón debe estar deshabilitado si alguna de las condiciones no se cumple
-      return !(hasSelectedSeller && hasProofPayment && hasSelectedPaymentMethod)
+      // Si no hay método de pago seleccionado, el botón debe estar deshabilitado
+      if (!hasSelectedPaymentMethod) {
+        return true
+      }
+
+      // 3. Verificar campos específicos según el método de pago seleccionado
+      const paymentData = salesData?.payment || {}
+      const paymentMethod = salesData?.paymentMethod
+
+      // Verificar si se han completado los campos comunes
+      const hasAmount = paymentData.amount > 0
+      const hasDate = !!paymentData.date
+
+      if (!hasAmount || !hasDate) {
+        return true
+      }
+      
+      // Verificar campos específicos según el método de pago
+      if (paymentMethod === 'transferencia') {
+        // Para transferencia, validar financialInstitution y proofPayment
+        const transferData = paymentData.transferData || {}
+        const hasFinancialInstitution = !!transferData.financialInstitution
+        const hasProofPayment = !!transferData.proofPayment
+        
+        return !(hasSelectedSeller && hasFinancialInstitution && hasProofPayment)
+      } 
+      else if (paymentMethod === 'datafast-voucher') {
+        // Para datafast, validar typeCard y numberLote
+        const datafastData = paymentData.datafastData || {}
+        const hasTypeCard = !!datafastData.typeCard
+        const hasNumberLote = !!datafastData.numberLote
+        
+        return !(hasSelectedSeller && hasTypeCard && hasNumberLote)
+      }
+      
+      // Si llegamos aquí, significa que hay un método de pago seleccionado pero no reconocido
+      // Por defecto, mantenemos el botón deshabilitado
+      return true
     }
 
     // Para otros subpasos, el botón está habilitado por defecto
@@ -125,20 +158,8 @@ export function useWizardValidation() {
     return false
   }
 
-  /**
-   * Función para agregar validaciones personalizadas para nuevos pasos
-   * @param stepKey - Clave del paso a validar
-   * @param validationFn - Función de validación que retorna true si el botón debe estar deshabilitado
-   */
-  // const addCustomStepValidation = (stepKey: string, validationFn: (subStepIndex: number) => boolean) => {
-  //   // Esta función permitiría extender las validaciones para nuevos pasos
-  //   // en una implementación más completa
-  //   console.log(`Agregada validación personalizada para el paso: ${stepKey}`)
-  // }
-
   return {
     shouldDisablePreviousButton,
     shouldDisableNextButton,
-    // addCustomStepValidation
   }
 }

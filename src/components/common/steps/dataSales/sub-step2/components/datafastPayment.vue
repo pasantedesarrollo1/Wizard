@@ -126,7 +126,7 @@
   const formatCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses van de 0-11
+    const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
@@ -145,43 +145,102 @@
     focusedField.value = '';
   };
   
-  const salesData = ref({});
+  // Variables para controlar si los datos han sido cargados
+  const isDataLoaded = ref(false);
   
   onMounted(() => {
-    salesData.value = wizardStore.getStepData("salesData") || {};
+    // Obtener los datos actuales
+    const salesData = wizardStore.getStepData("salesData") || {};
+    const paymentData = salesData.payment || {};
+    const datafastData = paymentData.datafastData || {};
+    
+    // Cargar datos si existen
+    if (paymentData.date) {
+      dateValue.value = paymentData.date;
+    }
+    
+    if (paymentData.amount !== undefined && paymentData.amount > 0) {
+      amountValue.value = paymentData.amount;
+    }
+    
+    if (datafastData.typeCard) {
+      typeCard.value = datafastData.typeCard;
+    }
+    
+    if (datafastData.numberLote) {
+      numberLoteValue.value = datafastData.numberLote;
+    }
+    
+    // Si no hay fecha definida, guardar la fecha actual
+    if (!paymentData.date) {
+      updateDate(dateValue.value);
+    }
   
-    // Usar la fecha del store si existe, de lo contrario mantener la fecha actual
-    // dateValue.value = salesData.value.paymentDate || formatCurrentDate();
-  
-    // if (salesData.value.typeCard) {
-    //   financialInstitutionValue.value = salesData.value.typeCard;
-    // }
-    // if (salesData.value.paymentAmount !== undefined) {
-    //   amountValue.value = salesData.value.paymentAmount;
-    // }
-    // if (salesData.value.numberLote) {
-    //   numberLoteValue.value = salesData.value.numberLote;
-    // }
-  
-    // // Guardar la fecha actual en el store si no existe
-    // if (!salesData.value.paymentDate) {
-    //   wizardStore.updateFormSection("salesData", { paymentDate: dateValue.value });
-    // }
+    isDataLoaded.value = true;
   });
+  
+  // Función para actualizar los datos de pago
+  const updatePaymentData = (partialData: Record<string, any>) => {
+    const salesData = wizardStore.getStepData("salesData") || {};
+    const paymentData = salesData.payment || {};
+    
+    // Actualizar los datos de pago manteniendo los valores existentes
+    wizardStore.updateFormSection("salesData", {
+      payment: {
+        ...paymentData,
+        ...partialData
+      }
+    });
+  };
+  
+  // Función para actualizar los datos de datafast
+  const updateDatafastData = (partialData: Record<string, any>) => {
+    const salesData = wizardStore.getStepData("salesData") || {};
+    const paymentData = salesData.payment || {};
+    const datafastData = paymentData.datafastData || {};
+    
+    // Actualizar los datos de datafast manteniendo los valores existentes
+    wizardStore.updateFormSection("salesData", {
+      payment: {
+        ...paymentData,
+        datafastData: {
+          ...datafastData,
+          ...partialData
+        }
+      }
+    });
+  };
   
   // Actualizar el store cuando cambie el valor de cada campo
-  watch(typeCard, (newValue) => {
-    wizardStore.updateFormSection("salesData", { typeCard: newValue });
-  });
-  watch(amountValue, (newValue) => {
-    wizardStore.updateFormSection("salesData", { paymentAmount: newValue });
-  });
-  watch(numberLoteValue, (newValue) => {
-    wizardStore.updateFormSection("salesData", { numberLote: newValue });
-  });
-  watch(dateValue, (newValue) => {
-    wizardStore.updateFormSection("salesData", { paymentDate: newValue });
-  });
+  const updateDate = (newValue: string) => {
+    updatePaymentData({ date: newValue });
+  };
+  
+  const updateAmount = (newValue: number) => {
+    updatePaymentData({ amount: newValue });
+  };
+  
+  const updateTypeCard = (newValue: string) => {
+    updateDatafastData({ typeCard: newValue });
+  };
+  
+  const updateNumberLote = (newValue: string) => {
+    updateDatafastData({ numberLote: newValue });
+  };
+  
+  // Observadores para los campos
+  watch(
+    () => isDataLoaded.value,
+    (loaded) => {
+      if (loaded) {
+        watch(dateValue, updateDate);
+        watch(amountValue, updateAmount);
+        watch(typeCard, updateTypeCard);
+        watch(numberLoteValue, updateNumberLote);
+      }
+    },
+    { immediate: true }
+  );
   </script>
   
   <style scoped>

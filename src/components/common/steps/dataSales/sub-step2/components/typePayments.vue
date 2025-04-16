@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted } from 'vue'
 import {
   IonGrid,
   IonRow,
@@ -66,6 +66,7 @@ const opcionesTipoPago = ref<TipoPagoOpcion[]>([
 ])
 
 const tipoPagoSeleccionado = ref('')
+const initialPaymentMethod = ref<string | null>(null);
 
 // Cargar datos del store si existen
 onMounted(() => {
@@ -74,30 +75,47 @@ onMounted(() => {
 
 const loadPaymentMethodFromStore = () => {
   const salesData = wizardStore.getStepData("salesData");
-  if (salesData && salesData.paymentMethod) {
-    tipoPagoSeleccionado.value = salesData.paymentMethod;
-    // Emitir el método de pago al cargar el componente
-    emit('payment-method-changed', salesData.paymentMethod);
-  } else {
-    tipoPagoSeleccionado.value = '';
+  initialPaymentMethod.value = salesData?.paymentMethod || null;
+  tipoPagoSeleccionado.value = initialPaymentMethod.value || '';
+  if (initialPaymentMethod.value) {
+    emit('payment-method-changed', initialPaymentMethod.value);
   }
 }
 
 const seleccionarTipoPago = (value: string) => {
+  // Actualizar el estado local
   tipoPagoSeleccionado.value = value;
-  // Actualizar el store con el método de pago seleccionado
-  wizardStore.updateFormSection("salesData", { paymentMethod: value });
+  
+  // Si seleccionamos un nuevo método de pago, debemos inicializar la estructura de datos correspondiente
+  const salesData = wizardStore.getStepData("salesData") || {};
+  const paymentData = salesData.payment || {};
+  
+  // Crear estructura básica de datos de pago según el método seleccionado
+  const updatedPayment = { ...paymentData };
+  
+  // Asegurarse de que exista la estructura adecuada para el método de pago seleccionado
+  if (value === 'transferencia' && !updatedPayment.transferData) {
+    updatedPayment.transferData = {
+      financialInstitution: '',
+      proofPayment: ''
+    };
+  } else if (value === 'datafast-voucher' && !updatedPayment.datafastData) {
+    updatedPayment.datafastData = {
+      typeCard: '',
+      numberLote: ''
+    };
+  }
+  
+  // Actualizar el store con el método de pago y la estructura de datos inicializada
+  wizardStore.updateFormSection("salesData", {
+    paymentMethod: value,
+    payment: updatedPayment
+  });
+  
   // Emitir el evento con el método de pago seleccionado
   emit('payment-method-changed', value);
   console.log('Tipo de Pago seleccionado:', value);
 }
-
-// Observar cambios en la selección para actualizar el store
-watch(tipoPagoSeleccionado, (newValue) => {
-  if (newValue) {
-    wizardStore.updateFormSection("salesData", { paymentMethod: newValue });
-  }
-});
 
 // Función para obtener el icono según el tipo de pago
 const getIconForPaymentType = (paymentType: string): string => {
