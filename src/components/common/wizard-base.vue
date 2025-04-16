@@ -19,8 +19,7 @@
             <div class="sub-step-container">
               <!-- Componente del sub-paso actual -->
               <component 
-                v-if="currentSubStep" 
-                :is="currentSubStep.component"
+                :is="currentSubStepComponent"
               />
             </div>
           </template>
@@ -72,6 +71,10 @@ import { useWizardProgress } from "@/composables/useWizardProgress"
 import { useWizardSubSteps, WizardSubStepsConfig } from "@/composables/useWizardSubSteps"
 import { useWizardStore } from "@/stores/wizardStore"
 import type { Component } from "vue"
+import { useWizardValidation } from "@/composables/useWizardValidation"
+
+// Obtener las funciones de validación del composable
+const { shouldDisableNextButton, shouldDisablePreviousButton } = useWizardValidation()
 
 // Obtenemos el router para la navegación
 const router = useRouter()
@@ -126,68 +129,6 @@ const currentStepKey = computed(() => {
   return steps.value[currentStep.value]?.key || ""
 })
 
-// Verificamos si debemos deshabilitar el botón "Anterior"
-const shouldDisablePreviousButton = computed(() => {
-  // Deshabilitar si estamos en el primer paso y primer subpaso
-  const isFirstStepAndSubStep = currentStep.value === 0 && currentSubStepIndex.value === 0
-  
-  // Deshabilitar si estamos en el paso "personal-info" (independientemente del subpaso)
-  const isPersonalInfoStep = currentStepKey.value === "personal-info"
-  
-  // Retornar true si cualquiera de las condiciones se cumple
-  return isFirstStepAndSubStep || isPersonalInfoStep
-})
-
-// Verificamos si debemos deshabilitar el botón "Siguiente"
-const shouldDisableNextButton = computed(() => {
-  // Verificar si estamos en el paso data-sales
-  if (currentStepKey.value === "data-sales") {
-    // Subpaso 0 (indexSalesDataSS1) - Verificar selección de plan
-    if (currentSubStepIndex.value === 0) {
-      const salesData = wizardStore.getStepData("salesData")
-      return !salesData?.plan
-    }
-    
-    // Subpaso 1 (indexSalesDataSS2) - Verificar las tres condiciones
-    if (currentSubStepIndex.value === 1) {
-      const salesData = wizardStore.getStepData("salesData")
-      const consultantData = wizardStore.getStepData("consultant")
-      
-      // Verificar si se ha seleccionado un vendedor
-      const hasSelectedSeller = consultantData?.sellerId ? true : false
-      
-      // Verificar si se ha ingresado un comprobante de pago
-      const hasProofPayment = salesData?.proofPayment ? salesData.proofPayment.trim().length > 0 : false
-      
-      // Verificar si se ha seleccionado un método de pago
-      const hasSelectedPaymentMethod = salesData?.paymentMethod ? true : false
-      
-      // El botón debe estar deshabilitado si alguna de las condiciones no se cumple
-      return !(hasSelectedSeller && hasProofPayment && hasSelectedPaymentMethod)
-    }
-  } else if (currentStepKey.value === "personal-info") {
-      // Subpaso 0 (personalInfo) - Verificar que todos los datos esten seleccionado
-      if (currentSubStepIndex.value === 0) {
-      const personalInfo = wizardStore.getStepData("personalInfo")
-
-      //si se ha seleccionado algun tipo de identifiacion y un numero de identificacion
-      const hasSelectedTypeId = personalInfo?.identification.type ? true : false
-      const hasNumberId = personalInfo?.identification.number ? personalInfo?.identification.number.trim().length > 0 : false
-
-      //si se ha ingresado algun nombre y apellido
-      const hasFirstName = personalInfo?.name.first ? personalInfo?.name.first.trim().length > 0 : false
-      const hasLastName = personalInfo?.name.last ? personalInfo?.name.last.trim().length > 0 : false
-
-      //si se ha ingresado email y telefono
-      const hasEmail = personalInfo?.contact.email ? personalInfo?.contact.email.trim().length > 0 : false
-      const hasPhone = personalInfo?.contact.phone ? personalInfo?.contact.phone.trim().length > 0 : false
-      return !(hasSelectedTypeId && hasNumberId && hasFirstName && hasLastName && hasPhone && hasEmail)
-    }
-  } 
-  // En otros pasos, el botón está habilitado normalmente
-  return false
-})
-
 // Actualizamos el estado del wizard cuando cambia el paso
 watch(currentStepKey, (newStepKey) => {
   wizardStore.updateWizardState({
@@ -217,6 +158,13 @@ const hasSubStepsForCurrentStep = computed(() => {
 const currentSubStep = computed(() => {
   return getCurrentSubStep(currentStepKey.value)
 })
+
+const currentSubStepComponent = computed(() => {
+  if (!currentSubStep.value) {
+    return null;
+  }
+  return currentSubStep.value.component;
+});
 
 // Obtenemos el número total de sub-pasos para el paso actual
 const totalSubStepsForCurrentStep = computed(() => {
