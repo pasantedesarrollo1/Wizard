@@ -22,8 +22,8 @@
             </div>
           </div>
           
-          <!-- Segunda fila: sección de formularios -->
-          <div class="bottom-row">
+          <!-- Segunda fila: sección de formularios - ahora condicionalmente visible -->
+          <div class="bottom-row" v-if="selectedPaymentMethod">
             <div class="section-container proof-section">
               <h4 class="text-lg font-semibold text-gray-800 pl-1 mt-0 mb-4 pb-2 border-b border-opacity-6">
                 Llena los siguientes datos
@@ -70,16 +70,18 @@ const updatePaymentMethod = (method: string) => {
 
 // Determinar qué componente de formulario mostrar basado en el método de pago
 watch(selectedPaymentMethod, (newValue) => {
-  switch (newValue) {
-    case 'datafast-voucher':
-      currentPaymentForm.value = datafastPayment
-      break
-    case 'transferencia':
-    default:
-      currentPaymentForm.value = transferPayment
-      break
+  if (newValue) {
+    switch (newValue) {
+      case 'datafast-voucher':
+        currentPaymentForm.value = datafastPayment
+        break
+      case 'transferencia':
+      default:
+        currentPaymentForm.value = transferPayment
+        break
+    }
+    console.log('Método de pago cambiado a:', newValue)
   }
-  console.log('Método de pago cambiado a:', newValue)
 })
 </script>
 
@@ -120,6 +122,7 @@ watch(selectedPaymentMethod, (newValue) => {
 // Segunda fila centrada
 .bottom-row {
   @apply w-full flex justify-center;
+  animation: fadeIn 0.5s ease;
   
   .proof-section {
     @apply w-full;
@@ -169,5 +172,11 @@ watch(selectedPaymentMethod, (newValue) => {
   .section-container {
     @apply mb-4;
   }
+}
+
+// Animación para la aparición del formulario
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
