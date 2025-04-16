@@ -75,10 +75,6 @@ export const initialState = (): WizardInterface => ({
       },
       taxes: [],
       taxesFiveNumber: "",
-      logo: {
-        url: "",
-        fileName: "",
-      },
     },
     branchAndPOS: {
       branch: {
@@ -90,6 +86,10 @@ export const initialState = (): WizardInterface => ({
         email: "",
         isTouristEstablishment: false,
         delayedDispatch: false,
+        logo: {
+          url: "",
+          fileName: "",
+        },
       },
       pointOfSale: {
         idPos: "",

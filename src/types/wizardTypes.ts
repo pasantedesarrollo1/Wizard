@@ -80,10 +80,6 @@ export interface WizardState {
     }
     taxes: string[]
     taxesFiveNumber: string
-    logo: {
-      url: string
-      fileName: string
-    }
   }
   
   // Interfaces para sucursal y punto de venta
@@ -97,6 +93,10 @@ export interface WizardState {
       email: string
       isTouristEstablishment: boolean
       delayedDispatch: boolean
+      logo: {
+        url: string
+        fileName: string
+      }
     }
     pointOfSale: {
       idPos: string
