@@ -48,6 +48,9 @@ import {
 import { Icon } from '@iconify/vue'
 import { useWizardStore } from "@/stores/wizardStore";
 
+// Definir los eventos que emite este componente
+const emit = defineEmits(['payment-method-changed'])
+
 // Obtener la instancia del store
 const wizardStore = useWizardStore();
 
@@ -66,18 +69,26 @@ const tipoPagoSeleccionado = ref('')
 
 // Cargar datos del store si existen
 onMounted(() => {
+  loadPaymentMethodFromStore();
+});
+
+const loadPaymentMethodFromStore = () => {
   const salesData = wizardStore.getStepData("salesData");
   if (salesData && salesData.paymentMethod) {
     tipoPagoSeleccionado.value = salesData.paymentMethod;
+    // Emitir el método de pago al cargar el componente
+    emit('payment-method-changed', salesData.paymentMethod);
   } else {
     tipoPagoSeleccionado.value = '';
   }
-});
+}
 
 const seleccionarTipoPago = (value: string) => {
   tipoPagoSeleccionado.value = value;
   // Actualizar el store con el método de pago seleccionado
   wizardStore.updateFormSection("salesData", { paymentMethod: value });
+  // Emitir el evento con el método de pago seleccionado
+  emit('payment-method-changed', value);
   console.log('Tipo de Pago seleccionado:', value);
 }
 
@@ -144,5 +155,4 @@ const getIconForPaymentType = (paymentType: string): string => {
     height: 5rem;
   }
 }
-
 </style>

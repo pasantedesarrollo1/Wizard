@@ -3,26 +3,32 @@
     <ion-card class="shadow-md rounded-2xl overflow-hidden w-full main-container">
       <ion-card-content>
         <div class="layout-container w-full">
-          <!-- Columna izquierda: contiene vendor-section y proof-section -->
-          <div class="left-column">
+          <!-- Primera fila: contiene vendor-section y payment-section -->
+          <div class="top-row">
             <!-- Sección de selección de vendedor -->
-            <div class="section-container vendor-section">
-              <h4 class="text-lg font-semibold text-gray-800 mt-0 mb-4 pl-3 pb-2 border-b border-opacity-6">Selecciona tu nombre para registrar tu venta</h4>
-              <salesListe />
+            <div class="section-container vendor-section w-full">
+              <h4 class="text-lg font-semibold text-gray-800 border-opacity-6">
+                Selecciona tu nombre para registrar tu venta
+              </h4>
+              <salesListe class="w-full" />
             </div>
             
             <!-- Sección del método de pago -->
-            <div class="section-container payment-section">
-              <h4 class="text-lg font-semibold text-gray-800 pl-3 mt-0 mb-4 pb-2 border-b border-opacity-6">Selecciona el método de pago del Servicio</h4>
-              <typePayments />
+            <div class="section-container payment-section w-full">
+              <h4 class="text-lg font-semibold text-gray-800 pl-3 mt-0 mb-4 pb-2 border-b border-opacity-6">
+                Selecciona el método de pago del Servicio
+              </h4>
+              <typePayments class="w-full" @payment-method-changed="updatePaymentMethod" />
             </div>
           </div>
           
-          <!-- Seccion de formularios -->
-          <div class="right-column">
+          <!-- Segunda fila: sección de formularios -->
+          <div class="bottom-row">
             <div class="section-container proof-section">
-              <h4 class="text-lg font-semibold text-gray-800 pl-1 mt-0 mb-4 pb-2 border-b border-opacity-6">Llena los siguientes datos</h4>
-              <transferPayment />
+              <h4 class="text-lg font-semibold text-gray-800 pl-1 mt-0 mb-4 pb-2 border-b border-opacity-6">
+                Llena los siguientes datos
+              </h4>
+              <component :is="currentPaymentForm" />
             </div>
           </div>
         </div>
@@ -32,10 +38,49 @@
 </template>
   
 <script setup lang="ts">
+import { ref, onMounted, watch } from 'vue'
 import { IonCard, IonCardContent } from '@ionic/vue'
 import typePayments from "@/components/common/steps/dataSales/sub-step2/components/typePayments.vue"
 import transferPayment from "@/components/common/steps/dataSales/sub-step2/components/transferPayment.vue"
+import datafastPayment from "@/components/common/steps/dataSales/sub-step2/components/datafastPayment.vue"
 import salesListe from "@/components/common/steps/dataSales/sub-step2/components/salesList.vue"
+import { useWizardStore } from "@/stores/wizardStore"
+
+// Obtener la instancia del store
+const wizardStore = useWizardStore()
+
+// Estado para el método de pago seleccionado
+const selectedPaymentMethod = ref('')
+
+// Estado para el componente de formulario actual
+const currentPaymentForm = ref(transferPayment) // Valor por defecto
+
+// Cargar el método de pago desde el store si existe
+onMounted(() => {
+  const salesData = wizardStore.getStepData("salesData")
+  if (salesData && salesData.paymentMethod) {
+    selectedPaymentMethod.value = salesData.paymentMethod
+  }
+})
+
+// Función para actualizar el método de pago seleccionado
+const updatePaymentMethod = (method: string) => {
+  selectedPaymentMethod.value = method
+}
+
+// Determinar qué componente de formulario mostrar basado en el método de pago
+watch(selectedPaymentMethod, (newValue) => {
+  switch (newValue) {
+    case 'datafast-voucher':
+      currentPaymentForm.value = datafastPayment
+      break
+    case 'transferencia':
+    default:
+      currentPaymentForm.value = transferPayment
+      break
+  }
+  console.log('Método de pago cambiado a:', newValue)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -49,13 +94,47 @@ import salesListe from "@/components/common/steps/dataSales/sub-step2/components
   max-width: 100%;
   
   @media (min-width: 768px) {
-    max-width: 768px; // Ancho fijo de 768px en pantallas de 768px en adelante
+    max-width: 950px; // Ancho máximo para el contenedor principal
+  }
+}
+
+// Layout principal
+.layout-container {
+  @apply flex flex-col;
+  gap: 1.5rem;
+}
+
+// Primera fila con dos columnas
+.top-row {
+  @apply flex flex-col md:flex-row w-full justify-center;
+  gap: 1rem;
+  
+  @media (min-width: 768px) {
+    .vendor-section, .payment-section {
+      width: 100%; // Cambio importante: ahora ocupan todo el ancho disponible
+      flex: 1; // Distribución equitativa del espacio
+    }
+  }
+}
+
+// Segunda fila centrada
+.bottom-row {
+  @apply w-full flex justify-center;
+  
+  .proof-section {
+    @apply w-full;
+    
+    @media (min-width: 768px) {
+      width: 100%; // Ahora ocupa todo el ancho disponible
+      max-width: 600px; // Ancho máximo para el formulario
+      margin: 0 auto;
+    }
   }
 }
 
 // Estilos base para las secciones
 .section-container {
-  @apply mb-6 p-2 rounded-xl shadow-sm;
+  @apply p-3 rounded-xl shadow-sm;
   background-color: #f9fafb;
   
   &:last-child {
@@ -66,50 +145,29 @@ import salesListe from "@/components/common/steps/dataSales/sub-step2/components
 // Colores específicos para cada sección
 .vendor-section {
   background-color: #f0f7ff; // Tono azul muy claro
+  width: 100%; // Asegurar ancho completo
 }
 
 .payment-section {
   background-color: #f7faff; // Tono azul aún más claro
   @apply h-full flex flex-col;
+  width: 100%; // Asegurar ancho completo
 }
 
 .proof-section {
   background-color: #f9fbff; // Tono azul casi imperceptible
+  width: 100%; // Asegurar ancho completo
 }
 
-// Media queries y layout responsive
+// Media queries para responsividad
 @media (max-width: 767px) {
   // Diseño móvil: todo en una columna
-  .left-column, .right-column {
+  .vendor-section, .payment-section, .proof-section {
     @apply w-full;
   }
   
   .section-container {
     @apply mb-4;
-  }
-}
-
-@media (min-width: 768px) {
-  // Diseño tablet y desktop: dos filas, primera fila con dos columnas iguales
-  .layout-container {
-    @apply flex flex-col;
-  }
-  
-  .left-column {
-    @apply flex flex-row w-full mb-5;
-    gap: 20px;
-  }
-  
-  .vendor-section, .proof-section {
-    @apply w-1/2 m-0;
-  }
-  
-  .right-column {
-    @apply w-full;
-  }
-  
-  .payment-section {
-    @apply w-full m-0;
   }
 }
 </style>
