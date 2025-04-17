@@ -16,16 +16,15 @@
                     <Icon icon="mdi:cards" width="20" height="20" />
                   </div>
                   <select 
-                    v-model="tipoIDSeleccionado" 
+                    v-model="data.identification.type" 
                     class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 appearance-none
                            hover:border-blue-400"
                     :class="{ 
-                      'bg-primary-50 border-primary text-primary': tipoIDSeleccionado.length > 0,
+                      'bg-primary-50 border-primary text-primary': data.identification.type.length > 0,
                       'border-blue-500 border-2 shadow-md': focusedField === 'tipoID'
                     }"
                     @focus="setFocus('tipoID')"
                     @blur="clearFocus"
-                    @change="updateStore"
                     required
                   >
                     <option value="" disabled selected>Seleccionar</option>
@@ -48,16 +47,15 @@
                   <input 
                     type="text"
                     placeholder="Número de identificación"
-                    v-model="identificacion"
+                    v-model="data.identification.number"
                     class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                            hover:border-blue-400"
                     :class="{ 
-                      'bg-primary-50 border-primary text-primary': identificacion.length > 0,
+                      'bg-primary-50 border-primary text-primary': data.identification.number.length > 0,
                       'border-blue-500 border-2 shadow-md': focusedField === 'identificacion'
                     }"
                     @focus="setFocus('identificacion')"
                     @blur="clearFocus"
-                    @input="updateStore"
                     required
                   >
                 </div>
@@ -71,16 +69,15 @@
                 <input 
                   type="text"
                   placeholder="Ingresa tus Nombres"
-                  v-model="nombres"
+                  v-model="data.name.first"
                   class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                          hover:border-blue-400"
                   :class="{ 
-                    'bg-primary-50 border-primary text-primary': nombres.length > 0,
+                    'bg-primary-50 border-primary text-primary': data.name.first.length > 0,
                     'border-blue-500 border-2 shadow-md': focusedField === 'nombres'
                   }"
                   @focus="setFocus('nombres')"
                   @blur="clearFocus"
-                  @input="updateStore"
                   required
                 >
               </div>
@@ -93,16 +90,15 @@
                 <input 
                   type="text"
                   placeholder="Ingresa tus Apellidos"
-                  v-model="apellidos"
+                  v-model="data.name.last"
                   class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                          hover:border-blue-400"
                   :class="{ 
-                    'bg-primary-50 border-primary text-primary': apellidos.length > 0,
+                    'bg-primary-50 border-primary text-primary': data.name.last.length > 0,
                     'border-blue-500 border-2 shadow-md': focusedField === 'apellidos'
                   }"
                   @focus="setFocus('apellidos')"
                   @blur="clearFocus"
-                  @input="updateStore"
                   required
                 >
               </div>
@@ -119,16 +115,15 @@
                   <input 
                     type="email"
                     placeholder="Email"
-                    v-model="email"
+                    v-model="data.contact.email"
                     class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                            hover:border-blue-400"
                     :class="{ 
-                      'bg-primary-50 border-primary text-primary': email.length > 0,
+                      'bg-primary-50 border-primary text-primary': data.contact.email.length > 0,
                       'border-blue-500 border-2 shadow-md': focusedField === 'email'
                     }"
                     @focus="setFocus('email')"
                     @blur="clearFocus"
-                    @input="updateStore"
                     required
                   >
                 </div>
@@ -146,16 +141,15 @@
                   <input 
                     type="phone"
                     placeholder="+593"
-                    v-model="telefono"
+                    v-model="data.contact.phone"
                     class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                            hover:border-blue-400"
                     :class="{ 
-                      'bg-primary-50 border-primary text-primary': focusedField === 'telefono' && telefono.length > 0,
+                      'bg-primary-50 border-primary text-primary': focusedField === 'telefono' && data.contact.phone.length > 0,
                       'border-blue-500 border-2 shadow-md': focusedField === 'telefono'
                     }"
                     @focus="setFocus('telefono')"
                     @blur="clearFocus"
-                    @input="updateStore"
                   >
                 </div>
               </div>
@@ -168,7 +162,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref } from 'vue';
 import {
   IonCard,
   IonCardContent,
@@ -176,10 +170,7 @@ import {
   IonLabel,
 } from '@ionic/vue';
 import { Icon } from '@iconify/vue'; // Importación de Iconify
-import { useWizardStore } from "@/stores/wizardStore";
-
-// Obtener la instancia del store
-const wizardStore = useWizardStore();
+import { useInitialData } from "@/composables/useInitialData";
 
 // Definimos la interfaz para las opciones de tipo de ID
 interface TipoIDOpcion {
@@ -193,14 +184,36 @@ const opcionesTipoID = ref<TipoIDOpcion[]>([
   { label: 'RUC', value: 'ruc' }
 ]);
 
+// Valores iniciales para el formulario
+const initialValues = {
+  identification: {
+    type: '',
+    number: ''
+  },
+  name: {
+    first: '',
+    last: ''
+  },
+  contact: {
+    email: '',
+    phone: ''
+  }
+};
 
-// Variables reactivas para almacenar los valores de los campos
-const tipoIDSeleccionado = ref('');
-const identificacion = ref('');
-const nombres = ref('');
-const apellidos = ref('');
-const email = ref('');
-const telefono = ref('');
+// Usar el composable useInitialData para manejar los datos
+const { data } = useInitialData(
+  "personalInfo",
+  initialValues,
+  {
+    autoSave: true,
+    debug: false,
+    nestedFields: {
+      identification: ["type", "number"],
+      name: ["first", "last"],
+      contact: ["email", "phone"]
+    }
+  }
+);
 
 // Variable para controlar qué campo está enfocado
 const focusedField = ref('');
@@ -213,52 +226,6 @@ const setFocus = (fieldName: string) => {
 const clearFocus = () => {
   focusedField.value = '';
 };
-
-// Función para actualizar el store con los valores actuales
-const updateStore = () => {
-  wizardStore.updateFormSection("personalInfo", {
-    identification: {
-      type: tipoIDSeleccionado.value,
-      number: identificacion.value
-    },
-    name: {
-      first: nombres.value,
-      last: apellidos.value
-    },
-    contact: {
-      email: email.value,
-      phone: telefono.value,
-    },
-  });
-};
-
-// Cargar datos del store si existen
-onMounted(() => {
-  const personalInfo = wizardStore.getStepData("personalInfo");
-  if (personalInfo) {
-    if (personalInfo.identification) {
-      tipoIDSeleccionado.value = personalInfo.identification.type || '';
-      identificacion.value = personalInfo.identification.number || '';
-    }
-    if (personalInfo.name) {
-      nombres.value = personalInfo.name.first || '';
-      apellidos.value = personalInfo.name.last || '';
-    }
-    if (personalInfo.contact) {
-      email.value = personalInfo.contact.email || '';
-      telefono.value = personalInfo.contact.phone || '';
-
-    }
-  }
-});
-
-// Observar cambios en todos los campos para actualizar el store
-watch(
-  [tipoIDSeleccionado, identificacion, nombres, apellidos, email, telefono],
-  () => {
-    updateStore();
-  }
-);
 </script>
 
 <style lang="scss" scoped>

@@ -23,13 +23,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits, onMounted } from "vue"
+import { ref, defineEmits} from "vue"
 import { IonItem, IonButton } from "@ionic/vue"
 import { Icon } from "@iconify/vue"
-import { useWizardStore } from "@/stores/wizardStore"
-
-// Obtener la instancia del store
-const wizardStore = useWizardStore()
+import { useInitialData } from "@/composables/useInitialData"
 
 // Datos simulados del SRI que se utilizarán para la consulta
 const dataSRI = {
@@ -45,7 +42,63 @@ const dataSRI = {
   address: "PICHINCHA / QUITO / IÑAQUITO / 10 DE AGOSTO N33-62 Y N33 GUAYANAS",
 }
 
-const rucValue = ref("")
+// Valores iniciales para los datos de la compañía
+const companyCreationInitial = {
+  ruc: "",
+  legalName: "",
+  domain: ""
+}
+
+// Inicializar los datos para branchAndPOS
+const branchAndPOSInitial = {
+  branch: {
+    idBranch: "",
+    commercialName: "",
+    address: ""
+  }
+}
+
+// Inicializar los datos para companyConfig
+const companyConfigInitial = {
+  regimeRUC: "",
+  categoryRUC: "",
+  taxAgent: {
+    isAgent: false,
+    accountingRequired: false
+  }
+}
+
+// Usar el composable useInitialData para cada sección
+const { data: companyCreationData, updateFields: updateCompanyCreation } = useInitialData(
+  "companyCreation",
+  companyCreationInitial,
+  { autoSave: true }
+)
+
+const { data: branchAndPOSData, updateFields: updateBranchAndPOS } = useInitialData(
+  "branchAndPOS",
+  branchAndPOSInitial,
+  { 
+    autoSave: true,
+    nestedFields: {
+      branch: ["idBranch", "commercialName", "address"]
+    }
+  }
+)
+
+const { data: companyConfigData, updateFields: updateCompanyConfig } = useInitialData(
+  "companyConfig",
+  companyConfigInitial,
+  { 
+    autoSave: true,
+    nestedFields: {
+      taxAgent: ["isAgent", "accountingRequired"]
+    }
+  }
+)
+
+// Usar el valor del RUC desde el store o un valor vacío
+const rucValue = ref(companyCreationData.value.ruc || "")
 const isFocused = ref(false)
 const rucInput = ref<HTMLInputElement | null>(null)
 
@@ -58,34 +111,34 @@ const focusInput = () => {
   }
 }
 
-// Actualizar el store cuando se busca un RUC
+// Actualizar el store con los datos del SRI
 const updateStoreWithSRIData = () => {
-  // Actualizar los datos de companyCreation con los datos de dataSRI
-  wizardStore.updateFormSection("companyCreation", {
+  // Actualizar los datos de companyCreation
+  updateCompanyCreation({
     ruc: dataSRI.ruc,
     legalName: dataSRI.legalName,
-    domain: dataSRI.ruc,
+    domain: dataSRI.ruc
   })
 
-  // Actualizar los datos de branchAndPOS.branch con los datos de dataSRI
-  wizardStore.updateFormSection("branchAndPOS", {
+  // Actualizar los datos de branchAndPOS
+  updateBranchAndPOS({
     branch: {
-      ...wizardStore.getStepData("branchAndPOS")?.branch,
+      ...branchAndPOSData.value.branch,
       idBranch: dataSRI.idBranch,
       commercialName: dataSRI.commercialName,
-      address: dataSRI.address,
-    },
+      address: dataSRI.address
+    }
   })
 
-  // Actualizar los datos de companyConfig con los datos de dataSRI
-  wizardStore.updateFormSection("companyConfig", {
+  // Actualizar los datos de companyConfig
+  updateCompanyConfig({
     regimeRUC: dataSRI.regimeRUC,
     categoryRUC: dataSRI.categoryRUC,
     taxAgent: {
-      ...wizardStore.getStepData("companyConfig")?.taxAgent,
+      ...companyConfigData.value.taxAgent,
       isAgent: dataSRI.isAgent,
-      accountingRequired: dataSRI.accountingRequired,
-    },
+      accountingRequired: dataSRI.accountingRequired
+    }
   })
 
   // Mostrar en consola para debug
@@ -131,15 +184,6 @@ const searchRuc = () => {
   // Emitir el evento con los datos del RUC
   emit("ruc-searched", rucData)
 }
-
-// Al montar el componente, verificar si ya hay datos en el store y actualizar el input
-onMounted(() => {
-  const companyData = wizardStore.getStepData("companyCreation") || {};
-  if (companyData.ruc) {
-    rucValue.value = companyData.ruc
-  }
-})
-
 </script>
 
 <style scoped>

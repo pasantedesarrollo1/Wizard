@@ -5,15 +5,15 @@
       <!-- Botón mejorado con Tailwind -->
       <ion-button 
         expand="block" 
-        :fill="vendedorSeleccionado ? 'solid' : 'outline'" 
+        :fill="data.sellerId ? 'solid' : 'outline'" 
         @click="abrirPopover($event)" 
         class="select-button"
-        :class="{ 'has-selection': vendedorSeleccionado }"
+        :class="{ 'has-selection': data.sellerId }"
         required
       >
         <div class="w-full flex justify-between items-center">
           <div class="text-left normal-case font-normal whitespace-nowrap overflow-hidden text-ellipsis">
-            <span v-if="vendedorSeleccionadoNombre">{{ vendedorSeleccionadoNombre }}</span>
+            <span v-if="data.sellerName">{{ data.sellerName }}</span>
             <span v-else class="text-gray-500 opacity-80">Identifícate y registra la venta</span>
           </div>
           <div class="flex items-center">
@@ -87,7 +87,7 @@
                 button
                 @click="seleccionarVendedor(vendedor)"
                 class="vendedor-item"
-                :class="{ 'selected': vendedor.id === vendedorSeleccionado }"
+                :class="{ 'selected': vendedor.id.toString() === data.sellerId }"
               >
                 <div class="w-full flex items-center gap-3">
                   <div class="flex items-center justify-center">
@@ -99,7 +99,7 @@
                     {{ vendedor.nombre }}
                   </ion-label>
                   <ion-icon 
-                    v-if="vendedor.id === vendedorSeleccionado" 
+                    v-if="vendedor.id.toString() === data.sellerId" 
                     :icon="checkmarkCircle" 
                     class="text-lg"
                     color="primary"
@@ -115,7 +115,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from "vue"
+import { ref, computed, onMounted, onUnmounted } from "vue"
 import {
   IonLabel,
   IonButton,
@@ -128,10 +128,7 @@ import {
   IonSpinner,
 } from "@ionic/vue"
 import { chevronDownOutline, checkmarkCircle, personOutline, alertCircleOutline } from "ionicons/icons"
-import { useWizardStore } from "@/stores/wizardStore"
-
-// Obtener la instancia del store
-const wizardStore = useWizardStore()
+import { useInitialData } from "@/composables/useInitialData"
 
 // Datos de vendedores implementados directamente desde dbSales.json
 const vendedoresData = [
@@ -150,8 +147,21 @@ const vendedoresData = [
 // Estado para almacenar los vendedores
 const vendedores = ref(vendedoresData)
 
-// Vendedor seleccionado
-const vendedorSeleccionado = ref<number | null>(null)
+// Valores iniciales para el formulario
+const initialValues = {
+  sellerId: "",
+  sellerName: ""
+}
+
+// Usar el composable useInitialData para manejar los datos
+const { data } = useInitialData(
+  "consultant",
+  initialValues,
+  {
+    autoSave: true,
+    debug: false
+  }
+)
 
 // Estado para el popover
 const popoverAbierto = ref(false)
@@ -166,12 +176,6 @@ const error = ref("")
 // Referencia al elemento selector para medir su ancho
 const selectorRef = ref<HTMLElement | null>(null)
 const popoverStyle = ref({})
-
-// Computar el nombre del vendedor seleccionado
-const vendedorSeleccionadoNombre = computed(() => {
-  const vendedor = vendedores.value.find((v) => v.id === vendedorSeleccionado.value)
-  return vendedor ? vendedor.nombre : ""
-})
 
 // Vendedores filtrados basados en el término de búsqueda
 const vendedoresFiltrados = computed(() => {
@@ -231,24 +235,15 @@ const cerrarPopover = () => {
 
 // Seleccionar un vendedor
 const seleccionarVendedor = (vendedor: { id: number; nombre: string }) => {
-  vendedorSeleccionado.value = vendedor.id
-
-  // Actualizar el store con el ID y nombre del vendedor seleccionado
-  wizardStore.updateFormSection("consultant", {
-    sellerId: vendedor.id.toString(),
-    sellerName: vendedor.nombre,
-  })
-
+  // Actualizar directamente el objeto data del composable
+  data.value.sellerId = vendedor.id.toString()
+  data.value.sellerName = vendedor.nombre
+  
   cerrarPopover()
 }
 
-// Cargar datos del store si existen
+// Cargar datos y configurar event listeners
 onMounted(() => {
-  const consultantData = wizardStore.getStepData("consultant")
-  if (consultantData && consultantData.sellerId) {
-    vendedorSeleccionado.value = parseInt(consultantData.sellerId)
-  }
-
   simularCarga()
   window.addEventListener("resize", handleResize)
 })
@@ -265,19 +260,6 @@ const handleResize = () => {
 // Limpiar event listeners al desmontar
 onUnmounted(() => {
   window.removeEventListener("resize", handleResize)
-})
-
-// Observar cambios en el vendedor seleccionado para actualizar el store
-watch(vendedorSeleccionado, (newValue) => {
-  if (newValue !== null) {
-    const vendedor = vendedores.value.find((v) => v.id === newValue)
-    if (vendedor) {
-      wizardStore.updateFormSection("consultant", {
-        sellerId: vendedor.id.toString(),
-        sellerName: vendedor.nombre,
-      })
-    }
-  }
 })
 </script>
 

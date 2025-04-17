@@ -12,7 +12,7 @@
           <!-- Card unificada -->
           <div 
             class="unified-card w-full h-[130px] rounded-[20px] transition-all duration-300 cursor-pointer p-2 flex flex-col justify-between items-center"
-            :class="{ 'selected-card': tipoPagoSeleccionado === opcion.value }"
+            :class="{ 'selected-card': data.paymentMethod === opcion.value }"
             @click="seleccionarTipoPago(opcion.value)"
           >
             <!-- Contenedor del icono grande -->
@@ -20,14 +20,14 @@
               <Icon 
                   :icon="getIconForPaymentType(opcion.value)" 
                   class="w-20 h-20 pb-1 transition-all duration-300"
-                  :class="{ 'text-white': tipoPagoSeleccionado === opcion.value }"
+                  :class="{ 'text-white': data.paymentMethod === opcion.value }"
                 />
             </div>
             
             <!-- Texto del método de pago con mejor estilo -->
             <div class="text-center w-full mt-auto">
               <p class="m-0 text-lg font-medium text-gray-800 transition-all duration-300"
-                 :class="{ 'text-white font-semibold': tipoPagoSeleccionado === opcion.value }">
+                 :class="{ 'text-white font-semibold': data.paymentMethod === opcion.value }">
                 {{ opcion.label }}
               </p>
             </div>
@@ -39,20 +39,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import {
   IonGrid,
   IonRow,
   IonCol
 } from '@ionic/vue'
 import { Icon } from '@iconify/vue'
-import { useWizardStore } from "@/stores/wizardStore";
+import { useInitialData } from "@/composables/useInitialData";
 
 // Definir los eventos que emite este componente
 const emit = defineEmits(['payment-method-changed'])
-
-// Obtener la instancia del store
-const wizardStore = useWizardStore();
 
 interface TipoPagoOpcion {
   label: string
@@ -65,55 +62,46 @@ const opcionesTipoPago = ref<TipoPagoOpcion[]>([
   { label: 'Transferencia', value: 'transferencia' },
 ])
 
-const tipoPagoSeleccionado = ref('')
-const initialPaymentMethod = ref<string | null>(null);
-
-// Cargar datos del store si existen
-onMounted(() => {
-  loadPaymentMethodFromStore();
-});
-
-const loadPaymentMethodFromStore = () => {
-  const salesData = wizardStore.getStepData("salesData");
-  initialPaymentMethod.value = salesData?.paymentMethod || null;
-  tipoPagoSeleccionado.value = initialPaymentMethod.value || '';
-  if (initialPaymentMethod.value) {
-    emit('payment-method-changed', initialPaymentMethod.value);
-  }
-}
-
-const seleccionarTipoPago = (value: string) => {
-  // Actualizar el estado local
-  tipoPagoSeleccionado.value = value;
-  
-  // Si seleccionamos un nuevo método de pago, debemos inicializar la estructura de datos correspondiente
-  const salesData = wizardStore.getStepData("salesData") || {};
-  const paymentData = salesData.payment || {};
-  
-  // Crear estructura básica de datos de pago según el método seleccionado
-  const updatedPayment = { ...paymentData };
-  
-  // Asegurarse de que exista la estructura adecuada para el método de pago seleccionado
-  if (value === 'transferencia' && !updatedPayment.transferData) {
-    updatedPayment.transferData = {
+// Valores iniciales para el formulario
+const initialValues = {
+  paymentMethod: '',
+  payment: {
+    date: '',
+    amount: 0,
+    transferData: {
       financialInstitution: '',
       proofPayment: ''
-    };
-  } else if (value === 'datafast-voucher' && !updatedPayment.datafastData) {
-    updatedPayment.datafastData = {
+    },
+    datafastData: {
       typeCard: '',
       numberLote: ''
-    };
+    }
   }
-  
-  // Actualizar el store con el método de pago y la estructura de datos inicializada
-  wizardStore.updateFormSection("salesData", {
-    paymentMethod: value,
-    payment: updatedPayment
+};
+
+// Usar el composable useInitialData para manejar los datos
+const { data, updateFields } = useInitialData(
+  "salesData",
+  initialValues,
+  {
+    autoSave: true,
+    debug: false
+  }
+);
+
+// Observar cambios en el método de pago para emitir eventos
+watch(() => data.value.paymentMethod, (newValue) => {
+  if (newValue) {
+    emit('payment-method-changed', newValue);
+  }
+}, { immediate: true });
+
+const seleccionarTipoPago = (value: string) => {
+  // Actualizar el método de pago en el store
+  updateFields({
+    paymentMethod: value
   });
   
-  // Emitir el evento con el método de pago seleccionado
-  emit('payment-method-changed', value);
   console.log('Tipo de Pago seleccionado:', value);
 }
 

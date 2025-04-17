@@ -8,8 +8,8 @@
     <div class="period-toggle-container">
       <div class="period-toggle">
         <span :class="{ 
-          'period-active': periodoSeleccionado === 'mensual', 
-          'period-inactive': periodoSeleccionado !== 'mensual' 
+          'period-active': salesData.billingFrequency === 'mensual', 
+          'period-inactive': salesData.billingFrequency !== 'mensual' 
         }">
           Mensual
         </span>
@@ -18,7 +18,7 @@
             <input 
               class="checkbox" 
               type="checkbox" 
-              :checked="periodoSeleccionado === 'anual'"
+              :checked="salesData.billingFrequency === 'anual'"
               @change="togglePeriodo"
             >
             <div class="knobs"></div>
@@ -26,11 +26,11 @@
           </div>
         </div>
         <span :class="{ 
-          'period-active': periodoSeleccionado === 'anual', 
-          'period-inactive': periodoSeleccionado !== 'anual' 
+          'period-active': salesData.billingFrequency === 'anual', 
+          'period-inactive': salesData.billingFrequency !== 'anual' 
         }">
           Anual
-          <ion-badge v-if="periodoSeleccionado === 'anual'" class="savings-badge">
+          <ion-badge v-if="salesData.billingFrequency === 'anual'" class="savings-badge">
             Ahorro 20%
           </ion-badge>
         </span>
@@ -51,7 +51,7 @@
             button 
             :class="[
               'plan-card',
-              tipoPlanSeleccionado === opcion.value ? 'selected-plan' : '',
+              salesData.plan === opcion.value ? 'selected-plan' : '',
               opcion.value === 'pymeplan' ? 'popular-plan' : ''
             ]"
             @click="seleccionarPlan(opcion.value)"
@@ -73,10 +73,10 @@
                 <div class="price-tag">
                   <span class="currency">$</span>
                   <span class="amount">{{ getPlanPrice(opcion) }}</span>
-                  <span class="period">/{{ periodoSeleccionado === 'anual' ? 'año' : 'mes' }}</span>
+                  <span class="period">/{{ salesData.billingFrequency === 'anual' ? 'año' : 'mes' }}</span>
                 </div>
                 
-                <div v-if="periodoSeleccionado === 'anual' && opcion.value !== 'freeplan'" class="savings-text">
+                <div v-if="salesData.billingFrequency === 'anual' && opcion.value !== 'freeplan'" class="savings-text">
                   <span class="original-price">{{ opcion.precioMensual }}×12</span>
                 </div>
               </div>
@@ -99,7 +99,7 @@
                   Gratis
                 </ion-badge>
                 <ion-badge 
-                  v-if="periodoSeleccionado === 'anual' && opcion.value !== 'freeplan'" 
+                  v-if="salesData.billingFrequency === 'anual' && opcion.value !== 'freeplan'" 
                   color="tertiary"
                   class="plan-badge annual-badge"
                 >
@@ -115,7 +115,7 @@
 </template>
   
 <script setup lang="ts">
-import { ref, watch, onMounted } from "vue"
+import { ref } from "vue"
 import {
   IonText,
   IonCard,
@@ -129,7 +129,7 @@ import {
   IonCol,
 } from "@ionic/vue"
 import { checkmarkCircle, star } from "ionicons/icons"
-import { useWizardStore } from "@/stores/wizardStore"
+import { useInitialData } from "@/composables/useInitialData"
 
 // Definimos la interfaz para las opciones de tipo de plan con precios
 interface TipoPlanesOpcion {
@@ -140,11 +140,17 @@ interface TipoPlanesOpcion {
   caracteristicas?: string[]
 }
 
-// Obtenemos la instancia del store
-const wizardStore = useWizardStore()
-
-// Estado para controlar si se muestra el precio anual o mensual
-const periodoSeleccionado = ref<string>("mensual")
+// Utilizamos el composable useInitialData para manejar los datos de salesData
+const { data: salesData, updateField } = useInitialData('salesData', {
+  plan: '',
+  billingFrequency: 'mensual',
+  payment: {
+    amount: 0,
+    date: ''
+  }
+}, {
+  debug: false // Activar para depuración si es necesario
+});
 
 // Array con las opciones de tipo de plan incluyendo precios
 const opcionesTipoPlanes = ref<TipoPlanesOpcion[]>([
@@ -196,50 +202,22 @@ const opcionesTipoPlanes = ref<TipoPlanesOpcion[]>([
   },
 ])
 
-// Variable para almacenar el plan seleccionado
-const tipoPlanSeleccionado = ref<string>("")
-
-// Cargar datos del store si existen al montar el componente
-onMounted(() => {
-  const salesData = wizardStore.getStepData("salesData")
-  if (salesData) {
-    if (salesData.plan) {
-      tipoPlanSeleccionado.value = salesData.plan
-    }
-    if (salesData.billingFrequency) {
-      periodoSeleccionado.value = salesData.billingFrequency
-    }
-  }
-})
-
 // Función para obtener el precio según el periodo seleccionado
 const getPlanPrice = (plan: TipoPlanesOpcion): string => {
-  return periodoSeleccionado.value === "anual" ? plan.precioAnual : plan.precioMensual
+  return salesData.value.billingFrequency === "anual" ? plan.precioAnual : plan.precioMensual
 }
 
 // Función para seleccionar un plan
 const seleccionarPlan = (value: string) => {
-  tipoPlanSeleccionado.value = value
-  // Actualizar el store con el plan seleccionado
-  wizardStore.updateFormSection("salesData", { plan: value })
+  updateField('plan', value);
 }
 
 // Función para alternar entre periodos (mensual/anual)
 const togglePeriodo = (event: Event) => {
   const target = event.target as HTMLInputElement
-  periodoSeleccionado.value = target.checked ? "anual" : "mensual"
-  // Actualizar el store con la frecuencia de facturación seleccionada
-  wizardStore.updateFormSection("salesData", { billingFrequency: periodoSeleccionado.value })
+  const nuevoPeriodo = target.checked ? "anual" : "mensual"
+  updateField('billingFrequency', nuevoPeriodo);
 }
-
-// Observar cambios en el plan y periodo seleccionados para actualizar el store
-watch([tipoPlanSeleccionado, periodoSeleccionado], () => {
-  // Actualizar el store con los valores actuales
-  wizardStore.updateFormSection("salesData", {
-    plan: tipoPlanSeleccionado.value,
-    billingFrequency: periodoSeleccionado.value,
-  })
-})
 
 </script>
   

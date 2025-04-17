@@ -14,11 +14,11 @@
             <input
               id="date"
               type="date"
-              v-model="dateValue"
+              v-model="data.payment.date"
               required
               class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
               :class="{
-                'bg-primary-50 border-primary text-primary': dateValue,
+                'bg-primary-50 border-primary text-primary': data.payment.date,
                 'border-blue-500 border-2 shadow-md': focusedField === 'date'
               }"
               @focus="setFocus('date')"
@@ -41,11 +41,11 @@
               type="number"
               step="0.01"
               placeholder="Valor a pagar"
-              v-model.number="amountValue"
+              v-model.number="data.payment.amount"
               required
               class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400 no-spinner"
               :class="{
-                'bg-primary-50 border-primary text-primary': amountValue > 0,
+                'bg-primary-50 border-primary text-primary': data.payment.amount > 0,
                 'border-blue-500 border-2 shadow-md': focusedField === 'amount'
               }"
               @focus="setFocus('amount')"
@@ -68,11 +68,11 @@
             id="typeCard"
             type="text"
             placeholder="Ej.: Visa"
-            v-model="typeCard"
+            v-model="data.payment.datafastData.typeCard"
             required
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
             :class="{
-              'bg-primary-50 border-primary text-primary': typeCard.length > 0,
+              'bg-primary-50 border-primary text-primary': data.payment.datafastData.typeCard.length > 0,
               'border-blue-500 border-2 shadow-md': focusedField === 'typeCard'
             }"
             @focus="setFocus('typeCard')"
@@ -94,11 +94,11 @@
             id="numberLote"
             type="text"
             placeholder="Ingresa el número de lote"
-            v-model="numberLoteValue"
+            v-model="data.payment.datafastData.numberLote"
             required
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
             :class="{
-              'bg-primary-50 border-primary text-primary': numberLoteValue.length > 0,
+              'bg-primary-50 border-primary text-primary': data.payment.datafastData.numberLote.length > 0,
               'border-blue-500 border-2 shadow-md': focusedField === 'numberLote'
             }"
             @focus="setFocus('numberLote')"
@@ -110,28 +110,9 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, onMounted, watch } from 'vue';
+  import { ref } from 'vue';
   import { Icon } from '@iconify/vue';
-  import { useWizardStore } from "@/stores/wizardStore";
-  
-  // Obtener la instancia del store
-  const wizardStore = useWizardStore();
-  
-  // Variables reactivas para cada campo
-  const typeCard = ref('');
-  const amountValue = ref<number>(0);
-  const numberLoteValue = ref('');
-  
-  // Formatear la fecha actual en formato YYYY-MM-DD para el input date
-  const formatCurrentDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-  
-  const dateValue = ref(formatCurrentDate());
+  import { useInitialData } from "@/composables/useInitialData";
   
   // Variable para controlar el campo enfocado
   const focusedField = ref('');
@@ -145,101 +126,38 @@
     focusedField.value = '';
   };
   
-  // Variables para controlar si los datos han sido cargados
-  const isDataLoaded = ref(false);
+  // Formatear la fecha actual en formato YYYY-MM-DD para el input date
+  const formatCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
   
-  onMounted(() => {
-    // Obtener los datos actuales
-    const salesData = wizardStore.getStepData("salesData") || {};
-    const paymentData = salesData.payment || {};
-    const datafastData = paymentData.datafastData || {};
-    
-    // Cargar datos si existen
-    if (paymentData.date) {
-      dateValue.value = paymentData.date;
-    }
-    
-    if (paymentData.amount !== undefined && paymentData.amount > 0) {
-      amountValue.value = paymentData.amount;
-    }
-    
-    if (datafastData.typeCard) {
-      typeCard.value = datafastData.typeCard;
-    }
-    
-    if (datafastData.numberLote) {
-      numberLoteValue.value = datafastData.numberLote;
-    }
-    
-    // Si no hay fecha definida, guardar la fecha actual
-    if (!paymentData.date) {
-      updateDate(dateValue.value);
-    }
-  
-    isDataLoaded.value = true;
-  });
-  
-  // Función para actualizar los datos de pago
-  const updatePaymentData = (partialData: Record<string, any>) => {
-    const salesData = wizardStore.getStepData("salesData") || {};
-    const paymentData = salesData.payment || {};
-    
-    // Actualizar los datos de pago manteniendo los valores existentes
-    wizardStore.updateFormSection("salesData", {
-      payment: {
-        ...paymentData,
-        ...partialData
+  // Valores iniciales para el formulario
+  const initialValues = {
+    payment: {
+      date: formatCurrentDate(),
+      amount: 0,
+      datafastData: {
+        typeCard: "",
+        numberLote: ""
       }
-    });
+    }
   };
   
-  // Función para actualizar los datos de datafast
-  const updateDatafastData = (partialData: Record<string, any>) => {
-    const salesData = wizardStore.getStepData("salesData") || {};
-    const paymentData = salesData.payment || {};
-    const datafastData = paymentData.datafastData || {};
-    
-    // Actualizar los datos de datafast manteniendo los valores existentes
-    wizardStore.updateFormSection("salesData", {
-      payment: {
-        ...paymentData,
-        datafastData: {
-          ...datafastData,
-          ...partialData
-        }
+  // Usar el composable useInitialData para manejar los datos
+  const { data } = useInitialData(
+    "salesData",
+    initialValues,
+    {
+      autoSave: true,
+      debug: false,
+      nestedFields: {
+        payment: ["date", "amount", "datafastData"]
       }
-    });
-  };
-  
-  // Actualizar el store cuando cambie el valor de cada campo
-  const updateDate = (newValue: string) => {
-    updatePaymentData({ date: newValue });
-  };
-  
-  const updateAmount = (newValue: number) => {
-    updatePaymentData({ amount: newValue });
-  };
-  
-  const updateTypeCard = (newValue: string) => {
-    updateDatafastData({ typeCard: newValue });
-  };
-  
-  const updateNumberLote = (newValue: string) => {
-    updateDatafastData({ numberLote: newValue });
-  };
-  
-  // Observadores para los campos
-  watch(
-    () => isDataLoaded.value,
-    (loaded) => {
-      if (loaded) {
-        watch(dateValue, updateDate);
-        watch(amountValue, updateAmount);
-        watch(typeCard, updateTypeCard);
-        watch(numberLoteValue, updateNumberLote);
-      }
-    },
-    { immediate: true }
+    }
   );
   </script>
   

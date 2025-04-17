@@ -14,11 +14,11 @@
           <input
             id="date"
             type="date"
-            v-model="dateValue"
+            v-model="data.payment.date"
             required
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
             :class="{
-              'bg-primary-50 border-primary text-primary': dateValue,
+              'bg-primary-50 border-primary text-primary': data.payment.date,
               'border-blue-500 border-2 shadow-md': focusedField === 'date'
             }"
             @focus="setFocus('date')"
@@ -41,11 +41,11 @@
             type="number"
             step="0.01"
             placeholder="Valor a pagar"
-            v-model.number="amountValue"
+            v-model.number="data.payment.amount"
             required
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400 no-spinner"
             :class="{
-              'bg-primary-50 border-primary text-primary': amountValue > 0,
+              'bg-primary-50 border-primary text-primary': data.payment.amount > 0,
               'border-blue-500 border-2 shadow-md': focusedField === 'amount'
             }"
             @focus="setFocus('amount')"
@@ -68,11 +68,11 @@
           id="financialInstitution"
           type="text"
           placeholder="Ej.: Banco Pichincha"
-          v-model="financialInstitutionValue"
+          v-model="data.payment.transferData.financialInstitution"
           required
           class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
           :class="{
-            'bg-primary-50 border-primary text-primary': financialInstitutionValue.length > 0,
+            'bg-primary-50 border-primary text-primary': data.payment.transferData.financialInstitution.length > 0,
             'border-blue-500 border-2 shadow-md': focusedField === 'financialInstitution'
           }"
           @focus="setFocus('financialInstitution')"
@@ -94,11 +94,11 @@
           id="proofPayment"
           type="text"
           placeholder="Ingresa el número de comprobante"
-          v-model="proofPaymentValue"
+          v-model="data.payment.transferData.proofPayment"
           required
           class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
           :class="{
-            'bg-primary-50 border-primary text-primary': proofPaymentValue.length > 0,
+            'bg-primary-50 border-primary text-primary': data.payment.transferData.proofPayment.length > 0,
             'border-blue-500 border-2 shadow-md': focusedField === 'proofPayment'
           }"
           @focus="setFocus('proofPayment')"
@@ -110,17 +110,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
-import { useWizardStore } from "@/stores/wizardStore";
-
-// Obtener la instancia del store
-const wizardStore = useWizardStore();
-
-// Variables reactivas para cada campo
-const financialInstitutionValue = ref('');
-const amountValue = ref<number>(0);
-const proofPaymentValue = ref('');
+import { useInitialData } from "@/composables/useInitialData";
 
 // Formatear la fecha actual en formato YYYY-MM-DD para el input date
 const formatCurrentDate = () => {
@@ -130,8 +122,6 @@ const formatCurrentDate = () => {
   const day = String(today.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 };
-
-const dateValue = ref(formatCurrentDate());
 
 // Variable para controlar el campo enfocado
 const focusedField = ref('');
@@ -145,89 +135,30 @@ const clearFocus = () => {
   focusedField.value = '';
 };
 
-// Función para actualizar los datos de pago
-const updatePaymentData = (partialData: Record<string, any>) => {
-  const salesData = wizardStore.getStepData("salesData") || {};
-  const paymentData = salesData.payment || {};
-  
-  // Actualizar los datos de pago manteniendo los valores existentes
-  wizardStore.updateFormSection("salesData", {
-    payment: {
-      ...paymentData,
-      ...partialData
+// Valores iniciales para el formulario
+const initialValues = {
+  payment: {
+    date: formatCurrentDate(),
+    amount: 0,
+    transferData: {
+      financialInstitution: "",
+      proofPayment: ""
     }
-  });
+  }
 };
 
-// Función para actualizar los datos de transferencia
-const updateTransferData = (partialData: Record<string, any>) => {
-  const salesData = wizardStore.getStepData("salesData") || {};
-  const paymentData = salesData.payment || {};
-  const transferData = paymentData.transferData || {};
-  
-  // Actualizar los datos de transferencia manteniendo los valores existentes
-  wizardStore.updateFormSection("salesData", {
-    payment: {
-      ...paymentData,
-      transferData: {
-        ...transferData,
-        ...partialData
-      }
+// Usar el composable useInitialData para manejar los datos
+const { data } = useInitialData(
+  "salesData",
+  initialValues,
+  {
+    autoSave: true,
+    debug: false,
+    nestedFields: {
+      payment: ["date", "amount", "transferData"]
     }
-  });
-};
-
-// Actualizar el store cuando cambie el valor de cada campo
-const updateDate = (newValue: string) => {
-  updatePaymentData({ date: newValue });
-};
-
-const updateAmount = (newValue: number) => {
-  updatePaymentData({ amount: newValue });
-};
-
-const updateFinancialInstitution = (newValue: string) => {
-  updateTransferData({ financialInstitution: newValue });
-};
-
-const updateProofPayment = (newValue: string) => {
-  updateTransferData({ proofPayment: newValue });
-};
-
-// Observadores para los campos
-watch(dateValue, updateDate);
-watch(amountValue, updateAmount);
-watch(financialInstitutionValue, updateFinancialInstitution);
-watch(proofPaymentValue, updateProofPayment);
-
-onMounted(() => {
-  // Obtener los datos actuales
-  const salesData = wizardStore.getStepData("salesData") || {};
-  const paymentData = salesData.payment || {};
-  const transferData = paymentData.transferData || {};
-  
-  // Cargar datos si existen
-  if (paymentData.date) {
-    dateValue.value = paymentData.date;
   }
-  
-  if (paymentData.amount !== undefined && paymentData.amount > 0) {
-    amountValue.value = paymentData.amount;
-  }
-  
-  if (transferData.financialInstitution) {
-    financialInstitutionValue.value = transferData.financialInstitution;
-  }
-  
-  if (transferData.proofPayment) {
-    proofPaymentValue.value = transferData.proofPayment;
-  }
-  
-  // Si no hay fecha definida, guardar la fecha actual
-  if (!paymentData.date) {
-    updateDate(dateValue.value);
-  }
-});
+);
 </script>
 
 <style scoped>
