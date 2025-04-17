@@ -1,6 +1,6 @@
 <template>
-  <ion-card class="w-full">
-    <ion-card-content>
+  <ion-card class="w-full shadow-md rounded-xl overflow-hidden">
+    <ion-card-content class="p-4">
       <typePlan />
     </ion-card-content>
   </ion-card>

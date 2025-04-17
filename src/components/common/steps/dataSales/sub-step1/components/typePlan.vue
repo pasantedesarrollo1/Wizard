@@ -141,7 +141,7 @@ const { data: salesData, updateField } = useInitialData('salesData', {
 });
 
 // Estado local para el plan seleccionado
-const selectedPlan = ref(salesData.value.plan || "");
+const selectedPlan = ref("");
 
 // Sincronizar el estado local con el store cuando cambia
 onMounted(() => {
@@ -153,7 +153,7 @@ onMounted(() => {
     if (newValue && newValue !== selectedPlan.value) {
       selectedPlan.value = newValue;
     }
-  });
+  }, { immediate: true });
 });
 
 // Array con las opciones de tipo de plan incluyendo precios
@@ -224,10 +224,151 @@ const togglePeriodo = (event: Event) => {
 }
 </script>
   
-<style lang="scss" src="@/components/common/steps/dataSales/sub-step1/styles/typePlan.scss" scoped></style>
+<style scoped>
+/* Estilos generales */
+.plan-selector {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-<style lang="scss" scoped>
-/* Estilos adicionales para integrar SelectableCard con los estilos existentes */
+.title-heading {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+/* Estilos para el toggle de periodo */
+.period-toggle-container {
+  display: flex;
+  justify-content: center;
+}
+
+.period-toggle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #f5f7fa;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.period-active {
+  font-weight: 600;
+  color: #333;
+}
+
+.period-inactive {
+  color: #777;
+}
+
+.savings-badge {
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background-color: rgba(var(--ion-color-tertiary-rgb), 0.15);
+  color: var(--ion-color-tertiary);
+}
+
+/* Estilos para el switch */
+.switch-container {
+  position: relative;
+  width: 74px;
+  height: 36px;
+}
+
+.button {
+  position: relative;
+  width: 74px;
+  height: 36px;
+  overflow: hidden;
+}
+
+.button.r,
+.button.r .layer {
+  border-radius: 100px;
+}
+
+.checkbox {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.knobs {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ebf7fc;
+  transition: 0.3s ease all;
+  z-index: 1;
+}
+
+#button-3 .knobs:before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 30px;
+  height: 30px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1;
+  padding: 9px 4px;
+  background-color: #03a9f4;
+  border-radius: 50%;
+  transition: 0.3s ease all, left 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15);
+}
+
+#button-3 .checkbox:active + .knobs:before {
+  width: 46px;
+  border-radius: 100px;
+}
+
+#button-3 .checkbox:checked:active + .knobs:before {
+  margin-left: -26px;
+}
+
+#button-3 .checkbox:checked + .knobs:before {
+  content: "";
+  left: 42px;
+  background-color: #f44336;
+}
+
+#button-3 .checkbox:checked ~ .layer {
+  background-color: #fcebeb;
+}
+
+/* Configuración del grid de Ionic */
+.plans-grid {
+  --ion-grid-padding: 0;
+  --ion-grid-column-padding: 10px;
+  width: 100%;
+  margin: 1.5rem 0;
+}
+
+/* Estilos para las tarjetas de planes */
 .plan-card-wrapper {
   height: 100%;
 }
@@ -235,40 +376,142 @@ const togglePeriodo = (event: Event) => {
 .plan-card-custom {
   height: 100% !important;
   min-height: 400px;
-  
-  &:deep(.selectable-card) {
-    height: 100% !important;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    
-    &.popular-card {
-      transform: scale(1.03);
-      
-      @media (max-width: 768px) {
-        transform: scale(1);
-      }
-    }
-  }
-  
-  &:deep(.card-label) {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-  }
-  
-  &:deep(.label-text) {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
 }
 
-/* Mantener los estilos específicos de las características y precios */
-.price-container, .features-list, .badges-container {
+.plan-card-custom :deep(.selectable-card) {
+  height: 100% !important;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-card-custom :deep(.selectable-card.popular-card) {
+  transform: scale(1.03);
+}
+
+.plan-card-custom :deep(.card-label) {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.plan-card-custom :deep(.label-text) {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* Contenedor de precio */
+.price-container {
+  text-align: center;
+  margin: 1rem 0 1.5rem;
+  width: 100%;
+}
+
+.price-tag {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+}
+
+.price-tag .currency {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.price-tag .amount {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #333;
+  margin: 0 0.2rem;
+}
+
+.price-tag .period {
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.savings-text {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+.savings-text .original-price {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* Lista de características */
+.features-list {
+  margin: 1.5rem 0;
   width: 100%;
 }
 
 .feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+  color: #555;
   text-align: left;
+}
+
+.feature-item .feature-icon {
+  color: var(--ion-color-primary);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* Contenedor de badges */
+.badges-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.plan-badge {
+  padding: 0.4rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 992px) {
+  ion-col[size-md="3"] {
+    --ion-grid-column-size: 6;
+    --ion-grid-column: 6;
+  }
+}
+
+@media (max-width: 768px) {
+  .period-toggle {
+    padding: 0.4rem 0.8rem;
+    gap: 0.5rem;
+  }
+  
+  .plan-card-custom :deep(.selectable-card.popular-card) {
+    transform: scale(1);
+  }
+  
+  .price-tag .amount {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  ion-col {
+    --ion-grid-column-size: 12;
+    --ion-grid-column: 12;
+  }
+  
+  .title-heading {
+    font-size: 1.2rem;
+  }
 }
 </style>
