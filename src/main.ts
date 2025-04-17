@@ -21,13 +21,10 @@ import "@ionic/vue/css/text-transformation.css"
 import "@ionic/vue/css/flex-utils.css"
 import "@ionic/vue/css/display.css"
 
-import "@ionic/vue/css/palettes/dark.system.css"
-
-/* Theme variables */
+/* Archivo de estilos centralizado */
 import "@/assets/styles.css"
 
 import { VueQueryPlugin } from "@tanstack/vue-query"
-
 
 // Creamos la instancia de Pinia
 const pinia = createPinia()
@@ -49,4 +46,3 @@ const app = createApp(App)
 router.isReady().then(() => {
   app.mount("#app")
 })
-
