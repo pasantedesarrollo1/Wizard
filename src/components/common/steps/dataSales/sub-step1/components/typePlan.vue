@@ -47,28 +47,19 @@
           v-for="opcion in opcionesTipoPlanes" 
           :key="opcion.value"
         >
-          <ion-card 
-            button 
-            :class="[
-              'plan-card',
-              salesData.plan === opcion.value ? 'selected-plan' : '',
-              opcion.value === 'pymeplan' ? 'popular-plan' : ''
-            ]"
-            @click="seleccionarPlan(opcion.value)"
-          >
-            <!-- Etiqueta de popular si corresponde -->
-            <div v-if="opcion.value === 'pymeplan'" class="popular-tag">
-              <ion-icon :icon="star" class="popular-icon"></ion-icon>
-              Popular
-            </div>
-            
-            <ion-card-header>
-              <ion-card-title class="plan-title">
-                {{ opcion.label }}
-              </ion-card-title>
-            </ion-card-header>
-            
-            <ion-card-content>
+          <!-- Usando el componente SelectableCard para los planes -->
+          <div class="plan-card-wrapper">
+            <SelectableCard
+              v-model="selectedPlan"
+              :value="opcion.value"
+              :label="opcion.label"
+              :is-popular="opcion.value === 'pymeplan'"
+              popular-label="Popular"
+              height="auto"
+              class="plan-card-custom"
+              @update:modelValue="seleccionarPlan"
+            >
+              <!-- Contenido personalizado dentro del SelectableCard -->
               <div class="price-container">
                 <div class="price-tag">
                   <span class="currency">$</span>
@@ -106,8 +97,8 @@
                   Ahorro anual
                 </ion-badge>
               </div>
-            </ion-card-content>
-          </ion-card>
+            </SelectableCard>
+          </div>
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -115,21 +106,18 @@
 </template>
   
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, watch, onMounted } from "vue"
 import {
   IonText,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
   IonBadge,
   IonIcon,
   IonGrid,
   IonRow,
   IonCol,
 } from "@ionic/vue"
-import { checkmarkCircle, star } from "ionicons/icons"
+import { checkmarkCircle } from "ionicons/icons"
 import { useInitialData } from "@/composables/useInitialData"
+import SelectableCard from "@/components/ui/selectableCard.vue"
 
 // Definimos la interfaz para las opciones de tipo de plan con precios
 interface TipoPlanesOpcion {
@@ -150,6 +138,22 @@ const { data: salesData, updateField } = useInitialData('salesData', {
   }
 }, {
   debug: false // Activar para depuración si es necesario
+});
+
+// Estado local para el plan seleccionado
+const selectedPlan = ref(salesData.value.plan || "");
+
+// Sincronizar el estado local con el store cuando cambia
+onMounted(() => {
+  // Inicializar el estado local con el valor del store
+  selectedPlan.value = salesData.value.plan || "";
+  
+  // Observar cambios en el store para actualizar el estado local
+  watch(() => salesData.value.plan, (newValue) => {
+    if (newValue && newValue !== selectedPlan.value) {
+      selectedPlan.value = newValue;
+    }
+  });
 });
 
 // Array con las opciones de tipo de plan incluyendo precios
@@ -218,7 +222,53 @@ const togglePeriodo = (event: Event) => {
   const nuevoPeriodo = target.checked ? "anual" : "mensual"
   updateField('billingFrequency', nuevoPeriodo);
 }
-
 </script>
   
 <style lang="scss" src="@/components/common/steps/dataSales/sub-step1/styles/typePlan.scss" scoped></style>
+
+<style lang="scss" scoped>
+/* Estilos adicionales para integrar SelectableCard con los estilos existentes */
+.plan-card-wrapper {
+  height: 100%;
+}
+
+.plan-card-custom {
+  height: 100% !important;
+  min-height: 400px;
+  
+  &:deep(.selectable-card) {
+    height: 100% !important;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    
+    &.popular-card {
+      transform: scale(1.03);
+      
+      @media (max-width: 768px) {
+        transform: scale(1);
+      }
+    }
+  }
+  
+  &:deep(.card-label) {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+  }
+  
+  &:deep(.label-text) {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Mantener los estilos específicos de las características y precios */
+.price-container, .features-list, .badges-container {
+  width: 100%;
+}
+
+.feature-item {
+  text-align: left;
+}
+</style>

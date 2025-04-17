@@ -9,29 +9,15 @@
           v-for="opcion in opcionesTipoPago"
           :key="opcion.value"
         >
-          <!-- Card unificada -->
-          <div 
-            class="unified-card w-full h-[130px] rounded-[20px] transition-all duration-300 cursor-pointer p-2 flex flex-col justify-between items-center"
-            :class="{ 'selected-card': data.paymentMethod === opcion.value }"
-            @click="seleccionarTipoPago(opcion.value)"
-          >
-            <!-- Contenedor del icono grande -->
-            <div class="flex-grow flex items-center justify-center w-full ">
-              <Icon 
-                  :icon="getIconForPaymentType(opcion.value)" 
-                  class="w-20 h-20 pb-1 transition-all duration-300"
-                  :class="{ 'text-white': data.paymentMethod === opcion.value }"
-                />
-            </div>
-            
-            <!-- Texto del método de pago con mejor estilo -->
-            <div class="text-center w-full mt-auto">
-              <p class="m-0 text-lg font-medium text-gray-800 transition-all duration-300"
-                 :class="{ 'text-white font-semibold': data.paymentMethod === opcion.value }">
-                {{ opcion.label }}
-              </p>
-            </div>
-          </div>
+          <!-- Usando el componente SelectableCard -->
+          <SelectableCard
+            v-model="selectedPaymentMethod"
+            :value="opcion.value"
+            :label="opcion.label"
+            :icon="getIconForPaymentType(opcion.value)"
+            height="130px"
+            @update:modelValue="seleccionarTipoPago"
+          />
         </ion-col>
       </ion-row>
     </ion-grid>
@@ -39,28 +25,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import {
-  IonGrid,
-  IonRow,
-  IonCol
-} from '@ionic/vue'
-import { Icon } from '@iconify/vue'
+import { ref, watch, onMounted } from 'vue';
+import { IonGrid, IonRow, IonCol } from '@ionic/vue';
 import { useInitialData } from "@/composables/useInitialData";
+import SelectableCard from "@/components/ui/selectableCard.vue";
 
 // Definir los eventos que emite este componente
-const emit = defineEmits(['payment-method-changed'])
+const emit = defineEmits(['payment-method-changed']);
 
 interface TipoPagoOpcion {
-  label: string
-  value: string
+  label: string;
+  value: string;
 }
 
 const opcionesTipoPago = ref<TipoPagoOpcion[]>([
   // { label: 'Tarjeta Nuevi', value: 'tarjeta-nuevi' },
   { label: 'Datafast Vouchet', value: 'datafast-voucher' },
   { label: 'Transferencia', value: 'transferencia' },
-])
+]);
 
 // Valores iniciales para el formulario
 const initialValues = {
@@ -89,13 +71,28 @@ const { data, updateFields } = useInitialData(
   }
 );
 
+// Estado local para el método de pago seleccionado
+const selectedPaymentMethod = ref(data.value.paymentMethod || '');
+
+// Sincronizar el estado local con el store cuando cambia
+onMounted(() => {
+  // Inicializar el estado local con el valor del store
+  selectedPaymentMethod.value = data.value.paymentMethod || '';
+});
+
 // Observar cambios en el método de pago para emitir eventos
 watch(() => data.value.paymentMethod, (newValue) => {
   if (newValue) {
+    // Actualizar el estado local si cambia en el store
+    if (selectedPaymentMethod.value !== newValue) {
+      selectedPaymentMethod.value = newValue;
+    }
+    // Emitir el evento
     emit('payment-method-changed', newValue);
   }
 }, { immediate: true });
 
+// Función para seleccionar un tipo de pago
 const seleccionarTipoPago = (value: string) => {
   // Actualizar el método de pago en el store
   updateFields({
@@ -103,62 +100,36 @@ const seleccionarTipoPago = (value: string) => {
   });
   
   console.log('Tipo de Pago seleccionado:', value);
-}
+};
 
 // Función para obtener el icono según el tipo de pago
 const getIconForPaymentType = (paymentType: string): string => {
   switch (paymentType) {
     case 'tarjeta-nuevi':
-      return 'f7:creditcard'
+      return 'f7:creditcard';
     case 'datafast-voucher':
-      return 'fontisto:shopping-pos-machine'
+      return 'fontisto:shopping-pos-machine';
     case 'transferencia':
-      return 'mdi:bank-transfer'
+      return 'mdi:bank-transfer';
     default:
-      return 'mdi:cash'
+      return 'mdi:cash';
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-/* Estilos unificados para la tarjeta */
-.unified-card {
-  border: 1px solid #e5e7eb; /* Borde sutil por defecto */
-  background-color: white;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    box-shadow: 0px 0px 30px 1px rgba(0, 60, 255, 0.30);
-    transform: scale(0.98);
-    border-color: transparent;
-  }
+// Configuración del grid de Ionic para métodos de pago
+.payment-grid {
+  --ion-grid-padding: 0;
+  --ion-grid-column-padding: 8px;
+  width: 100%;
+  margin: 0;
 }
 
-/* Estilos para cards seleccionadas */
-.selected-card {
-  box-shadow: 0px 0px 30px 1px rgba(0, 60, 255, 0.50);
-  transform: scale(0.98);
-  background-color: rgb(0, 60, 255) !important; /* Color azul específico */
-  border-color: transparent !important;
-}
-
-/* Estilos para el contenedor de iconos */
-.icon-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-/* Estilos responsivos adicionales */
-@media (max-width: 768px) {
-  .unified-card {
-    height: 160px;
-  }
-  
-  .icon-container svg {
-    width: 5rem;
-    height: 5rem;
+// Media queries para responsividad
+@media (max-width: 576px) {
+  ion-col {
+    padding-bottom: 10px;
   }
 }
 </style>

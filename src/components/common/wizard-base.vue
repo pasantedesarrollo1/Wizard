@@ -45,14 +45,25 @@
     
     <!-- Modal de confirmación para finalizar el wizard -->
     <ConfirmationModal 
-      :is-open="showConfirmationModal" 
+      :is-open="showConfirmationModal"
+      title="Finalizar Configuración"
+      message="¿Está seguro que desea finalizar la configuración?"
+      secondary-message="Al confirmar, se guardarán todos los datos y se completará el proceso."
+      confirm-button-text="Finalizar"
+      cancel-button-text="Continuar Editando"
       @confirm="handleConfirmFinish" 
       @cancel="handleCancelFinish"
     />
     
     <!-- Modal de confirmación para el paso de ventas -->
-    <ConfirmationSales 
-      :is-open="showSalesConfirmationModal" 
+    <ConfirmationModal 
+      :is-open="showSalesConfirmationModal"
+      title="Confirmar Información de Venta"
+      message="¿Está seguro que desea continuar con esta información de venta?"
+      secondary-message="Verifique que todos los datos de pago y plan sean correctos antes de continuar."
+      confirm-button-text="Continuar"
+      cancel-button-text="Revisar Datos"
+      confirm-button-color="success"
       @confirm="handleConfirmSalesNext" 
       @cancel="handleCancelSalesNext"
     />
@@ -65,8 +76,7 @@ import { computed, ref, PropType, watch, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import ProgressBar from "@/components/common/progressBar.vue"
 import welcomeGeneral from "@/components/common/welcomeGeneral.vue"
-import ConfirmationModal from "@/components/common/confirmation-modal.vue"
-import ConfirmationSales from "@/components/common/confirmationSales.vue"
+import ConfirmationModal from "@/components/ui/confirmationModal.vue" // Cambiado a la nueva ruta
 import { useWizardProgress } from "@/composables/useWizardProgress"
 import { useWizardSubSteps, WizardSubStepsConfig } from "@/composables/useWizardSubSteps"
 import { useWizardStore } from "@/stores/wizardStore"
