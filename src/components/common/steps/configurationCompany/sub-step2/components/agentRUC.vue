@@ -3,22 +3,35 @@
     <div class="label-container">
       <ion-label class="info-label text-gray-500">Agente de retención: </ion-label>
     </div>
-    <ion-input class="info-input text-gray-500" v-model="agentValueText" readonly></ion-input>
+    <ion-input class="info-input text-gray-500" :value="agentValueText" readonly></ion-input>
   </ion-item>
 </template>
     
 <script setup lang="ts">
 import { IonItem, IonLabel, IonInput } from "@ionic/vue";
-import { ref, onMounted, watch } from 'vue';
-import { useWizardStore } from "@/stores/wizardStore";
+import { computed } from 'vue';
+import { useInitialData } from "@/composables/useInitialData";
 
-// Obtener la instancia del store
-const wizardStore = useWizardStore();
+// Valores iniciales para el formulario
+const initialValues = {
+  taxAgent: {
+    isAgent: false,
+    accountingRequired: false
+  }
+};
 
-// Variable reactiva para almacenar el valor textual (Si/No)
-const agentValueText = ref('');
-const companyConfig = ref(wizardStore.getStepData("companyConfig"));
-const isAgent = ref<boolean | undefined>(undefined);
+// Usar el composable useInitialData para manejar los datos
+const { data } = useInitialData(
+  "companyConfig",
+  initialValues,
+  {
+    autoSave: false, // Solo lectura, no necesitamos guardar
+    debug: false,
+    nestedFields: {
+      taxAgent: ["isAgent", "accountingRequired"]
+    }
+  }
+);
 
 // Función para convertir el booleano a texto
 const booleanToText = (value: boolean | undefined): string => {
@@ -26,31 +39,10 @@ const booleanToText = (value: boolean | undefined): string => {
   return value ? 'Si' : 'No';
 };
 
-// Cargar datos del store si existen
-onMounted(() => {
-  let initialIsAgent: boolean | undefined;
-  if (companyConfig.value && companyConfig.value.taxAgent) {
-    initialIsAgent = companyConfig.value.taxAgent.isAgent;
-  }
-  isAgent.value = initialIsAgent;
-  agentValueText.value = booleanToText(isAgent.value);
+// Computed property para obtener el texto basado en el valor booleano
+const agentValueText = computed(() => {
+  return booleanToText(data.value.taxAgent.isAgent);
 });
-
-// Observar cambios en el store para actualizar el texto
-watch(
-  () => wizardStore.getStepData("companyConfig"),
-  (newCompanyConfig) => {
-    let newIsAgent: boolean | undefined;
-    if (newCompanyConfig && newCompanyConfig.taxAgent !== undefined) {
-      newIsAgent = newCompanyConfig.taxAgent.isAgent;
-    } else {
-      newIsAgent = undefined;
-    }
-    isAgent.value = newIsAgent;
-    agentValueText.value = booleanToText(isAgent.value);
-  },
-  { deep: true }
-);
 </script>
     
 <style scoped>

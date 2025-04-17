@@ -12,10 +12,10 @@
           <input 
             type="text"
             readonly
-            v-model="nombreComercial"
+            v-model="data.branch.commercialName"
             class="form-input"
             :class="{ 
-              'has-value': nombreComercial.length > 0,
+              'has-value': data.branch.commercialName.length > 0,
               'is-focused': focusedField === 'nombreComercial'
             }"
             @focus="setFocus('nombreComercial')"
@@ -34,10 +34,10 @@
           <input 
             type="text"
             readonly
-            v-model="codigoSucursal"
+            v-model="data.branch.idBranch"
             class="form-input"
             :class="{ 
-              'has-value': codigoSucursal.length > 0,
+              'has-value': data.branch.idBranch.length > 0,
               'is-focused': focusedField === 'codigoSucursal'
             }"
             @focus="setFocus('codigoSucursal')"
@@ -57,10 +57,10 @@
         <input 
           type="text"
           placeholder="Nombre de la sucursal"
-          v-model="nombreSucursal"
+          v-model="data.branch.name"
           class="form-input"
           :class="{ 
-            'has-value': nombreSucursal.length > 0,
+            'has-value': data.branch.name.length > 0,
             'is-focused': focusedField === 'nombreSucursal'
           }"
           @focus="setFocus('nombreSucursal')"
@@ -79,10 +79,10 @@
         <input 
           type="text"
           readonly
-          v-model="direccionSucursal"
+          v-model="data.branch.address"
           class="form-input"
           :class="{ 
-            'has-value': direccionSucursal.length > 0,
+            'has-value': data.branch.address.length > 0,
             'is-focused': focusedField === 'direccionSucursal'
           }"
           @focus="setFocus('direccionSucursal')"
@@ -101,10 +101,10 @@
         <input 
           type="tel"
           placeholder="+593"
-          v-model="telefonoSucursal"
+          v-model="data.branch.phone"
           class="form-input"
           :class="{ 
-            'has-value': telefonoSucursal.length > 0,
+            'has-value': data.branch.phone.length > 0,
             'is-focused': focusedField === 'telefonoSucursal'
           }"
           @focus="setFocus('telefonoSucursal')"
@@ -123,10 +123,10 @@
         <input 
           type="email"
           placeholder="Email de la sucursal"
-          v-model="correoSucursal"
+          v-model="data.branch.email"
           class="form-input"
           :class="{ 
-            'has-value': correoSucursal.length > 0,
+            'has-value': data.branch.email.length > 0,
             'is-focused': focusedField === 'correoSucursal'
           }"
           @focus="setFocus('correoSucursal')"
@@ -138,51 +138,41 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import { useWizardStore } from "@/stores/wizardStore";
-import { IonLabel} from '@ionic/vue';
-import { Icon } from '@iconify/vue'; // Importación de Iconify
+import { ref } from 'vue';
+import { IonLabel } from '@ionic/vue';
+import { Icon } from '@iconify/vue';
+import { useInitialData } from "@/composables/useInitialData";
 
-// Obtener la instancia del store
-const wizardStore = useWizardStore();
+// Valores iniciales para el formulario
+const initialValues = {
+  branch: {
+    commercialName: '',
+    idBranch: '',
+    name: '',
+    address: '',
+    phone: '',
+    email: '',
+    // Incluimos campos que pueden existir en otras partes del código
+    delayedDispatch: false,
+    isTouristEstablishment: false
+  }
+};
 
-// Variables reactivas para almacenar los valores de los campos
-const nombreSucursal = ref('');
-const nombreComercial = ref('');
-const codigoSucursal = ref('');
-const direccionSucursal = ref('');
-const telefonoSucursal = ref('');
-const correoSucursal = ref('');
+// Usar el composable useInitialData para manejar los datos
+const { data } = useInitialData(
+  "branchAndPOS",
+  initialValues,
+  {
+    autoSave: true,
+    debug: false,
+    nestedFields: {
+      branch: ["commercialName", "idBranch", "name", "address", "phone", "email", "delayedDispatch", "isTouristEstablishment"]
+    }
+  }
+);
 
 // Variable para controlar qué campo está enfocado
 const focusedField = ref('');
-
-// Cargar datos del store si existen
-onMounted(() => {
-  const branchAndPOS = wizardStore.getStepData("branchAndPOS");
-  if (branchAndPOS && branchAndPOS.branch.idBranch) {
-    codigoSucursal.value = branchAndPOS.branch.idBranch;
-  }
-  if (branchAndPOS && branchAndPOS.branch.commercialName) {
-    nombreComercial.value = branchAndPOS.branch.commercialName;
-  }
-  if (branchAndPOS && branchAndPOS.branch.address) {
-    direccionSucursal.value = branchAndPOS.branch.address;
-  }
-});
-
-// Observar cambios en el valor para actualizar el store
-watch(codigoSucursal, (newValue) => {
-  wizardStore.updateFormSection("branchAndPOS", { codigoSucursal, value: newValue });
-});
-watch(nombreComercial, (newValue) => {
-  wizardStore.updateFormSection("branchAndPOS", { nombreComercial, value: newValue });
-});
-
-watch(direccionSucursal, (newValue) => {
-  wizardStore.updateFormSection("branchAndPOS", { direccionSucursal, value: newValue });
-});
-
 
 // Funciones para manejar el enfoque
 const setFocus = (fieldName: string) => {

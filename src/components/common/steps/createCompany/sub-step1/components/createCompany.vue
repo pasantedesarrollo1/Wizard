@@ -11,10 +11,10 @@
           </div>
           <input 
             type="text"
-            v-model="ruc"
+            v-model="data.ruc"
             class="form-input"
             :class="{ 
-              'has-value': ruc.length > 0,
+              'has-value': data.ruc.length > 0,
               'is-focused': focusedField === 'ruc'
             }"
             @focus="setFocus('ruc')"
@@ -33,10 +33,10 @@
           </div>
           <input 
             type="text"
-            v-model="razonSocial"
+            v-model="data.legalName"
             class="form-input"
             :class="{ 
-              'has-value': razonSocial.length > 0,
+              'has-value': data.legalName.length > 0,
               'is-focused': focusedField === 'razonSocial'
             }"
             @focus="setFocus('razonSocial')"
@@ -57,10 +57,10 @@
         <input 
           type="text"
           placeholder="Nombre de tu empresa"
-          v-model="nombreEmpresa"
+          v-model="data.companyName"
           class="form-input"
           :class="{ 
-            'has-value': nombreEmpresa.length > 0,
+            'has-value': data.companyName.length > 0,
             'is-focused': focusedField === 'nombreEmpresa'
           }"
           @focus="setFocus('nombreEmpresa')"
@@ -79,10 +79,10 @@
         <input 
           type="text"
           placeholder="Dirección de tu empresa"
-          v-model="direccion"
+          v-model="data.address"
           class="form-input"
           :class="{ 
-            'has-value': direccion.length > 0,
+            'has-value': data.address.length > 0,
             'is-focused': focusedField === 'direccion'
           }"
           @focus="setFocus('direccion')"
@@ -101,10 +101,10 @@
         <input 
           type="tel"
           placeholder="+593"
-          v-model="telefono"
+          v-model="data.phone"
           class="form-input"
           :class="{ 
-            'has-value': telefono.length > 0,
+            'has-value': data.phone.length > 0,
             'is-focused': focusedField === 'telefono'
           }"
           @focus="setFocus('telefono')"
@@ -123,10 +123,10 @@
         <input 
           type="email"
           placeholder="Email empresarial"
-          v-model="email"
+          v-model="data.email"
           class="form-input"
           :class="{ 
-            'has-value': email.length > 0,
+            'has-value': data.email.length > 0,
             'is-focused': focusedField === 'email'
           }"
           @focus="setFocus('email')"
@@ -138,42 +138,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import { useWizardStore } from "@/stores/wizardStore";
-import {IonLabel} from '@ionic/vue';
-import { Icon } from '@iconify/vue'; // Importación de Iconify
+import { ref } from 'vue';
+import { IonLabel } from '@ionic/vue';
+import { Icon } from '@iconify/vue';
+import { useInitialData } from "@/composables/useInitialData";
 
-// Obtener la instancia del store
-const wizardStore = useWizardStore();
-// Variables reactivas para almacenar los valores de los campos
-const nombreEmpresa = ref('');
-const ruc = ref('');
-const razonSocial = ref('');
-const direccion = ref('');
-const telefono = ref('');
-const email = ref('');
+// Valores iniciales para el formulario
+const initialValues = {
+  ruc: '',
+  legalName: '',
+  companyName: '',
+  address: '',
+  phone: '',
+  email: ''
+};
+
+// Usar el composable useInitialData para manejar los datos
+const { data } = useInitialData(
+  "companyCreation",
+  initialValues,
+  {
+    autoSave: true,
+    debug: false
+  }
+);
 
 // Variable para controlar qué campo está enfocado
 const focusedField = ref('');
-
-// Cargar datos del store si existen
-onMounted(() => {
-  const companyCreation = wizardStore.getStepData("companyCreation");
-  if (companyCreation && companyCreation.ruc) {
-    ruc.value = companyCreation.ruc;
-  }
-  if (companyCreation && companyCreation.legalName) {
-    razonSocial.value = companyCreation.legalName;
-  }
-});
-
-// Observar cambios en el valor para actualizar el store
-watch(ruc, (newValue) => {
-  wizardStore.updateFormSection("companyCreation", { ruc, value: newValue });
-});
-watch(razonSocial, (newValue) => {
-  wizardStore.updateFormSection("companyCreation", { razonSocial, value: newValue });
-});
 
 // Funciones para manejar el enfoque
 const setFocus = (fieldName: string) => {

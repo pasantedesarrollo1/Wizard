@@ -7,7 +7,7 @@
         <ion-item>
           <ion-checkbox 
           slot="start"
-          v-model="delayedDispatch"
+          v-model="data.branch.delayedDispatch"
           ></ion-checkbox>
           <ion-label>Despacho posterior</ion-label>
         </ion-item>
@@ -17,7 +17,7 @@
         <ion-item>
           <ion-checkbox 
           slot="start"
-          v-model="isTouristEstablishment"
+          v-model="data.branch.isTouristEstablishment"
           ></ion-checkbox>
           <ion-label>Establecimiento Turistico</ion-label>
         </ion-item>
@@ -28,39 +28,32 @@
 
 <script setup lang="ts">
 import { IonGrid, IonRow, IonCol, IonItem, IonLabel, IonCheckbox } from "@ionic/vue"
-import { ref, watch, onMounted } from "vue"
-import { useWizardStore } from "@/stores/wizardStore"
+import { useInitialData } from "@/composables/useInitialData"
 
-const wizardStore = useWizardStore()
-const delayedDispatch = ref(false)
-const isTouristEstablishment = ref(false)
-
-// Cargar datos del store si existen
-onMounted(() => {
-  const branchAndPOS = wizardStore.getStepData("branchAndPOS")
-  if (branchAndPOS && branchAndPOS.branch) {
-    // Verificar si las propiedades existen y asignarlas
-    delayedDispatch.value = branchAndPOS.branch.delayedDispatch || false
-    isTouristEstablishment.value = branchAndPOS.branch.isTouristEstablishment || false
+// Valores iniciales para el formulario
+const initialValues = {
+  branch: {
+    delayedDispatch: false,
+    isTouristEstablishment: false,
+    // Incluimos campos vacíos para otros valores que puedan existir en branch
+    idBranch: "",
+    commercialName: "",
+    address: ""
   }
-  console.log("Valores cargados:", { delayedDispatch: delayedDispatch.value, isTouristEstablishment: isTouristEstablishment.value })
-})
+};
 
-// Observar cambios en los valores para actualizar el store
-watch([delayedDispatch, isTouristEstablishment], ([newDelayedDispatch, newIsTouristEstablishment]) => {
-  // Obtener primero los datos actuales para no perder información
-  const currentData = wizardStore.getStepData("branchAndPOS") || {}
-  const currentBranch = currentData.branch || {}
-  
-  // Actualizar solo las propiedades específicas manteniendo el resto intacto
-  wizardStore.updateFormSection("branchAndPOS", {
-    branch: {
-      ...currentBranch, // Mantener todas las propiedades existentes (idBranch, commercialName, address, etc.)
-      delayedDispatch: newDelayedDispatch,
-      isTouristEstablishment: newIsTouristEstablishment
+// Usar el composable useInitialData para manejar los datos
+const { data } = useInitialData(
+  "branchAndPOS",
+  initialValues,
+  {
+    autoSave: true,
+    debug: false,
+    nestedFields: {
+      branch: ["delayedDispatch", "isTouristEstablishment", "idBranch", "commercialName", "address"]
     }
-  })
-})
+  }
+);
 </script>
 
 <style scoped>

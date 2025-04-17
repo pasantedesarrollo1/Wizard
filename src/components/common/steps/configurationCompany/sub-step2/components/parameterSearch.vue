@@ -14,7 +14,7 @@
           <!-- Card unificada -->
           <div 
             class="unified-card w-full h-[150px] rounded-[20px] transition-all duration-300 mx-auto cursor-pointer p-2 flex flex-col justify-between items-center"
-            :class="{ 'selected-card': parametroSeleccionado === opcion.value }"
+            :class="{ 'selected-card': data.defaultSearchParameter === opcion.value }"
             @click="seleccionarParametro(opcion.value)"
           >
             <!-- Contenedor del icono grande -->
@@ -22,14 +22,14 @@
               <Icon 
                 :icon="getIconForParameterType(opcion.value)" 
                 class="w-20 h-20 transition-all duration-300"
-                :class="{ 'text-white': parametroSeleccionado === opcion.value }"
+                :class="{ 'text-white': data.defaultSearchParameter === opcion.value }"
               />
             </div>
             
             <!-- Texto del parámetro con mejor estilo -->
             <div class="text-center w-full mt-auto">
               <p class="m-0 text-lg font-medium text-gray-800 transition-all duration-300"
-                 :class="{ 'text-white font-semibold': parametroSeleccionado === opcion.value }">
+                 :class="{ 'text-white font-semibold': data.defaultSearchParameter === opcion.value }">
                 {{ opcion.label }}
               </p>
             </div>
@@ -48,6 +48,7 @@ import {
   IonCol
 } from '@ionic/vue'
 import { Icon } from '@iconify/vue'
+import { useInitialData } from "@/composables/useInitialData"
 
 interface ParametroOpcion {
   label: string
@@ -55,14 +56,27 @@ interface ParametroOpcion {
 }
 
 const opcionesParametro = ref<ParametroOpcion[]>([
-{ label: 'Nombre', value: 'nombre' },  
-{ label: 'Código', value: 'codigo' }
+  { label: 'Nombre', value: 'nombre' },  
+  { label: 'Código', value: 'codigo' }
 ])
 
-const parametroSeleccionado = ref('nombre')
+// Valores iniciales para el formulario
+const initialValues = {
+  defaultSearchParameter: 'nombre'
+};
+
+// Usar el composable useInitialData para manejar los datos
+const { data, updateFields } = useInitialData(
+  "companyConfig",
+  initialValues,
+  {
+    autoSave: true,
+    debug: false
+  }
+);
 
 const seleccionarParametro = (value: string) => {
-  parametroSeleccionado.value = value
+  updateFields({ defaultSearchParameter: value })
   console.log('Parámetro seleccionado:', value)
 }
 

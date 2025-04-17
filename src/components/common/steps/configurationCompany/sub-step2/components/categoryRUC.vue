@@ -3,41 +3,28 @@
     <div class="label-container">
       <ion-label class="info-label text-gray-500">Categoria: </ion-label>
     </div>
-    <ion-input class="info-input text-gray-500" v-model="categoria" readonly></ion-input>
+    <ion-input class="info-input text-gray-500" :value="data.categoryRUC" readonly></ion-input>
   </ion-item>
 </template>
     
 <script setup lang="ts">
 import { IonItem, IonLabel, IonInput } from "@ionic/vue";
-import { ref, onMounted, watch } from 'vue';
-import { useWizardStore } from "@/stores/wizardStore";
+import { useInitialData } from "@/composables/useInitialData";
 
-// Obtener la instancia del store
-const wizardStore = useWizardStore();
+// Valores iniciales para el formulario
+const initialValues = {
+  categoryRUC: ''
+};
 
-// Variable reactiva para almacenar el valor del régimen
-const categoria = ref('');
-
-// Cargar datos del store si existen
-onMounted(() => {
-  let companyConfig;
-  try {
-    companyConfig = wizardStore.getStepData("companyConfig");
-  } catch (error) {
-    console.error("Error getting company config:", error);
-    companyConfig = null; // or some default value
+// Usar el composable useInitialData para manejar los datos
+const { data } = useInitialData(
+  "companyConfig",
+  initialValues,
+  {
+    autoSave: false, // Solo lectura, no necesitamos guardar
+    debug: false
   }
-  if (companyConfig && companyConfig.categoryRUC) {
-    categoria.value = companyConfig.categoryRUC;
-  } else {
-    categoria.value = '';
-  }
-});
-
-// Observar cambios en el valor para actualizar el store
-watch(categoria, (newValue) => {
-  wizardStore.updateFormSection("companyConfig", { categoryRUC: newValue });
-});
+);
 </script>
     
 <style scoped>

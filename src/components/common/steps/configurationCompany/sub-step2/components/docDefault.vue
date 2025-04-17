@@ -14,7 +14,7 @@
           <!-- Card unificada -->
           <div 
             class="unified-card w-full h-[150px] rounded-[20px] transition-all duration-300 mx-auto cursor-pointer p-2 flex flex-col justify-between items-center"
-            :class="{ 'selected-card': documentoSeleccionado === opcion.value }"
+            :class="{ 'selected-card': data.defaultDocumentType === opcion.value }"
             @click="seleccionarDocumento(opcion.value)"
           >
             <!-- Contenedor del icono grande -->
@@ -22,14 +22,14 @@
               <Icon 
                 :icon="getIconForDocumentType(opcion.value)" 
                 class="w-20 h-20 transition-all duration-300"
-                :class="{ 'text-white': documentoSeleccionado === opcion.value }"
+                :class="{ 'text-white': data.defaultDocumentType === opcion.value }"
               />
             </div>
             
             <!-- Texto del tipo de documento con mejor estilo -->
             <div class="text-center w-full mt-auto">
               <p class="m-0 text-lg font-medium text-gray-800 transition-all duration-300"
-                 :class="{ 'text-white font-semibold': documentoSeleccionado === opcion.value }">
+                 :class="{ 'text-white font-semibold': data.defaultDocumentType === opcion.value }">
                 {{ opcion.label }}
               </p>
             </div>
@@ -48,6 +48,7 @@ import {
   IonCol
 } from '@ionic/vue'
 import { Icon } from '@iconify/vue'
+import { useInitialData } from "@/composables/useInitialData"
 
 interface DocumentoOpcion {
   label: string
@@ -59,11 +60,23 @@ const opcionesDocumento = ref<DocumentoOpcion[]>([
   { label: 'Recibos', value: 'recibos' }
 ])
 
-// Inicializamos con 'facturas' seleccionado por defecto
-const documentoSeleccionado = ref('facturas')
+// Valores iniciales para el formulario
+const initialValues = {
+  defaultDocumentType: 'facturas'
+};
+
+// Usar el composable useInitialData para manejar los datos
+const { data, updateFields } = useInitialData(
+  "companyConfig",
+  initialValues,
+  {
+    autoSave: true,
+    debug: false
+  }
+);
 
 const seleccionarDocumento = (value: string) => {
-  documentoSeleccionado.value = value
+  updateFields({ defaultDocumentType: value })
   console.log('Documento seleccionado:', value)
 }
 

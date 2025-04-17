@@ -5,19 +5,20 @@
       <ion-item>
         <ion-checkbox 
           slot="start"
-          v-model="isArtesano"
+          v-model="data.artisan.isArtisan"
+          @ionChange="handleArtisanChange"
         ></ion-checkbox>
         <ion-label>Artesano</ion-label>
       </ion-item>
     </ion-list>
     
     <!-- Campo de entrada con el mismo estilo que en taxesRUC.vue -->
-    <div v-if="isArtesano" class="mt-4">
+    <div v-if="data.artisan.isArtisan" class="mt-4">
       <div class="text-sm text-gray-700 mb-1">Código de artesano</div>
       <input
         type="text"
         placeholder="Ingresa tu código de artesano"
-        v-model="artisanCode"
+        v-model="data.artisan.artisanNumber"
         class="w-full border border-gray-300 rounded-md p-2 text-base"
       />
     </div>
@@ -26,58 +27,36 @@
 
 <script setup lang="ts">
 import { IonList, IonItem, IonLabel, IonCheckbox } from "@ionic/vue"
-import { ref, watch, onMounted } from "vue"
-import { useWizardStore } from "@/stores/wizardStore"
+import { useInitialData } from "@/composables/useInitialData"
 
-// Obtener la instancia del store
-const wizardStore = useWizardStore()
+// Valores iniciales para el formulario
+const initialValues = {
+  artisan: {
+    isArtisan: false,
+    artisanNumber: ""
+  }
+};
 
-// Reactive state for checkbox and input values
-const isArtesano = ref(false)
-const artisanCode = ref("")
-
-// Función para actualizar el store con los valores actuales
-// const updateStore = () => {
-//   const artisanNumber = isArtesano.value ? artisanCode.value: '';
-//   wizardStore.updateFormSection("companyConfig", {
-//       artisan: {
-//         isArtisan: isArtesano.value,
-//         artisanNumber: artisanNumber,
-//       },
-//   });
-// };
-
-// Cargar datos del store si existen
-onMounted(() => {
-  const companyConfig = wizardStore.getStepData("companyConfig")
-  if (companyConfig) {
-    if (companyConfig.artisan) {
-      isArtesano.value = companyConfig.artisan.isArtisan
-      artisanCode.value = companyConfig.artisan.artisanNumber || ""
+// Usar el composable useInitialData para manejar los datos
+const { data, updateNestedField } = useInitialData(
+  "companyConfig",
+  initialValues,
+  {
+    autoSave: true,
+    debug: false,
+    nestedFields: {
+      artisan: ["isArtisan", "artisanNumber"]
     }
   }
-})
+);
 
-// Reemplazar los dos watchers separados para isArtesano y artisanCode con este código:
-
-// Actualizar el store cuando cambie cualquier valor
-watch([isArtesano, artisanCode], ([newIsArtesano, newArtisanCode]) => {
-  const artisanNumber = newIsArtesano ? newArtisanCode : ""
-  wizardStore.updateFormSection("companyConfig", {
-    artisan: {
-      isArtisan: newIsArtesano,
-      artisanNumber,
-    },
-  })
-})
-
-// Mantener el watcher para limpiar el código cuando se desmarca la casilla
-watch(isArtesano, (newVal) => {
-  if (!newVal) {
-    artisanCode.value = ""
+// Función para manejar el cambio en el checkbox de artesano
+const handleArtisanChange = () => {
+  // Si se desmarca la casilla, limpiar el código de artesano
+  if (!data.value.artisan.isArtisan) {
+    updateNestedField("artisan", "artisanNumber", "");
   }
-})
-
+};
 </script>
 
 <style lang="scss" scoped>

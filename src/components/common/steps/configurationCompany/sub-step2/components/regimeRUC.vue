@@ -3,33 +3,28 @@
     <div class="label-container">
       <ion-label class="info-label text-gray-500">Regimen: </ion-label>
     </div>
-    <ion-input class="info-input text-gray-500" v-model="regimeRUCValue" readonly></ion-input>
+    <ion-input class="info-input text-gray-500" :value="data.regimeRUC" readonly></ion-input>
   </ion-item>
 </template>
     
 <script setup lang="ts"> 
 import { IonItem, IonLabel, IonInput } from "@ionic/vue";
-import { ref, onMounted, watch } from 'vue';
-import { useWizardStore } from "@/stores/wizardStore";
+import { useInitialData } from "@/composables/useInitialData";
 
-// Obtener la instancia del store
-const wizardStore = useWizardStore();
+// Valores iniciales para el formulario
+const initialValues = {
+  regimeRUC: ''
+};
 
-// Variable reactiva para almacenar el valor del régimen
-const regimeRUCValue = ref('');
-
-// Cargar datos del store si existen
-onMounted(() => {
-  const companyConfig = wizardStore.getStepData("companyConfig");
-  if (companyConfig && companyConfig.regimeRUC) {
-    regimeRUCValue.value = companyConfig.regimeRUC;
+// Usar el composable useInitialData para manejar los datos
+const { data } = useInitialData(
+  "companyConfig",
+  initialValues,
+  {
+    autoSave: false, // Solo lectura, no necesitamos guardar
+    debug: false
   }
-});
-
-// Observar cambios en el valor para actualizar el store
-watch(regimeRUCValue, (newValue) => {
-  wizardStore.updateFormSection("companyConfig", { regimeRUC: newValue });
-});
+);
 </script>
     
 <style scoped>

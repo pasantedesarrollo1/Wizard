@@ -10,10 +10,10 @@
         <input 
           type="text"
           placeholder="Nombre del punto de Emisión"
-          v-model="nombrePOS"
+          v-model="data.pos.name"
           class="form-input"
           :class="{ 
-            'has-value': nombrePOS.length > 0,
+            'has-value': data.pos.name.length > 0,
             'is-focused': focusedField === 'nombrePOS'
           }"
           @focus="setFocus('nombrePOS')"
@@ -32,10 +32,10 @@
         <input 
           type="text"
           placeholder="Código del punto de Emisión"
-          v-model="codigoPOS"
+          v-model="data.pos.code"
           class="form-input"
           :class="{ 
-            'has-value': codigoPOS.length > 0,
+            'has-value': data.pos.code.length > 0,
             'is-focused': focusedField === 'codigoPOS'
           }"
           @focus="setFocus('codigoPOS')"
@@ -48,15 +48,30 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import {
+import { IonLabel } from '@ionic/vue';
+import { Icon } from '@iconify/vue';
+import { useInitialData } from "@/composables/useInitialData";
 
-  IonLabel,
-} from '@ionic/vue';
-import { Icon } from '@iconify/vue'; // Importación de Iconify
+// Valores iniciales para el formulario
+const initialValues = {
+  pos: {
+    name: '',
+    code: ''
+  }
+};
 
-// Variables reactivas para almacenar los valores de los campos
-const nombrePOS = ref('');
-const codigoPOS = ref('');
+// Usar el composable useInitialData para manejar los datos
+const { data } = useInitialData(
+  "branchAndPOS",
+  initialValues,
+  {
+    autoSave: true,
+    debug: false,
+    nestedFields: {
+      pos: ["name", "code"]
+    }
+  }
+);
 
 // Variable para controlar qué campo está enfocado
 const focusedField = ref('');
