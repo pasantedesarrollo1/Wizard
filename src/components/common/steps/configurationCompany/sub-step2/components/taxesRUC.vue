@@ -8,12 +8,12 @@
       <div 
         v-for="opcion in opcionesImpuesto"
         :key="opcion.value"
-        class="unified-card w-[90px] h-[70px] rounded-[16px] transition-all duration-300 cursor-pointer p-2 flex items-center justify-center"
+        class="unified-card w-[90px] h-[70px] rounded-[16px] transition-all duration-300 cursor-pointer p-2 flex items-center justify-center border border-gray-200 bg-white hover:shadow-blue-300 hover:shadow-md hover:scale-[0.98] hover:border-transparent sm:w-[80px] sm:h-[60px]"
         :class="{ 'selected-card': data.taxes.selectedTaxes.includes(opcion.value) }"
         @click="toggleImpuesto(opcion.value)"
       >
         <div 
-          class="tax-number text-3xl font-bold transition-all duration-300"
+          class="text-3xl font-bold transition-all duration-300 leading-none sm:text-2xl"
           :class="{ 'text-white': data.taxes.selectedTaxes.includes(opcion.value), 'text-blue-600': !data.taxes.selectedTaxes.includes(opcion.value) }"
         >
           {{ opcion.label }}
@@ -28,7 +28,7 @@
         type="text"
         placeholder="Ingresa tu código para 5%"
         v-model="data.taxes.taxCode5Percent"
-        class="w-full border border-gray-300 rounded-md p-2 text-base"
+        class="w-full border border-gray-300 rounded-md p-2 text-base transition-all duration-300 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 sm:text-sm sm:p-1.5"
       />
     </div>
   </div>
@@ -94,43 +94,12 @@ const toggleImpuesto = (value: string) => {
 }
 </script>
 
-<style lang="scss" scoped>
-/* Estilos unificados para la tarjeta */
-.unified-card {
-  border: 1px solid #e5e7eb; /* Borde sutil por defecto */
-  background-color: white;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    box-shadow: 0px 0px 15px 1px rgba(0, 60, 255, 0.25);
-    transform: scale(0.98);
-    border-color: transparent;
-  }
-}
-
-/* Estilos para cards seleccionadas */
+<style scoped>
+/* Estilos para cards seleccionadas que no se pueden lograr fácilmente con Tailwind */
 .selected-card {
   box-shadow: 0px 0px 15px 1px rgba(0, 60, 255, 0.40);
   transform: scale(0.98);
-  background-color: rgb(0, 60, 255) !important; /* Color azul específico */
+  background-color: rgb(0, 60, 255) !important;
   border-color: transparent !important;
-}
-
-/* Estilos para los números de impuesto */
-.tax-number {
-  transition: all 0.3s ease;
-  line-height: 1;
-}
-
-/* Estilos responsivos adicionales */
-@media (max-width: 576px) {
-  .unified-card {
-    width: 80px;
-    height: 60px;
-  }
-  
-  .tax-number {
-    font-size: 1.5rem;
-  }
 }
 </style>

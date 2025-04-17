@@ -19,7 +19,7 @@
         type="text"
         placeholder="Ingresa tu código de artesano"
         v-model="data.artisan.artisanNumber"
-        class="w-full border border-gray-300 rounded-md p-2 text-base"
+        class="w-full border border-gray-300 rounded-md p-2 text-base transition-all duration-300 ease-in-out focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 sm:text-sm sm:p-1.5"
       />
     </div>
   </div>
@@ -58,24 +58,3 @@ const handleArtisanChange = () => {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-/* Estilos adicionales para mantener consistencia con taxesRUC.vue */
-input {
-  transition: all 0.3s ease;
-  
-  &:focus {
-    outline: none;
-    border-color: rgb(0, 60, 255);
-    box-shadow: 0px 0px 5px rgba(0, 60, 255, 0.25);
-  }
-}
-
-/* Estilos responsivos adicionales */
-@media (max-width: 576px) {
-  input {
-    font-size: 0.9rem;
-    padding: 0.4rem;
-  }
-}
-</style>

@@ -3,7 +3,7 @@
     <span class="block mb-4 text-gray-700">Elige cómo prefieres buscar tus productos por defecto</span>
     
     <!-- Grid mejorado con SelectableCard -->
-    <ion-grid class="parameter-grid">
+    <ion-grid class="w-full m-0 parameter-grid">
       <ion-row class="ion-justify-content-center">
         <ion-col
           size="12"
@@ -11,6 +11,7 @@
           size-md="6"
           v-for="opcion in opcionesParametro"
           :key="opcion.value"
+          class="sm:pb-2.5"
         >
           <!-- Usando el componente SelectableCard -->
           <SelectableCard
@@ -95,19 +96,10 @@ const getIconForParameterType = (parameterType: string): string => {
 };
 </script>
 
-<style lang="scss" scoped>
-// Configuración del grid de Ionic
+<style scoped>
+/* Configuración del grid de Ionic con CSS estándar */
 .parameter-grid {
   --ion-grid-padding: 0;
   --ion-grid-column-padding: 10px;
-  width: 100%;
-  margin: 0;
-}
-
-// Media queries para responsividad
-@media (max-width: 576px) {
-  ion-col {
-    padding-bottom: 10px;
-  }
 }
 </style>

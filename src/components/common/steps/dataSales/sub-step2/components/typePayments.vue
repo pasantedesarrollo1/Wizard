@@ -1,13 +1,14 @@
 <template>
   <div class="p-2 py-2 bg-white rounded-xl">
     <!-- Grid modificado para ocupar todo el ancho -->
-    <ion-grid class="payment-grid">
+    <ion-grid class="w-full m-0 payment-grid">
       <ion-row>
         <ion-col
           size="6"
           size-md="6"
           v-for="opcion in opcionesTipoPago"
           :key="opcion.value"
+          class="sm:pb-2.5"
         >
           <!-- Usando el componente SelectableCard -->
           <SelectableCard
@@ -117,19 +118,10 @@ const getIconForPaymentType = (paymentType: string): string => {
 };
 </script>
 
-<style lang="scss" scoped>
-// Configuración del grid de Ionic para métodos de pago
+<style scoped>
+/* Configuración del grid de Ionic con CSS estándar */
 .payment-grid {
   --ion-grid-padding: 0;
   --ion-grid-column-padding: 8px;
-  width: 100%;
-  margin: 0;
-}
-
-// Media queries para responsividad
-@media (max-width: 576px) {
-  ion-col {
-    padding-bottom: 10px;
-  }
 }
 </style>

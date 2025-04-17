@@ -1,12 +1,12 @@
 <template>
-  <div class="container-wrapper">
+  <div class="w-full flex justify-center">
     <ion-card class="shadow-md rounded-2xl overflow-hidden w-full main-container">
       <ion-card-content>
-        <div class="layout-container w-full">
+        <div class="w-full flex flex-col gap-6">
           <!-- Primera fila: contiene vendor-section y payment-section -->
-          <div class="top-row">
+          <div class="flex flex-col md:flex-row w-full justify-center gap-4">
             <!-- Sección de selección de vendedor -->
-            <div class="section-container vendor-section w-full">
+            <div class="p-3 rounded-xl shadow-sm bg-blue-50 w-full vendor-section">
               <h4 class="text-lg font-semibold text-gray-800 border-opacity-6">
                 Selecciona tu nombre para registrar tu venta
               </h4>
@@ -14,7 +14,7 @@
             </div>
             
             <!-- Sección del método de pago -->
-            <div class="section-container payment-section w-full">
+            <div class="p-3 rounded-xl shadow-sm bg-blue-50/70 w-full h-full flex flex-col payment-section">
               <h4 class="text-lg font-semibold text-gray-800 pl-3 mt-0 mb-4 pb-2 border-b border-opacity-6">
                 Selecciona el método de pago del Servicio
               </h4>
@@ -23,8 +23,8 @@
           </div>
           
           <!-- Segunda fila: sección de formularios - ahora condicionalmente visible -->
-          <div class="bottom-row" v-if="selectedPaymentMethod">
-            <div class="section-container proof-section">
+          <div v-if="selectedPaymentMethod" class="w-full flex justify-center animate-fadeIn">
+            <div class="p-3 rounded-xl shadow-sm bg-blue-50/30 w-full md:max-w-[600px] mx-auto">
               <h4 class="text-lg font-semibold text-gray-800 pl-1 mt-0 mb-4 pb-2 border-b border-opacity-6">
                 Llena los siguientes datos
               </h4>
@@ -85,98 +85,26 @@ watch(selectedPaymentMethod, (newValue) => {
 })
 </script>
 
-<style lang="scss" scoped>
-// Contenedor principal con ancho máximo
-.container-wrapper {
-  @apply w-full flex justify-center;
-}
-
+<style scoped>
+/* Contenedor principal con ancho máximo */
 .main-container {
   width: 100%;
   max-width: 100%;
-  
-  @media (min-width: 768px) {
-    max-width: 950px; // Ancho máximo para el contenedor principal
+}
+
+@media (min-width: 768px) {
+  .main-container {
+    max-width: 950px;
   }
 }
 
-// Layout principal
-.layout-container {
-  @apply flex flex-col;
-  gap: 1.5rem;
-}
-
-// Primera fila con dos columnas
-.top-row {
-  @apply flex flex-col md:flex-row w-full justify-center;
-  gap: 1rem;
-  
-  @media (min-width: 768px) {
-    .vendor-section, .payment-section {
-      width: 100%; // Cambio importante: ahora ocupan todo el ancho disponible
-      flex: 1; // Distribución equitativa del espacio
-    }
-  }
-}
-
-// Segunda fila centrada
-.bottom-row {
-  @apply w-full flex justify-center;
-  animation: fadeIn 0.5s ease;
-  
-  .proof-section {
-    @apply w-full;
-    
-    @media (min-width: 768px) {
-      width: 100%; // Ahora ocupa todo el ancho disponible
-      max-width: 600px; // Ancho máximo para el formulario
-      margin: 0 auto;
-    }
-  }
-}
-
-// Estilos base para las secciones
-.section-container {
-  @apply p-3 rounded-xl shadow-sm;
-  background-color: #f9fafb;
-  
-  &:last-child {
-    @apply mb-0;
-  }
-}
-
-// Colores específicos para cada sección
-.vendor-section {
-  background-color: #f0f7ff; // Tono azul muy claro
-  width: 100%; // Asegurar ancho completo
-}
-
-.payment-section {
-  background-color: #f7faff; // Tono azul aún más claro
-  @apply h-full flex flex-col;
-  width: 100%; // Asegurar ancho completo
-}
-
-.proof-section {
-  background-color: #f9fbff; // Tono azul casi imperceptible
-  width: 100%; // Asegurar ancho completo
-}
-
-// Media queries para responsividad
-@media (max-width: 767px) {
-  // Diseño móvil: todo en una columna
-  .vendor-section, .payment-section, .proof-section {
-    @apply w-full;
-  }
-  
-  .section-container {
-    @apply mb-4;
-  }
-}
-
-// Animación para la aparición del formulario
+/* Animación para la aparición del formulario */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease;
 }
 </style>

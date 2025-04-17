@@ -263,14 +263,13 @@ onUnmounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
-// Variables
-$primary-color: var(--ion-color-primary);
-$primary-light: rgba(var(--ion-color-primary-rgb), 0.1);
-$primary-lighter: rgba(var(--ion-color-primary-rgb), 0.05);
-$border-radius: 8px;
+<style scoped>
+/* Variables CSS */
+:root {
+  --border-radius: 8px;
+}
 
-// Estilo para animación fadeIn (necesario mantenerlo en CSS)
+/* Estilo para animación fadeIn */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -280,12 +279,12 @@ $border-radius: 8px;
   animation: fadeIn 0.5s ease;
 }
 
-// Estilos del botón que aún necesitan SCSS
+/* Estilos del botón */
 .select-button {
   --background: white;
-  --background-hover: #{$primary-lighter};
-  --background-activated: #{$primary-lighter};
-  --border-radius: #{$border-radius};
+  --background-hover: rgba(var(--ion-color-primary-rgb), 0.05);
+  --background-activated: rgba(var(--ion-color-primary-rgb), 0.05);
+  --border-radius: var(--border-radius);
   --border-color: #d7d8da;
   --border-style: solid;
   --border-width: 1px;
@@ -299,34 +298,32 @@ $border-radius: 8px;
   height: auto;
   transition: all 0.3s ease;
   overflow: hidden;
-  
-  &:hover {
-    --border-color: #{$primary-color};
-  }
-  
-  &.has-selection {
-    --background: #{$primary-lighter};
-    --border-color: #{$primary-color};
-    --color: #{$primary-color};
-  }
 }
 
-// Estilos del popover que necesitan mantenerse como SCSS
+.select-button:hover {
+  --border-color: var(--ion-color-primary);
+}
+
+.select-button.has-selection {
+  --background: rgba(var(--ion-color-primary-rgb), 0.05);
+  --border-color: var(--ion-color-primary);
+  --color: var(--ion-color-primary);
+}
+
+/* Estilos del popover */
 .vendedor-popover {
-  // Se eliminó el ancho fijo para permitir que se ajuste dinámicamente
-  // El ancho ahora se establece mediante JavaScript
   --backdrop-opacity: 0.1;
   --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  --border-radius: #{$border-radius};
-  
-  &::part(content) {
-    border-radius: $border-radius;
-  }
+  --border-radius: var(--border-radius);
 }
 
-// Estilos para la barra de búsqueda
+.vendedor-popover::part(content) {
+  border-radius: var(--border-radius);
+}
+
+/* Estilos para la barra de búsqueda */
 .vendedor-searchbar {
-  --background: #{$primary-lighter};
+  --background: rgba(var(--ion-color-primary-rgb), 0.05);
   --border-radius: 6px;
   --box-shadow: none;
   --placeholder-color: var(--ion-color-medium);
@@ -336,30 +333,30 @@ $border-radius: 8px;
   margin: 0;
 }
 
-// Estilos para los items de vendedor
+/* Estilos para los items de vendedor */
 .vendedor-item {
   --padding-start: 0.75rem;
   --padding-end: 0.75rem;
   --padding-top: 0.5rem;
   --padding-bottom: 0.5rem;
-  --background-hover: #{$primary-lighter};
-  --ripple-color: #{$primary-light};
+  --background-hover: rgba(var(--ion-color-primary-rgb), 0.05);
+  --ripple-color: rgba(var(--ion-color-primary-rgb), 0.1);
   transition: all 0.3s ease;
-  
-  &.selected {
-    --background: #{$primary-lighter};
-    --background-hover: #{$primary-lighter};
-    font-weight: 500;
-  }
 }
 
-// Estilo para el avatar
+.vendedor-item.selected {
+  --background: rgba(var(--ion-color-primary-rgb), 0.05);
+  --background-hover: rgba(var(--ion-color-primary-rgb), 0.05);
+  font-weight: 500;
+}
+
+/* Estilo para el avatar */
 .avatar-circle {
-  background-color: $primary-light;
-  color: $primary-color;
+  background-color: rgba(var(--ion-color-primary-rgb), 0.1);
+  color: var(--ion-color-primary);
 }
 
-// Media queries para responsividad
+/* Media queries para responsividad */
 @media (max-width: 576px) {
   .select-button {
     --padding-top: 0.6rem;

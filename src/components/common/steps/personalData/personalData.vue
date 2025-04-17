@@ -1,9 +1,9 @@
 <template>
-  <div class="container-wrapper">
+  <div class="w-full flex justify-center">
     <ion-card class="wizard-card main-container">
       <!-- Aplicamos una altura máxima y habilitamos el scroll, pero de manera controlada -->
       <ion-card-content class="wizard-content">
-        <div class="form-container">
+        <div class="pb-5">
           <span>Ingresa tus datos personales para crear tu empresa</span>
           <form @submit.prevent>
             <!-- Tipo de identificación -->
@@ -228,57 +228,41 @@ const clearFocus = () => {
 };
 </script>
 
-<style lang="scss" scoped>
-// Variables para colores y estilos que no se pueden implementar fácilmente con Tailwind
-$primary-color: var(--ion-color-primary);
-$primary-light: rgba(var(--ion-color-primary-rgb), 0.1);
-$primary-lighter: rgba(var(--ion-color-primary-rgb), 0.05);
-
-// Contenedor principal con ancho máximo - NUEVO
-.container-wrapper {
-  @apply w-full flex justify-center;
-}
-
-// Configuración del ancho fijo para pantallas grandes - NUEVO
+<style scoped>
+/* Configuración del ancho fijo para pantallas grandes */
 .main-container {
   width: 100%;
   max-width: 100%;
-  
-  @media (min-width: 768px) {
-    max-width: 768px; // Ancho fijo de 768px en pantallas de 768px en adelante
-  }
-}
-
-// Estilos para la tarjeta principal
-.wizard-card {
   margin: 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%; // Asegura que la tarjeta ocupe toda la altura disponible
+  height: 100%;
 }
 
+@media (min-width: 768px) {
+  .main-container {
+    max-width: 768px;
+  }
+}
+
+/* Estilos para el contenido */
 .wizard-content {
   padding: 16px;
-  flex: 1; // Permite que el contenido ocupe todo el espacio disponible
-  overflow-y: auto; // Habilita el scroll vertical
-  height: 100%; // Asegura que el contenido ocupe toda la altura disponible
+  flex: 1;
+  overflow-y: auto;
+  height: 100%;
 }
 
-// Contenedor del formulario
-.form-container {
-  padding-bottom: 20px; // Espacio adicional al final del formulario
-}
-
-// Estilos específicos para ion-item que no se pueden hacer con Tailwind
+/* Estilos específicos para ion-item que no se pueden hacer con Tailwind */
 .ion-item-custom {
   --padding-start: 0;
   --inner-padding-end: 0;
 }
 
-// Estilos para inputs enfocados
+/* Estilos para inputs enfocados */
 input:focus, select:focus {
   outline: none;
   border-color: #1a73e8 !important;
@@ -286,14 +270,14 @@ input:focus, select:focus {
   box-shadow: 0 0 0 1px rgba(26, 115, 232, 0.1);
 }
 
-// Clase para mantener el estilo de enfoque
+/* Clase para mantener el estilo de enfoque */
 .border-blue-500 {
   border-color: rgb(0,60,255) !important;
   border-width: 2px !important;
   box-shadow: 0 0 0 1px rgba(26, 115, 232, 0.1);
 }
 
-// Media queries para responsividad específica
+/* Media queries para responsividad específica */
 @media (max-width: 640px) {
   input, select {
     padding: 0.6rem 1rem 0.6rem 2.5rem !important;

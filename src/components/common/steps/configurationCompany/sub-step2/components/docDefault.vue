@@ -4,7 +4,7 @@
     <span class="block mb-4 text-gray-700">Selecciona el tipo de documento que deseas emitir por defecto al vender</span>
     
     <!-- Grid mejorado con SelectableCard -->
-    <ion-grid class="document-grid">
+    <ion-grid class="w-full m-0 document-grid">
       <ion-row class="ion-justify-content-center">
         <ion-col
           size="12"
@@ -12,6 +12,7 @@
           size-md="6"
           v-for="opcion in opcionesDocumento"
           :key="opcion.value"
+          class="sm:pb-2.5"
         >
           <!-- Usando el componente SelectableCard -->
           <SelectableCard
@@ -96,19 +97,10 @@ const getIconForDocumentType = (documentType: string): string => {
 };
 </script>
 
-<style lang="scss" scoped>
-// Configuración del grid de Ionic
+<style scoped>
+/* Configuración del grid de Ionic con CSS estándar */
 .document-grid {
   --ion-grid-padding: 0;
   --ion-grid-column-padding: 10px;
-  width: 100%;
-  margin: 0;
-}
-
-// Media queries para responsividad
-@media (max-width: 576px) {
-  ion-col {
-    padding-bottom: 10px;
-  }
 }
 </style>

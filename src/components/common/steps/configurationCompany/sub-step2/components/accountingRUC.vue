@@ -1,14 +1,16 @@
 <template>
-  <span>Si eres agente de retención es opcional llevar contabilidad</span>
-  <ion-list>      
-    <ion-item>
-      <ion-checkbox 
-        slot="start"
-        v-model="data.taxAgent.accountingRequired"
-      ></ion-checkbox>
-      <ion-label>Obligado a llevar contabilidad</ion-label>
-    </ion-item>
-  </ion-list>
+  <div class="p-2 py-2 bg-white rounded-xl">
+    <span class="text-sm text-gray-700">Si eres agente de retención es opcional llevar contabilidad</span>
+    <ion-list class="mt-2">      
+      <ion-item>
+        <ion-checkbox 
+          slot="start"
+          v-model="data.taxAgent.accountingRequired"
+        ></ion-checkbox>
+        <ion-label>Obligado a llevar contabilidad</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -36,7 +38,3 @@ const { data } = useInitialData(
   }
 );
 </script>
-
-<style scoped>
-/* No additional styles needed as Ionic components provide styling */
-</style>
