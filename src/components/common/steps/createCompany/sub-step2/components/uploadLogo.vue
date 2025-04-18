@@ -2,8 +2,133 @@
   <div class="upload-logo-container">
     <h3 class="section-title">Carga el logo de tu empresa</h3>
     <p class="section-description">Este logo aparecerá en tus documentos y en tu portal web</p>
-    
-    <div class="upload-area" :class="{ 'has-file': selectedFile }">
+
+    <!-- Modo de edición -->
+    <div v-if="isEditing" class="editor-mode">
+      <!-- Barra de herramientas -->
+      <div class="editor-toolbar">
+        <button class="toolbar-btn close-btn" @click="cancelEditing">
+          <ion-icon :icon="closeOutline"></ion-icon>
+        </button>
+        <span class="toolbar-title">Seleccionar Imagen</span>
+        <button class="toolbar-btn save-btn" @click="saveChanges">
+          <ion-icon :icon="saveOutline"></ion-icon>
+          Guardar
+        </button>
+      </div>
+
+      <!-- Alerta de error -->
+      <div v-if="showErrorMessage" class="error-alert">
+        <ion-icon :icon="alertCircleOutline"></ion-icon>
+        <span>La imagen seleccionada supera el tamaño máximo permitido de 5MB.</span>
+      </div>
+
+      <!-- Área de selección de archivo -->
+      <div v-if="!tempImage" class="dropzone-editor"
+        :class="{ 'drag-active': isDragging }"
+        @click="triggerFileInput"
+        @dragover.prevent="handleDragOver"
+        @dragleave="handleDragLeave"
+        @drop.prevent="handleDrop"
+      >
+        <ion-icon :icon="cloudUploadOutline" class="upload-icon"></ion-icon>
+        <p class="dropzone-text">
+          Arrastra y suelta tu imagen aquí o haz clic para seleccionar
+        </p>
+
+        <input 
+          type="file"
+          ref="fileInput"
+          accept="image/*"
+          class="hidden-input"
+          @change="handleFileInputChange"
+        />
+
+        <button class="select-file-btn" @click.stop="triggerFileInput">
+          Seleccionar archivo
+        </button>
+      </div>
+
+      <!-- Área de edición de imagen -->
+      <div v-if="tempImage" class="cropper-wrapper">
+        <!-- Información del archivo -->
+        <div class="file-info-bar">
+          <div class="file-details">
+            <ion-icon :icon="imageOutline" class="file-icon"></ion-icon>
+            <div class="file-text">
+              <div class="file-name">{{ tempFile?.name || 'Imagen' }}</div>
+              <div class="file-size">{{ formatFileSize(tempFile?.size) }}</div>
+            </div>
+          </div>
+          <button class="remove-file-btn" @click="removeTempImage">
+            <ion-icon :icon="closeCircle"></ion-icon>
+          </button>
+        </div>
+        
+        <!-- Contenedor principal del editor -->
+        <div class="editor-layout">
+          <!-- Barra lateral de herramientas -->
+          <div class="sidebar-tools">
+            <button class="sidebar-tool" @click="rotate(-90)">
+              <ion-icon :icon="refreshOutline"></ion-icon>
+              <span>Rotar<br>Izquierda</span>
+            </button>
+            <button class="sidebar-tool" @click="rotate(90)">
+              <ion-icon :icon="refreshOutline" style="transform: scaleX(-1)"></ion-icon>
+              <span>Rotar<br>Derecha</span>
+            </button>
+            <button class="sidebar-tool" @click="flip(true, false)">
+              <ion-icon :icon="swapHorizontalOutline"></ion-icon>
+              <span>Voltear<br>Horizontal</span>
+            </button>
+            <button class="sidebar-tool" @click="flip(false, true)">
+              <ion-icon :icon="swapVerticalOutline"></ion-icon>
+              <span>Voltear<br>Vertical</span>
+            </button>
+            <button class="sidebar-tool" @click="saveCropped">
+              <ion-icon :icon="cropOutline"></ion-icon>
+              <span>Recortar</span>
+            </button>
+          </div>
+          
+          <!-- Área del cropper -->
+          <div class="cropper-container">
+            <Cropper
+              ref="cropper"
+              class="cropper"
+              :src="tempImage"
+              :stencil-props="{
+                aspectRatio: 1/1,
+                handlers: {
+                  eastNorth: true,
+                  north: true,
+                  westNorth: true,
+                  west: true,
+                  westSouth: true,
+                  south: true,
+                  eastSouth: true,
+                  east: true,
+                },
+                movable: true,
+                resizable: true
+              }"
+              :resize-image="{
+                touch: true,
+                wheel: {
+                  ratio: 5
+                }
+              }"
+              :canvas="{ width: 600, height: 400 }"
+              image-restriction="stencil"
+              background-color="#f0f0f0"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modo normal (no editando) -->
+    <div v-else class="upload-area" :class="{ 'has-file': selectedFile }">
       <!-- Área de previsualización -->
       <div class="preview-container" v-if="selectedFile">
         <img v-if="previewUrl" :src="previewUrl" alt="Vista previa del logo" class="logo-preview" />
@@ -13,6 +138,9 @@
         </div>
         <button @click="removeFile" class="remove-button">
           <ion-icon :icon="closeCircle" class="remove-icon"></ion-icon>
+        </button>
+        <button @click="startEditing" class="edit-button">
+          <ion-icon :icon="createOutline" class="edit-icon"></ion-icon>
         </button>
       </div>
       
@@ -46,31 +174,60 @@
     </div>
     
     <!-- Mensajes de error -->
-    <div v-if="errorMessage" class="error-message">
+    <div v-if="errorMessage && !isEditing" class="error-message">
       <ion-icon :icon="alertCircleOutline" class="error-icon"></ion-icon>
       <span>{{ errorMessage }}</span>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { IonIcon } from '@ionic/vue';
-import { cloudUploadOutline, closeCircle, alertCircleOutline } from 'ionicons/icons';
-import { useWizardStore } from "@/stores/wizardStore";
+<script setup>
+import { ref, watch, onMounted } from 'vue';
+import { Cropper } from 'vue-advanced-cropper';
+import 'vue-advanced-cropper/dist/style.css'; // Importación correcta de estilos
+import { 
+  cloudUploadOutline, closeCircle, alertCircleOutline, createOutline,
+  closeOutline, saveOutline, imageOutline, refreshOutline,
+  swapHorizontalOutline, swapVerticalOutline, cropOutline
+} from 'ionicons/icons';
+import { useWizardStore } from '@/stores/wizardStore';
 
 // Obtener la instancia del store
 const wizardStore = useWizardStore();
 
-// Estados reactivos
-const selectedFile = ref<File | null>(null);
-const previewUrl = ref<string | null>(null);
+// Estados reactivos para uploadLogo
+const selectedFile = ref(null);
+const previewUrl = ref(null);
 const isDragging = ref(false);
 const errorMessage = ref('');
 
-// Función para manejar la selección de archivos
-const handleFileChange = (event: Event) => {
-  const input = event.target as HTMLInputElement;
+// Estados reactivos para imageSelector
+const isEditing = ref(false);
+const tempFile = ref(null);
+const tempImage = ref(undefined);
+const cropper = ref(null);
+const croppedImage = ref("");
+const showErrorMessage = ref(false);
+const fileInput = ref(null);
+
+// Función para iniciar el modo de edición
+const startEditing = () => {
+  isEditing.value = true;
+  if (previewUrl.value) {
+    tempImage.value = previewUrl.value;
+  }
+};
+
+// Función para cancelar la edición
+const cancelEditing = () => {
+  isEditing.value = false;
+  tempFile.value = null;
+  tempImage.value = undefined;
+};
+
+// Función para manejar la selección de archivos (uploadLogo)
+const handleFileChange = (event) => {
+  const input = event.target;
   if (input.files && input.files.length > 0) {
     const file = input.files[0];
     
@@ -88,7 +245,7 @@ const handleFileChange = (event: Event) => {
 };
 
 // Función para validar el archivo
-const validateFile = (file: File): boolean => {
+const validateFile = (file) => {
   // Validar tipo de archivo
   const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'];
   if (!validTypes.includes(file.type)) {
@@ -107,10 +264,10 @@ const validateFile = (file: File): boolean => {
 };
 
 // Función para crear la vista previa
-const createPreview = (file: File) => {
+const createPreview = (file) => {
   const reader = new FileReader();
   reader.onload = (e) => {
-    previewUrl.value = e.target?.result as string;
+    previewUrl.value = e.target?.result;
   };
   reader.readAsDataURL(file);
 };
@@ -130,7 +287,9 @@ const removeFile = () => {
 };
 
 // Función para formatear el tamaño del archivo
-const formatFileSize = (bytes: number): string => {
+const formatFileSize = (bytes) => {
+  if (bytes === undefined) return "Tamaño desconocido";
+  
   if (bytes < 1024) return bytes + ' bytes';
   if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
   return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
@@ -145,7 +304,7 @@ const onDragLeave = () => {
   isDragging.value = false;
 };
 
-const onDrop = (event: DragEvent) => {
+const onDrop = (event) => {
   isDragging.value = false;
   
   if (event.dataTransfer?.files.length) {
@@ -160,7 +319,7 @@ const onDrop = (event: DragEvent) => {
 };
 
 // Función para actualizar el store con el archivo seleccionado
-const updateStore = (file: File) => {
+const updateStore = (file) => {
   // En un entorno real, aquí se subiría el archivo a un servidor
   // y se obtendría la URL. Para este ejemplo, usamos la URL de vista previa
   wizardStore.updateFormSection("companyConfig", {
@@ -171,12 +330,154 @@ const updateStore = (file: File) => {
   });
 };
 
+// Verificar tamaño de archivo
+watch(tempFile, (file) => {
+  if(file && file.size > 5 * 1024 * 1024){
+    tempImage.value = undefined;
+    tempFile.value = null;
+    showErrorMessage.value = true;
+  } else if (file && file.size <= 5 * 1024 * 1024) {
+    showErrorMessage.value = false;
+  }
+});
+
+// Convertir archivo a base64
+watch(tempFile, (file) => {
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        tempImage.value = e.target.result;
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// Eliminar la imagen temporal
+function removeTempImage() {
+  tempImage.value = undefined;
+  tempFile.value = null;
+}
+
+// Función para rotar la imagen
+function rotate(angle) {
+  if (cropper.value) {
+    cropper.value.rotate(angle);
+  }
+}
+
+// Función para voltear la imagen
+function flip(horizontal, vertical) {
+  if (cropper.value) {
+    cropper.value.flip(horizontal, vertical);
+  }
+}
+
+// Función para recortar la imagen
+async function saveCropped() {
+  if (!cropper.value) return;
+  
+  const { canvas } = cropper.value.getResult();
+  
+  if (!canvas) {
+    console.error("Canvas is undefined.");
+    return;
+  }
+
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (e.target?.result) {
+            croppedImage.value = e.target.result;
+            tempImage.value = croppedImage.value;
+            resolve();
+          }
+        };
+        reader.readAsDataURL(blob);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+// Función para guardar los cambios
+async function saveChanges() {
+  await saveCropped();
+  
+  if (tempImage.value) {
+    try {
+      const fetchResponse = await fetch(tempImage.value);
+      const blob = await fetchResponse.blob();
+      
+      const fileName = tempFile.value?.name || "logo.png";
+      const newFile = new File([blob], fileName, { type: blob.type });
+      
+      selectedFile.value = newFile;
+      previewUrl.value = tempImage.value;
+      
+      updateStore(newFile);
+    } catch (error) {
+      console.error("Error al procesar la imagen:", error);
+    }
+  }
+  
+  isEditing.value = false;
+  tempFile.value = null;
+  tempImage.value = undefined;
+}
+
+// Métodos para manejo del input en modo edición
+function triggerFileInput() {
+  if (fileInput.value) {
+    fileInput.value.click();
+  }
+}
+
+function handleDragOver() {
+  isDragging.value = true;
+}
+
+function handleDragLeave() {
+  isDragging.value = false;
+}
+
+function handleDrop(event) {
+  const files = event.dataTransfer?.files;
+  if (files?.length) {
+    const file = files[0];
+    if (file.size <= 5 * 1024 * 1024) {
+      tempFile.value = file;
+      showErrorMessage.value = false;
+    } else {
+      showErrorMessage.value = true;
+    }
+  }
+  isDragging.value = false;
+}
+
+function handleFileInputChange(event) {
+  const input = event.target;
+  if (input.files && input.files.length > 0) {
+    const file = input.files[0];
+    if (file.size <= 5 * 1024 * 1024) {
+      tempFile.value = file;
+      showErrorMessage.value = false;
+    } else {
+      showErrorMessage.value = true;
+    }
+    input.value = ''; // Limpiar input
+  }
+}
+
 // Cargar datos del store si existen
 onMounted(() => {
   const companyConfig = wizardStore.getStepData("companyConfig");
   if (companyConfig?.logo?.url) {
     previewUrl.value = companyConfig.logo.url;
-    // No podemos restaurar el objeto File real, pero podemos simular que hay uno seleccionado
     if(companyConfig.logo.fileName){
       selectedFile.value = new File([], companyConfig.logo.fileName || "logo.png");
     }
@@ -184,7 +485,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
+<style>
 .upload-logo-container {
   width: 100%;
   padding: 1rem;
@@ -205,138 +506,105 @@ onMounted(() => {
   margin-bottom: 1.5rem;
 }
 
-.upload-area {
-  width: 100%;
-  min-height: 200px;
-  border: 2px dashed #d1d5db;
-  border-radius: 12px;
-  transition: all 0.3s ease;
+/* Estilos para el modo de edición */
+.editor-mode {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   overflow: hidden;
+  background-color: #fff;
+}
+
+.editor-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
   background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.upload-area:hover {
-  border-color: #003cff;
+.toolbar-title {
+  font-weight: 600;
+  color: #333;
 }
 
-.upload-area.has-file {
-  border-style: solid;
-  border-color: #003cff;
-  background-color: rgba(0, 60, 255, 0.03);
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
 
-.dropzone {
-  width: 100%;
-  height: 100%;
-  min-height: 200px;
+.toolbar-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.close-btn {
+  color: #666;
+}
+
+.save-btn {
+  color: white;
+  font-weight: 600;
+  background-color: #003cff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.save-btn:hover {
+  background-color: #0035e0;
+}
+
+.error-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #fee2e2;
+  color: #ef4444;
+  margin: 0.5rem;
+  border-radius: 4px;
+}
+
+.cropper-wrapper {
   display: flex;
   flex-direction: column;
+  height: 500px;
+}
+
+.file-info-bar {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.dropzone.drag-over {
-  background-color: rgba(0, 60, 255, 0.08);
-  border-color: #003cff;
-}
-
-.upload-icon-container {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background-color: rgba(0, 60, 255, 0.1);
+.file-details {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
+  gap: 0.5rem;
 }
 
-.upload-icon {
-  font-size: 32px;
+.file-icon {
+  font-size: 1.5rem;
   color: #003cff;
 }
 
-.upload-text {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.primary-text {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-.secondary-text {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 0.5rem;
-}
-
-.upload-button {
-  display: inline-block;
-  padding: 0.5rem 1.5rem;
-  background-color: #003cff;
-  color: white;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.upload-button:hover {
-  background-color: #0035e0;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 60, 255, 0.2);
-}
-
-.file-requirements {
-  font-size: 0.8rem;
-  color: #666;
-  margin-top: 1rem;
-  text-align: center;
-}
-
-.file-input {
-  display: none;
-}
-
-.preview-container {
-  width: 100%;
-  height: 100%;
-  min-height: 200px;
+.file-text {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  position: relative;
-}
-
-.logo-preview {
-  max-width: 100%;
-  max-height: 150px;
-  object-fit: contain;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.file-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
 }
 
 .file-name {
-  font-size: 0.9rem;
   font-weight: 500;
-  color: #333;
+  font-size: 0.9rem;
 }
 
 .file-size {
@@ -344,71 +612,117 @@ onMounted(() => {
   color: #666;
 }
 
-.remove-button {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+.remove-file-btn {
   background: none;
   border: none;
+  color: #ef4444;
   cursor: pointer;
   padding: 0.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ffeeee;
 }
 
-.remove-icon {
+.remove-file-btn:hover {
+  background-color: #ffd5d5;
+}
+
+.remove-file-btn ion-icon {
   font-size: 24px;
-  color: #ef4444;
 }
 
-.remove-button:hover .remove-icon {
-  transform: scale(1.1);
-}
-
-.error-message {
+/* Nuevo layout con barra lateral */
+.editor-layout {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  padding: 0.75rem;
-  background-color: rgba(239, 68, 68, 0.1);
-  border-radius: 6px;
-  color: #ef4444;
-  font-size: 0.9rem;
+  flex: 1;
+  overflow: hidden;
 }
 
-.error-icon {
-  font-size: 20px;
+.sidebar-tools {
+  display: flex;
+  flex-direction: column;
+  width: 80px;
+  background-color: #000;
+  padding: 1rem 0;
+  gap: 1rem;
+}
+
+.sidebar-tool {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  background: none;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.sidebar-tool:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-tool ion-icon {
+  font-size: 1.5rem;
+  color: white;
+}
+
+.cropper-container {
+  flex: 1;
+  position: relative;
+  background-color: #000;
+  overflow: hidden;
+}
+
+.cropper {
+  height: 100%;
+  width: 100%;
+}
+
+/* Estilos para el stencil (marco de recorte) */
+:deep(.vue-advanced-cropper__stencil) {
+  border: 2px solid white;
+}
+
+:deep(.vue-advanced-cropper__stencil-handler) {
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-radius: 50%;
+}
+
+/* Estilos para la barra superior */
+.editor-toolbar {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 /* Estilos responsivos */
 @media (max-width: 640px) {
-  .upload-area {
-    min-height: 180px;
+  .sidebar-tools {
+    width: 60px;
   }
   
-  .dropzone, .preview-container {
-    min-height: 180px;
-    padding: 1rem;
+  .sidebar-tool {
+    font-size: 0.6rem;
+    padding: 0.3rem;
   }
   
-  .upload-icon-container {
-    width: 48px;
-    height: 48px;
+  .sidebar-tool ion-icon {
+    font-size: 1.2rem;
   }
   
-  .upload-icon {
-    font-size: 24px;
-  }
-  
-  .primary-text {
-    font-size: 0.9rem;
-  }
-  
-  .logo-preview {
-    max-height: 120px;
+  .cropper-wrapper {
+    height: 400px;
   }
 }
 </style>
