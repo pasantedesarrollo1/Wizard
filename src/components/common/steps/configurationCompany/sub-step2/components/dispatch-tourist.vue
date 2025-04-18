@@ -1,35 +1,45 @@
 <template>
-  <ion-grid>
-    <ion-row>
-      <ion-col size="6">
-      <span>Selecciona si necesitas despacho posterior                   
-      </span>
-        <ion-item>
-          <ion-checkbox 
-          slot="start"
-          v-model="data.branch.delayedDispatch"
-          ></ion-checkbox>
-          <ion-label>Despacho posterior</ion-label>
-        </ion-item>
-      </ion-col>
-      <ion-col size="6">
-      <span>Selecciona si tu empresa es establecimiento Turistico</span>
-        <ion-item>
-          <ion-checkbox 
-          slot="start"
-          v-model="data.branch.isTouristEstablishment"
-          ></ion-checkbox>
-          <ion-label>Establecimiento Turistico</ion-label>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    <!-- Despacho posterior -->
+    <div class="p-2 rounded-lg bg-gray-50">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <p class="text-sm text-gray-700"> <b>Despacho Posterior: </b>Activa si necesitas despacho posterior</p>
+        </div>
+        
+        <!-- Toggle Switch moderno -->
+        <div 
+          class="toggle-switch"
+          :class="{ 'active': data.branch.delayedDispatch }"
+          @click="toggleDispatch"
+        >
+          <div class="toggle-switch-handle"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Establecimiento Turístico -->
+    <div class="p-2 rounded-lg bg-gray-50">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <p class="text-sm text-gray-700"> <b>Establecimiento Turístico</b> Activa si tu empresa es establecimiento turístico</p>
+        </div>
+        
+        <!-- Toggle Switch moderno -->
+        <div 
+          class="toggle-switch"
+          :class="{ 'active': data.branch.isTouristEstablishment }"
+          @click="toggleTourist"
+        >
+          <div class="toggle-switch-handle"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { IonGrid, IonRow, IonCol, IonItem, IonLabel, IonCheckbox } from "@ionic/vue"
-import { useInitialData } from "@/composables/useInitialData"
-
+import { useInitialData } from "@/composables/useInitialData";
 // Valores iniciales para el formulario
 const initialValues = {
   branch: {
@@ -43,7 +53,7 @@ const initialValues = {
 };
 
 // Usar el composable useInitialData para manejar los datos
-const { data } = useInitialData(
+const { data, updateNestedField } = useInitialData(
   "branchAndPOS",
   initialValues,
   {
@@ -54,11 +64,46 @@ const { data } = useInitialData(
     }
   }
 );
+
+// Funciones para alternar los estados
+const toggleDispatch = () => {
+  updateNestedField("branch", "delayedDispatch", !data.value.branch.delayedDispatch);
+};
+
+const toggleTourist = () => {
+  updateNestedField("branch", "isTouristEstablishment", !data.value.branch.isTouristEstablishment);
+};
 </script>
 
 <style scoped>
-/* Ensure items take full width within columns */
-ion-item {
-  --padding-start: 0;
+/* Estilo para el toggle switch */
+.toggle-switch {
+  position: relative;
+  width: 50px;
+  height: 26px;
+  border-radius: 13px;
+  background-color: #e5e7eb;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-switch.active {
+  background-color: #3b82f6;
+}
+
+.toggle-switch-handle {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.toggle-switch.active .toggle-switch-handle {
+  left: calc(100% - 23px);
 }
 </style>

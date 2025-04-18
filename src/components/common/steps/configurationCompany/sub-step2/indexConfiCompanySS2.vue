@@ -1,56 +1,63 @@
 <template>
-  <ion-card class="w-full">
-    <ion-card-content class="p-3 sm:p-4 md:p-5">
+  <ion-card class="shadow-lg rounded-xl overflow-hidden">
+    <ion-card-content>
       <!-- Contenedor principal con dos columnas generales -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <!-- Columna 1 - Dividida en 4 filas -->
-        <div class="flex flex-col gap-4">
-          <!-- Fila 1 Columna 1: regimeRUC y categoryRUC t  -->
-          <div className="w-full">
-            <h4 className="font-medium text-lg mb-2">Datos informativos</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="w-full">
-                <regimeRUC />
-              </div>
-              <div className="w-full">
-                <categoryRUC />
-              </div>
-              <div className="w-full">
-                <agentRUC />
-              </div>
+      <div class="flex flex-col lg:flex-row gap-3">
+        <!-- Columna 1 - Información y configuración principal (60%) -->
+        <div class="flex flex-col gap-2 lg:w-[55%]">
+          <!-- Sección 1: Datos informativos -->
+          <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+            <h3 class="font-medium text-lg mb-3 flex items-center text-black">
+              <b>              Datos informativos <span class="text-blue-700 pl-1">*</span>
+              </b>
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <regimeRUC />
+              <categoryRUC />
+              <agentRUC />
             </div>
           </div>
 
-          <!-- Fila 2 Columna 1: agentRUC -->
-          <div class="w-full">
+          <!-- Sección 2: Contabilidad -->
+          <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
             <accountingRUC />
           </div>
 
-          <!-- Fila 3 Columna 1: artisanRUC -->
-          <div class="w-full">
+          <!-- Sección 3: Artesano -->
+          <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
             <artisanRUC />
           </div>
 
-          <!-- Fila 4 Columna 1: dispatch_touris -->
-          <div class="w-full">
+          <!-- Sección 4: Despacho y Turismo -->
+          <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
             <dispatch_touris />
           </div>
         </div>
 
-        <!-- Columna 2 - Dividida en 2 filas -->
-        <div class="flex flex-col gap-4">
-          <!-- Fila 1 Columna 2: docDefault y parameterSearch -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="w-full">
+        <!-- Columna 2 - Configuraciones adicionales (40%) -->
+        <div class="flex flex-col gap-2 lg:w-[45%]">
+          <!-- Sección 1: Preferencias de Operación (título general) -->
+          <!-- Grid de 2 columnas para las dos secciones independientes -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <!-- Columna para docDefault -->
+
+            <div
+              class="bg-white rounded-xl p-3 shadow-sm border border-gray-100"
+            >
               <docDefault />
             </div>
-            <div class="w-full">
+
+            <!-- Columna para parameterSearch -->
+
+            <div
+              class="bg-white rounded-xl p-3 shadow-sm border border-gray-100"
+            >
               <parameterSearch />
             </div>
           </div>
 
-          <!-- Fila 2 Columna 2: taxes -->
-          <div class="w-full">
+          <!-- Sección 2: Impuestos -->
+          <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
             <taxesRUC />
           </div>
         </div>
@@ -73,5 +80,19 @@ import dispatch_touris from "./components/dispatch-tourist.vue";
 </script>
 
 <style scoped>
-/* No se necesitan estilos adicionales ya que usamos Tailwind */
+/* Estilos adicionales para mejorar la apariencia */
+:deep(ion-card) {
+  margin: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+:deep(ion-card-header) {
+  padding: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  :deep(ion-card-content) {
+    padding: 1rem;
+  }
+}
 </style>

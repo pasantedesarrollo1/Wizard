@@ -1,14 +1,17 @@
 <template>
-  <ion-item class="info-item">
-    <div class="label-container">
-      <ion-label class="info-label text-gray-500">Agente de retención: </ion-label>
+  <div class="info-field">
+    <div class="info-label">
+      <b>Agente de retención:</b> 
+      <div class="info-value">
+      {{ agentValueText }}
     </div>
-    <ion-input class="info-input text-gray-500" :value="agentValueText" readonly></ion-input>
-  </ion-item>
+
+    </div>
+
+  </div>
 </template>
     
 <script setup lang="ts">
-import { IonItem, IonLabel, IonInput } from "@ionic/vue";
 import { computed } from 'vue';
 import { useInitialData } from "@/composables/useInitialData";
 
@@ -35,8 +38,8 @@ const { data } = useInitialData(
 
 // Función para convertir el booleano a texto
 const booleanToText = (value: boolean | undefined): string => {
-  if (value === undefined) return '';
-  return value ? 'Si' : 'No';
+  if (value === undefined) return 'No especificado';
+  return value ? 'Sí' : 'No';
 };
 
 // Computed property para obtener el texto basado en el valor booleano
@@ -46,52 +49,32 @@ const agentValueText = computed(() => {
 </script>
     
 <style scoped>
-/* Estilos unificados para componentes informativos */
-.info-item {
-  --inner-padding-end: 0;
+.info-field {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: #f9fafb;
+  transition: all 0.2s ease;
 }
 
-/* Contenedor para el label con ancho fijo */
-.label-container {
-  width: auto;
-  display: inline-block;
-  white-space: nowrap;
+.info-field:hover {
+  background-color: #f3f4f6;
 }
 
 .info-label {
-  font-weight: 500;
-  color: #333;
-  font-size: 0.95rem;
-  white-space: nowrap;
-  width: auto;
-  display: inline-block;
-}
-
-.info-input {
-  font-size: 1rem;
-  color: #555;
-  font-weight: 500;
-  --padding-start: 2px;
-  flex: 1;
-  text-align: left;
-}
-
-/* Asegurar que el texto del input esté alineado a la izquierda con padding */
-:deep(.native-input) {
-  text-align: left !important;
-  padding-left: 2px !important;
-}
-
-/* Ajustar el input-wrapper para una mejor distribución */
-:deep(.input-wrapper) {
   display: flex;
-  width: 100%;
+  align-items: center;
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 0.875rem;
 }
 
-:deep(.item-inner) {
-  display: flex;
-  width: 100%;
+.info-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+  padding: 0.25rem 0.25rem;
 }
 </style>

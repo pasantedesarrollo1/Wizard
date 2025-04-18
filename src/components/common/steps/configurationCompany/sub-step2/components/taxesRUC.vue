@@ -1,20 +1,19 @@
 <template>
+  <span>Selecciona <b>los impuestos</b> a aplicar en tus ventas</span>
+
   <div class="p-2 py-2 bg-white rounded-xl">
-    <!-- Grid mejorado con animaciones y efectos -->
-    <span>Puedes elegir más de un impuesto a aplicar en tus ventas</span>
-    
     <!-- Contenedor centrado para las tarjetas -->
     <div class="flex justify-center items-center gap-4 mt-3">
       <div 
         v-for="opcion in opcionesImpuesto"
         :key="opcion.value"
         class="unified-card w-[90px] h-[70px] rounded-[16px] transition-all duration-300 cursor-pointer p-2 flex items-center justify-center border border-gray-200 bg-white hover:shadow-blue-300 hover:shadow-md hover:scale-[0.98] hover:border-transparent sm:w-[80px] sm:h-[60px]"
-        :class="{ 'selected-card': data.taxes.selectedTaxes.includes(opcion.value) }"
+        :class="{ 'selected-card': isSelected(opcion.value) }"
         @click="toggleImpuesto(opcion.value)"
       >
         <div 
           class="text-3xl font-bold transition-all duration-300 leading-none sm:text-2xl"
-          :class="{ 'text-white': data.taxes.selectedTaxes.includes(opcion.value), 'text-blue-600': !data.taxes.selectedTaxes.includes(opcion.value) }"
+          :class="{ 'text-white': isSelected(opcion.value), 'text-blue-600': !isSelected(opcion.value) }"
         >
           {{ opcion.label }}
         </div>
@@ -22,7 +21,7 @@
     </div>
     
     <!-- Campo de entrada simplificado para el código de 5% -->
-    <div v-if="data.taxes.selectedTaxes.includes('5')" class="mt-4">
+    <div v-if="isSelected('5')" class="mt-4">
       <div class="text-sm text-gray-700 mb-1">Código para 5%</div>
       <input
         type="text"
@@ -35,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useInitialData } from "@/composables/useInitialData"
 
 interface ImpuestoOpcion {
@@ -49,10 +48,10 @@ const opcionesImpuesto = ref<ImpuestoOpcion[]>([
   { label: '0%', value: '0' }
 ])
 
-// Valores iniciales para el formulario
+// Valores iniciales para el formulario - 15% seleccionado por defecto
 const initialValues = {
   taxes: {
-    selectedTaxes: ['15'],
+    selectedTaxes: ['15'], // Inicializado con un array que contiene '15'
     taxCode5Percent: ''
   }
 };
@@ -63,32 +62,66 @@ const { data, updateNestedField } = useInitialData(
   initialValues,
   {
     autoSave: true,
-    debug: false,
+    debug: true, // Activamos el modo debug para ver los logs
     nestedFields: {
       taxes: ["selectedTaxes", "taxCode5Percent"]
     }
   }
 );
 
+const selectedTaxesRef = computed(() => data.value.taxes.selectedTaxes);
+
+// Asegurarse de que selectedTaxes es un array y contiene '15' al inicio
+onMounted(() => {
+  // Verificar si selectedTaxes existe y es un array
+  if (!Array.isArray(selectedTaxesRef.value)) {
+    // Si no es un array, inicializarlo con '15'
+    updateNestedField("taxes", "selectedTaxes", ['15']);
+    console.log('selectedTaxes inicializado con [15]');
+  } else if (!selectedTaxesRef.value.includes('15')) {
+    // Si es un array pero no contiene '15', añadirlo
+    const updatedTaxes = [...selectedTaxesRef.value, '15'];
+    updateNestedField("taxes", "selectedTaxes", updatedTaxes);
+    console.log('15% añadido a selectedTaxes:', updatedTaxes);
+  } else {
+    console.log('selectedTaxes ya contiene 15%:', selectedTaxesRef.value);
+  }
+});
+
+const isSelected = (value: string): boolean => {
+  const currentTaxes = Array.isArray(selectedTaxesRef.value) ? selectedTaxesRef.value : [];
+  return currentTaxes.includes(value);
+};
+
 const toggleImpuesto = (value: string) => {
-  const selectedTaxes = [...data.value.taxes.selectedTaxes];
-  const index = selectedTaxes.indexOf(value);
+  // Asegurarse de que selectedTaxes es un array
+  const currentTaxes = Array.isArray(selectedTaxesRef.value) 
+    ? [...selectedTaxesRef.value] 
+    : [];
+  
+  const index = currentTaxes.indexOf(value);
   
   if (index === -1) {
     // Si no está seleccionado, lo añadimos
-    selectedTaxes.push(value);
+    currentTaxes.push(value);
   } else {
     // Si ya está seleccionado, lo quitamos
-    selectedTaxes.splice(index, 1);
+    // No permitimos quitar cualquier impuesto si es el único seleccionado
+    if (currentTaxes.length > 1) {
+      currentTaxes.splice(index, 1);
+    } else {
+      console.log(`No se puede deseleccionar ${value}% cuando es el único impuesto seleccionado`);
+      return; // Salir de la función sin hacer cambios
+    }
   }
   
   // Actualizar el store con los nuevos impuestos seleccionados
-  updateNestedField("taxes", "selectedTaxes", selectedTaxes);
+  updateNestedField("taxes", "selectedTaxes", currentTaxes);
   
-  console.log('Impuestos seleccionados:', selectedTaxes);
+  console.log('Impuestos seleccionados:', currentTaxes);
   
   // Si se deselecciona 5%, limpiar el código
-  if (!selectedTaxes.includes('5')) {
+  if (!currentTaxes.includes('5')) {
     updateNestedField("taxes", "taxCode5Percent", '');
   }
 }
