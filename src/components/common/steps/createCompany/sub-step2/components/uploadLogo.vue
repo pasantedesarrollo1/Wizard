@@ -109,7 +109,7 @@
               class="cropper"
               :src="tempImage"
               :stencil-props="{
-                aspectRatio: 1 / 1,
+                aspectRatio: null, // Eliminamos la relación de aspecto fija
                 handlers: {
                   eastNorth: true,
                   north: true,
@@ -122,12 +122,24 @@
                 },
                 movable: true,
                 resizable: true,
+                handlersInteractions: {
+                  // Configuración para mantener relación de aspecto solo en las esquinas
+                  north: { aspectRatio: false },
+                  south: { aspectRatio: false },
+                  east: { aspectRatio: false },
+                  west: { aspectRatio: false },
+                  // Las esquinas mantienen la relación de aspecto
+                  eastNorth: { aspectRatio: true },
+                  westNorth: { aspectRatio: true },
+                  westSouth: { aspectRatio: true },
+                  eastSouth: { aspectRatio: true }
+                }
               }"
               :resize-image="{
                 touch: true,
                 wheel: {
-                  ratio: 5,
-                },
+                  ratio: 5
+                }
               }"
               :canvas="{ width: 600, height: 400 }"
               image-restriction="stencil"
