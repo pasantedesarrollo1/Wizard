@@ -32,6 +32,7 @@
           placeholder="Ingresa tu código para 5%"
           v-model="taxesFiveNumberLocal"
           class="w-full border border-gray-300 rounded-md py-2 pl-10 pr-3 text-base transition-all duration-300 ease-in-out focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+          @input="updateTaxesFiveNumber"
         />
       </div>
     </div>
@@ -65,35 +66,40 @@ const opcionesImpuesto = ref<ImpuestoOpcion[]>([
 ]);
 
 // Estado local para los impuestos seleccionados
-const selectedTaxes = ref(props.formData.taxes || ['15']);
+const selectedTaxes = ref<string[]>([]);
 
 // Estado local para el código de 5%
-const taxesFiveNumberLocal = ref(props.formData.taxesFiveNumber || '');
-
-// Sincronizar el estado local con los props cuando cambian
-watch(() => props.formData.taxes, (newValue) => {
-  if (newValue && JSON.stringify(newValue) !== JSON.stringify(selectedTaxes.value)) {
-    selectedTaxes.value = Array.isArray(newValue) ? [...newValue] : ['15'];
-  }
-});
-
-watch(() => props.formData.taxesFiveNumber, (newValue) => {
-  if (newValue !== taxesFiveNumberLocal.value) {
-    taxesFiveNumberLocal.value = newValue;
-  }
-});
-
-// Observar cambios en el código de 5% para actualizar el componente padre
-watch(taxesFiveNumberLocal, (newValue) => {
-  emit('update', 'root', { taxesFiveNumber: newValue });
-});
+const taxesFiveNumberLocal = ref('');
 
 // Inicializar el componente
 onMounted(() => {
   // Asegurarse de que el estado local esté sincronizado con los props
-  selectedTaxes.value = Array.isArray(props.formData.taxes) ? [...props.formData.taxes] : ['15'];
-  taxesFiveNumberLocal.value = props.formData.taxesFiveNumber || '';
+  initializeFromProps();
 });
+
+// Función para inicializar el estado local desde los props
+const initializeFromProps = () => {
+  // Inicializar impuestos seleccionados
+  if (props.formData && props.formData.taxes) {
+    selectedTaxes.value = Array.isArray(props.formData.taxes) 
+      ? [...props.formData.taxes] 
+      : ['15'];
+  } else {
+    selectedTaxes.value = ['15'];
+  }
+  
+  // Inicializar código de 5%
+  if (props.formData && props.formData.taxesFiveNumber !== undefined) {
+    taxesFiveNumberLocal.value = props.formData.taxesFiveNumber;
+  } else {
+    taxesFiveNumberLocal.value = '';
+  }
+};
+
+// Sincronizar el estado local con los props cuando cambian
+watch(() => props.formData, () => {
+  initializeFromProps();
+}, { deep: true });
 
 // Verificar si un impuesto está seleccionado
 const isSelected = (value: string): boolean => {
@@ -132,6 +138,11 @@ const toggleImpuesto = (value: string) => {
     taxesFiveNumberLocal.value = '';
     emit('update', 'root', { taxesFiveNumber: '' });
   }
+};
+
+// Actualizar el código de 5%
+const updateTaxesFiveNumber = () => {
+  emit('update', 'root', { taxesFiveNumber: taxesFiveNumberLocal.value });
 };
 </script>
 

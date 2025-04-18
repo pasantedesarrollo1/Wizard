@@ -3,29 +3,32 @@
     <div class="info-label">
       <b>Régimen:</b>
       <div class="info-value">
-      {{ data.regimeRUC || 'No especificado' }}
-    </div>
+        {{ regimeValue }}
+      </div>
     </div>
   </div>
 </template>
     
 <script setup lang="ts"> 
-import { useInitialData } from "@/composables/useInitialData";
+import { computed } from 'vue';
 
-// Valores iniciales para el formulario
-const initialValues = {
-  regimeRUC: ''
-};
-
-// Usar el composable useInitialData para manejar los datos
-const { data } = useInitialData(
-  "companyConfig",
-  initialValues,
-  {
-    autoSave: false, // Solo lectura, no necesitamos guardar
-    debug: false
+// Definir props para recibir datos del componente padre
+const props = defineProps({
+  formData: {
+    type: Object,
+    required: true
   }
-);
+});
+
+// Computed property para obtener el valor del régimen
+const regimeValue = computed(() => {
+  // Verificar si existe la propiedad regimeRUC
+  if (props.formData && props.formData.regimeRUC !== undefined) {
+    return props.formData.regimeRUC || 'No especificado';
+  }
+  // Valor por defecto si no existe
+  return 'No especificado';
+});
 </script>
     
 <style scoped>

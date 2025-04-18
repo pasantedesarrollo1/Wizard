@@ -10,7 +10,7 @@
         <!-- Toggle Switch moderno -->
         <div 
           class="toggle-switch"
-          :class="{ 'active': data.branch.delayedDispatch }"
+          :class="{ 'active': isDelayedDispatch }"
           @click="toggleDispatch"
         >
           <div class="toggle-switch-handle"></div>
@@ -28,7 +28,7 @@
         <!-- Toggle Switch moderno -->
         <div 
           class="toggle-switch"
-          :class="{ 'active': data.branch.isTouristEstablishment }"
+          :class="{ 'active': isTouristEstablishment }"
           @click="toggleTourist"
         >
           <div class="toggle-switch-handle"></div>
@@ -39,40 +39,101 @@
 </template>
 
 <script setup lang="ts">
-import { useInitialData } from "@/composables/useInitialData";
-// Valores iniciales para el formulario
-const initialValues = {
-  branch: {
-    delayedDispatch: false,
-    isTouristEstablishment: false,
-    // Incluimos campos vacíos para otros valores que puedan existir en branch
-    idBranch: "",
-    commercialName: "",
-    address: ""
-  }
-};
+import { computed, onMounted } from 'vue';
 
-// Usar el composable useInitialData para manejar los datos
-const { data, updateNestedField } = useInitialData(
-  "branchAndPOS",
-  initialValues,
-  {
-    autoSave: true,
-    debug: false,
-    nestedFields: {
-      branch: ["delayedDispatch", "isTouristEstablishment", "idBranch", "commercialName", "address"]
-    }
+// Definir props para recibir datos del componente padre
+const props = defineProps({
+  formData: {
+    type: Object,
+    required: true
   }
-);
+});
 
-// Funciones para alternar los estados
+// Definir eventos para comunicarse con el componente padre
+const emit = defineEmits(['update']);
+
+// Computed property para obtener el estado actual de delayedDispatch
+const isDelayedDispatch = computed(() => {
+  // Verificar si existe la propiedad branch y delayedDispatch
+  if (props.formData && 
+      props.formData.branch && 
+      typeof props.formData.branch.delayedDispatch === 'boolean') {
+    return props.formData.branch.delayedDispatch;
+  }
+  // Valor por defecto si no existe
+  return false;
+});
+
+// Computed property para obtener el estado actual de isTouristEstablishment
+const isTouristEstablishment = computed(() => {
+  // Verificar si existe la propiedad branch y isTouristEstablishment
+  if (props.formData && 
+      props.formData.branch && 
+      typeof props.formData.branch.isTouristEstablishment === 'boolean') {
+    return props.formData.branch.isTouristEstablishment;
+  }
+  // Valor por defecto si no existe
+  return false;
+});
+
+// Función para alternar el estado de despacho posterior
 const toggleDispatch = () => {
-  updateNestedField("branch", "delayedDispatch", !data.value.branch.delayedDispatch);
+  // Crear una copia del objeto branch actual o uno nuevo si no existe
+  const updatedBranch = props.formData.branch 
+    ? { ...props.formData.branch } 
+    : { 
+        delayedDispatch: false, 
+        isTouristEstablishment: false,
+        idBranch: "",
+        commercialName: "",
+        address: ""
+      };
+  
+  // Actualizar el valor de delayedDispatch
+  updatedBranch.delayedDispatch = !isDelayedDispatch.value;
+  
+  // Emitir evento al componente padre
+  emit('update', 'branch', updatedBranch);
+  
+  console.log('Estado de despacho posterior actualizado:', updatedBranch.delayedDispatch);
 };
 
+// Función para alternar el estado de establecimiento turístico
 const toggleTourist = () => {
-  updateNestedField("branch", "isTouristEstablishment", !data.value.branch.isTouristEstablishment);
+  // Crear una copia del objeto branch actual o uno nuevo si no existe
+  const updatedBranch = props.formData.branch 
+    ? { ...props.formData.branch } 
+    : { 
+        delayedDispatch: false, 
+        isTouristEstablishment: false,
+        idBranch: "",
+        commercialName: "",
+        address: ""
+      };
+  
+  // Actualizar el valor de isTouristEstablishment
+  updatedBranch.isTouristEstablishment = !isTouristEstablishment.value;
+  
+  // Emitir evento al componente padre
+  emit('update', 'branch', updatedBranch);
+  
+  console.log('Estado de establecimiento turístico actualizado:', updatedBranch.isTouristEstablishment);
 };
+
+// Inicializar el componente
+onMounted(() => {
+  // Verificar si los datos iniciales son válidos
+  if (!props.formData.branch) {
+    // Si no existe branch, inicializarlo con valores por defecto
+    emit('update', 'branch', {
+      delayedDispatch: false,
+      isTouristEstablishment: false,
+      idBranch: "",
+      commercialName: "",
+      address: ""
+    });
+  }
+});
 </script>
 
 <style scoped>

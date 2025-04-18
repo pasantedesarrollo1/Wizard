@@ -3,38 +3,22 @@
     <div class="info-label">
       <b>Agente de retención:</b> 
       <div class="info-value">
-      {{ agentValueText }}
+        {{ agentValueText }}
+      </div>
     </div>
-
-    </div>
-
   </div>
 </template>
     
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useInitialData } from "@/composables/useInitialData";
 
-// Valores iniciales para el formulario
-const initialValues = {
-  taxAgent: {
-    isAgent: false,
-    accountingRequired: false
+// Definir props para recibir datos del componente padre
+const props = defineProps({
+  formData: {
+    type: Object,
+    required: true
   }
-};
-
-// Usar el composable useInitialData para manejar los datos
-const { data } = useInitialData(
-  "companyConfig",
-  initialValues,
-  {
-    autoSave: false, // Solo lectura, no necesitamos guardar
-    debug: false,
-    nestedFields: {
-      taxAgent: ["isAgent", "accountingRequired"]
-    }
-  }
-);
+});
 
 // Función para convertir el booleano a texto
 const booleanToText = (value: boolean | undefined): string => {
@@ -44,7 +28,14 @@ const booleanToText = (value: boolean | undefined): string => {
 
 // Computed property para obtener el texto basado en el valor booleano
 const agentValueText = computed(() => {
-  return booleanToText(data.value.taxAgent.isAgent);
+  // Verificar si existe la propiedad taxAgent y isAgent
+  if (props.formData && 
+      props.formData.taxAgent && 
+      typeof props.formData.taxAgent.isAgent === 'boolean') {
+    return booleanToText(props.formData.taxAgent.isAgent);
+  }
+  // Valor por defecto si no existe
+  return booleanToText(false);
 });
 </script>
     

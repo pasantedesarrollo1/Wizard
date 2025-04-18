@@ -8,7 +8,7 @@
       <!-- Toggle Switch moderno -->
       <div 
         class="toggle-switch"
-        :class="{ 'active': data.taxAgent.accountingRequired }"
+        :class="{ 'active': isAccountingRequired }"
         @click="toggleAccounting"
       >
         <div class="toggle-switch-handle"></div>
@@ -18,33 +18,58 @@
 </template>
 
 <script setup lang="ts">
-import { useInitialData } from "@/composables/useInitialData";
+import { computed, onMounted } from 'vue';
 
-// Valores iniciales para el formulario
-const initialValues = {
-  taxAgent: {
-    accountingRequired: false,
-    isAgent: false
+// Definir props para recibir datos del componente padre
+const props = defineProps({
+  formData: {
+    type: Object,
+    required: true
   }
-};
+});
 
-// Usar el composable useInitialData para manejar los datos
-const { data, updateNestedField } = useInitialData(
-  "companyConfig",
-  initialValues,
-  {
-    autoSave: true,
-    debug: false,
-    nestedFields: {
-      taxAgent: ["accountingRequired", "isAgent"]
-    }
+// Definir eventos para comunicarse con el componente padre
+const emit = defineEmits(['update']);
+
+// Computed property para obtener el valor actual de accountingRequired
+const isAccountingRequired = computed(() => {
+  // Verificar si existe la propiedad taxAgent y accountingRequired
+  if (props.formData && 
+      props.formData.taxAgent && 
+      typeof props.formData.taxAgent.accountingRequired === 'boolean') {
+    return props.formData.taxAgent.accountingRequired;
   }
-);
+  // Valor por defecto si no existe
+  return false;
+});
 
-// Función para alternar el estado del checkbox
+// Función para alternar el estado del toggle
 const toggleAccounting = () => {
-  updateNestedField("taxAgent", "accountingRequired", !data.value.taxAgent.accountingRequired);
+  // Crear una copia del objeto taxAgent actual o uno nuevo si no existe
+  const updatedTaxAgent = props.formData.taxAgent 
+    ? { ...props.formData.taxAgent } 
+    : { isAgent: false, accountingRequired: false };
+  
+  // Actualizar el valor de accountingRequired
+  updatedTaxAgent.accountingRequired = !isAccountingRequired.value;
+  
+  // Emitir evento al componente padre
+  emit('update', 'taxAgent', updatedTaxAgent);
+  
+  console.log('Contabilidad obligatoria actualizada:', updatedTaxAgent.accountingRequired);
 };
+
+// Inicializar el componente
+onMounted(() => {
+  // Verificar si los datos iniciales son válidos
+  if (!props.formData.taxAgent) {
+    // Si no existe taxAgent, inicializarlo con valores por defecto
+    emit('update', 'taxAgent', {
+      isAgent: false,
+      accountingRequired: false
+    });
+  }
+});
 </script>
 
 <style scoped>

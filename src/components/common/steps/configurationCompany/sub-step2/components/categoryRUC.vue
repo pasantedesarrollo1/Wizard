@@ -3,29 +3,32 @@
     <div class="info-label">
       <b>Categoría:</b>
       <div class="info-value">
-      {{ data.categoryRUC || 'No especificada' }}
-    </div>
+        {{ categoryValue }}
+      </div>
     </div>
   </div>
 </template>
     
 <script setup lang="ts">
-import { useInitialData } from "@/composables/useInitialData";
+import { computed } from 'vue';
 
-// Valores iniciales para el formulario
-const initialValues = {
-  categoryRUC: ''
-};
-
-// Usar el composable useInitialData para manejar los datos
-const { data } = useInitialData(
-  "companyConfig",
-  initialValues,
-  {
-    autoSave: false, // Solo lectura, no necesitamos guardar
-    debug: false
+// Definir props para recibir datos del componente padre
+const props = defineProps({
+  formData: {
+    type: Object,
+    required: true
   }
-);
+});
+
+// Computed property para obtener el valor de la categoría
+const categoryValue = computed(() => {
+  // Verificar si existe la propiedad categoryRUC
+  if (props.formData && props.formData.categoryRUC !== undefined) {
+    return props.formData.categoryRUC || 'No especificada';
+  }
+  // Valor por defecto si no existe
+  return 'No especificada';
+});
 </script>
     
 <style scoped>
@@ -49,7 +52,6 @@ const { data } = useInitialData(
   font-weight: 500;
   color: #1f2937;
   font-size: 0.875rem;
-  
 }
 
 .info-value {
