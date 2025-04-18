@@ -12,15 +12,17 @@
         <p class="text-lg mb-4 text-gray-800 text-center">{{ message }}</p>
         
         <!-- Mensaje secundario (si existe) -->
-        <p v-if="secondaryMessage" class="text-sm text-gray-600 mb-6 text-center">
+        <p v-if="secondaryMessage" class="text-sm text-gray-600 mb-4 text-center">
           {{ secondaryMessage }}
         </p>
         
         <!-- Slot para contenido personalizado -->
-        <slot></slot>
+        <div class="custom-content-wrapper mb-4">
+          <slot></slot>
+        </div>
         
-        <!-- Botones de acción -->
-        <div class="flex justify-between mt-6 gap-4 sm:flex-row flex-col-reverse">
+        <!-- Botones de acción - SIEMPRE VISIBLES -->
+        <div class="flex justify-between mt-4 gap-4 sm:flex-row flex-col-reverse">
           <ion-button 
             fill="outline" 
             class="flex-1 cancel-button"
@@ -99,6 +101,13 @@ const handleBackdropClick = () => {
 .cancel-button, .confirm-button {
   --border-radius: 10px;
   font-weight: 500;
+}
+
+/* Contenedor para el contenido personalizado */
+.custom-content-wrapper {
+  width: 100%;
+  max-height: 50vh;
+  overflow-y: auto;
 }
 
 /* Animaciones */

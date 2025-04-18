@@ -66,7 +66,10 @@
       confirm-button-color="success"
       @confirm="handleConfirmSalesNext" 
       @cancel="handleCancelSalesNext"
-    />
+    > 
+    <SalesSummary />
+    </ConfirmationModal> 
+    
   </IonPage>
 </template>
 
@@ -82,6 +85,7 @@ import { useWizardSubSteps, WizardSubStepsConfig } from "@/composables/useWizard
 import { useWizardStore } from "@/stores/wizardStore"
 import type { Component } from "vue"
 import { useWizardValidation } from "@/composables/useWizardValidation"
+import SalesSummary from "@/components/summary/salesSummary.vue" // Importamos el componente
 
 // Obtener las funciones de validación del composable
 const { shouldDisableNextButton, shouldDisablePreviousButton } = useWizardValidation()

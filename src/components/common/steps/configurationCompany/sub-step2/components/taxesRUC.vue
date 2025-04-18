@@ -22,13 +22,18 @@
     
     <!-- Campo de entrada simplificado para el código de 5% -->
     <div v-if="isSelected('5')" class="mt-4">
-      <div class="text-sm text-gray-700 mb-1">Código para 5%</div>
-      <input
-        type="text"
-        placeholder="Ingresa tu código para 5%"
-        v-model="data.taxes.taxCode5Percent"
-        class="w-full border border-gray-300 rounded-md p-2 text-base transition-all duration-300 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 sm:text-sm sm:p-1.5"
-      />
+      <div class="text-sm text-gray-700 mb-1">Ingresa el código proporcionado por el SRI para activar el 5% de impuestos</div>
+      <div class="relative">
+        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+          <Icon icon="lsicon:number-filled" width="18" height="18" />
+        </span>
+        <input  
+          type="text"
+          placeholder="Ingresa tu código para 5%"
+          v-model="data.taxes.taxCode5Percent"
+          class="w-full border border-gray-300 rounded-md py-2 pl-10 pr-3 text-base transition-all duration-300 ease-in-out focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -36,6 +41,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useInitialData } from "@/composables/useInitialData"
+import { Icon } from '@iconify/vue';
+
 
 interface ImpuestoOpcion {
   label: string
