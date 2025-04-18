@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, nextTick } from "vue";
 import { IonCard, IonCardContent } from "@ionic/vue";
 import regimeRUC from "./components/regimeRUC.vue";
 import categoryRUC from "./components/categoryRUC.vue";
@@ -137,8 +137,10 @@ const updateFormData = (section: string, data: Record<string, any>) => {
     (formData.value as any)[section] = { ...sectionData, ...data };
   }
   
-  // No guardamos en el store aquí, solo actualizamos el estado local
-  console.log("Estado local actualizado:", formData.value);
+  // Guardar en el store inmediatamente después de cada actualización
+  saveFormToStore();
+  
+  console.log("Estado local actualizado:", JSON.parse(JSON.stringify(formData.value)));
 };
 
 // Cargar datos iniciales desde el store
@@ -180,7 +182,7 @@ onMounted(() => {
     };
   }
   
-  console.log("Datos iniciales cargados:", formData.value);
+  console.log("Datos iniciales cargados:", JSON.parse(JSON.stringify(formData.value)));
 });
 
 // Guardar datos en el store cuando se haga clic en "Siguiente"
@@ -189,6 +191,10 @@ watch(() => wizardStore.getCurrentWizardState.currentStep, (newStep, oldStep) =>
   // Solo guardar si estamos saliendo del paso actual
   if (oldStep === "config-company" && newStep !== "config-company") {
     saveFormToStore();
+    // Forzar una actualización completa después de un pequeño retraso
+    setTimeout(() => {
+      saveFormToStore();
+    }, 100);
   }
 });
 
@@ -197,35 +203,57 @@ watch(() => wizardStore.getCurrentWizardState.currentSubStep, (newSubStep, oldSu
   // Si estamos en el paso config-company y cambiamos de subpaso
   if (wizardStore.getCurrentWizardState.currentStep === "config-company" && newSubStep !== oldSubStep) {
     saveFormToStore();
+    // Forzar una actualización completa después de un pequeño retraso
+    setTimeout(() => {
+      saveFormToStore();
+    }, 100);
   }
 });
 
 // Función para guardar todos los datos en el store
 const saveFormToStore = () => {
-  // Guardar datos en companyConfig
-  wizardStore.updateFormSection("companyConfig", {
+  // Obtener los datos actuales de companyConfig del store
+  const existingCompanyConfig = wizardStore.getStepData("companyConfig") || {};
+  
+  // Crear una copia profunda de los datos para evitar problemas de referencia
+  const companyConfigData = {
+    ...existingCompanyConfig, // Mantener los datos existentes
     defaultDocument: formData.value.defaultDocument,
     searchParameter: formData.value.searchParameter,
     regimeRUC: formData.value.regimeRUC,
     categoryRUC: formData.value.categoryRUC,
-    taxAgent: formData.value.taxAgent,
-    artisan: formData.value.artisan,
-    taxes: formData.value.taxes,
+    taxAgent: JSON.parse(JSON.stringify(formData.value.taxAgent)),
+    artisan: JSON.parse(JSON.stringify(formData.value.artisan)),
+    taxes: [...formData.value.taxes],
     taxesFiveNumber: formData.value.taxesFiveNumber
-  });
+  };
   
-  // Guardar datos en branchAndPOS
-  wizardStore.updateFormSection("branchAndPOS", {
+  // Guardar datos en companyConfig
+  wizardStore.updateFormSection("companyConfig", companyConfigData);
+  
+  // Obtener los datos actuales de branchAndPOS del store
+  const existingBranchData = wizardStore.getStepData("branchAndPOS") || {};
+  const existingBranch = existingBranchData.branch || {};
+  
+  // Crear una copia profunda de los datos de branch
+  const branchData = {
+    ...existingBranchData, // Mantener los datos existentes
     branch: {
-      ...wizardStore.getStepData("branchAndPOS")?.branch || {},
+      ...existingBranch, // Mantener los datos existentes de branch
       delayedDispatch: formData.value.branch.delayedDispatch,
       isTouristEstablishment: formData.value.branch.isTouristEstablishment
     }
-  });
+  };
   
-  console.log("Datos guardados en el store:", {
-    companyConfig: wizardStore.getStepData("companyConfig"),
-    branchAndPOS: wizardStore.getStepData("branchAndPOS")
+  // Guardar datos en branchAndPOS
+  wizardStore.updateFormSection("branchAndPOS", branchData);
+  
+  // Usar nextTick para asegurarnos de que los cambios se han aplicado
+  nextTick(() => {
+    console.log("Datos guardados en el store (copia profunda):", {
+      companyConfig: JSON.parse(JSON.stringify(wizardStore.getStepData("companyConfig"))),
+      branchAndPOS: JSON.parse(JSON.stringify(wizardStore.getStepData("branchAndPOS")))
+    });
   });
 };
 </script>

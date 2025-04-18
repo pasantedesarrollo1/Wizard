@@ -222,50 +222,50 @@ const updateSalesDataIfNeeded = () => {
   }
 }
 
-// Función para proceder al siguiente paso/subpaso
+// Modificar la función proceedToNextStep para mostrar el estado completo
 const proceedToNextStep = () => {
   // Si el paso actual tiene sub-pasos
   if (hasSubStepsForCurrentStep.value) {
     // Intentamos avanzar al siguiente sub-paso
-    const completed = nextSubStep(currentStepKey.value)
+    const completed = nextSubStep(currentStepKey.value);
     // Actualizar el subpaso en el store
     wizardStore.updateWizardState({
       currentSubStep: currentSubStepIndex.value + 1,
-    })
+    });
 
-    // Mostrar el estado completo en consola
+    // Mostrar el estado completo en consola con copia profunda para evitar referencias
     console.log("Wizard state actualizado (proceedToNextStep - subpaso):", {
-      wizardState: wizardStore.getCurrentWizardState,
-      formData: wizardStore.getAllFormData,
-    })
+      wizardState: JSON.parse(JSON.stringify(wizardStore.getCurrentWizardState)),
+      formData: JSON.parse(JSON.stringify(wizardStore.getAllFormData))
+    });
 
     // Si hemos completado todos los sub-pasos, avanzamos al siguiente paso principal
     if (completed) {
-      nextStep()
+      nextStep();
     }
-    return
+    return;
   }
 
   // Para pasos sin sub-pasos, comportamiento normal
-  nextStep()
+  nextStep();
 
-  // Mostrar el estado completo en consola
+  // Mostrar el estado completo en consola con copia profunda para evitar referencias
   console.log("Wizard state actualizado (proceedToNextStep - paso principal):", {
-    wizardState: wizardStore.getCurrentWizardState,
-    formData: wizardStore.getAllFormData,
-  })
-}
+    wizardState: JSON.parse(JSON.stringify(wizardStore.getCurrentWizardState)),
+    formData: JSON.parse(JSON.stringify(wizardStore.getAllFormData))
+  });
+};
 
-// Maneja la lógica de navegación "siguiente"
+// Modificar la función handleNext para asegurar que los datos se guarden correctamente
 const handleNext = () => {
   // Actualizar datos de salesData si es necesario
-  updateSalesDataIfNeeded()
+  updateSalesDataIfNeeded();
 
   // Si estamos en el último paso y sub-paso y el botón dice "Finalizado"
   if (isLastStepAndSubStep.value) {
     // Mostramos el modal de confirmación en lugar de avanzar
-    showConfirmationModal.value = true
-    return
+    showConfirmationModal.value = true;
+    return;
   }
 
   // Verificar si estamos en el paso data-sales y subpaso 1 (indexSalesDataSS2)
@@ -273,14 +273,23 @@ const handleNext = () => {
     // Verificar si se cumplen todas las condiciones para habilitar el botón
     if (!shouldDisableNextButton.value) {
       // Mostrar el modal de confirmación de ventas
-      showSalesConfirmationModal.value = true
-      return
+      showSalesConfirmationModal.value = true;
+      return;
     }
   }
 
-  // Para todos los demás casos, procedemos normalmente
-  proceedToNextStep()
-}
+  // Forzar una actualización del store antes de proceder
+  if (currentStepKey.value === "config-company") {
+    // Esperar un momento para asegurar que los datos se han guardado
+    setTimeout(() => {
+      // Para todos los demás casos, procedemos normalmente
+      proceedToNextStep();
+    }, 200);
+  } else {
+    // Para todos los demás casos, procedemos normalmente
+    proceedToNextStep();
+  }
+};
 
 // Función para manejar la confirmación del modal de ventas
 const handleConfirmSalesNext = () => {
@@ -401,23 +410,23 @@ const wizardState = ref({
   currentSubStep: 0,
 })
 
-// Observa los cambios en currentStepKey y currentSubStepIndex
+// Modificar el watch para usar copia profunda en los logs
 watch([currentStepKey, currentSubStepIndex], () => {
   // Actualiza el estado del wizard con los valores actuales
   wizardState.value = {
     currentStep: currentStepKey.value,
     currentSubStep: currentSubStepIndex.value + 1,
-  }
+  };
 
   // Actualiza el estado del wizard en el store
-  wizardStore.updateWizardState(wizardState.value)
+  wizardStore.updateWizardState(wizardState.value);
 
-  // Muestra el estado completo en la consola
+  // Muestra el estado completo en la consola con copia profunda para evitar referencias
   console.log("Wizard state actualizado (watch currentStepKey y currentSubStepIndex):", {
-    wizardState: wizardStore.getCurrentWizardState,
-    formData: wizardStore.getAllFormData,
-  })
-})
+    wizardState: JSON.parse(JSON.stringify(wizardStore.getCurrentWizardState)),
+    formData: JSON.parse(JSON.stringify(wizardStore.getAllFormData))
+  });
+});
 </script>
 <style scoped>
 .ion-content {
