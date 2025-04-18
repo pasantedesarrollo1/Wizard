@@ -10,10 +10,10 @@
         <input 
           type="text"
           placeholder="Nombre del punto de Emisión"
-          v-model="data.pos.name"
+          v-model="data.pointOfSale.name"
           class="form-input"
           :class="{ 
-            'has-value': data.pos.name.length > 0,
+            'has-value': data.pointOfSale.name.length > 0,
             'is-focused': focusedField === 'nombrePOS'
           }"
           @focus="setFocus('nombrePOS')"
@@ -32,10 +32,10 @@
         <input 
           type="text"
           placeholder="Código del punto de Emisión"
-          v-model="data.pos.code"
+          v-model="data.pointOfSale.idPos"
           class="form-input"
           :class="{ 
-            'has-value': data.pos.code.length > 0,
+            'has-value': data.pointOfSale.idPos.length > 0,
             'is-focused': focusedField === 'codigoPOS'
           }"
           @focus="setFocus('codigoPOS')"
@@ -54,9 +54,9 @@ import { useInitialData } from "@/composables/useInitialData";
 
 // Valores iniciales para el formulario
 const initialValues = {
-  pos: {
-    name: '',
-    code: ''
+  pointOfSale: {
+    idPos: '',
+    name: ''
   }
 };
 
@@ -68,7 +68,7 @@ const { data } = useInitialData(
     autoSave: true,
     debug: false,
     nestedFields: {
-      pos: ["name", "code"]
+      pointOfSale: ["idPos", "name"]
     }
   }
 );

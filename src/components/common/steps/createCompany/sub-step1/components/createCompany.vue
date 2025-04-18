@@ -57,10 +57,10 @@
         <input 
           type="text"
           placeholder="Nombre de tu empresa"
-          v-model="data.companyName"
+          v-model="data.name"
           class="form-input"
           :class="{ 
-            'has-value': data.companyName.length > 0,
+            'has-value': data.name.length > 0,
             'is-focused': focusedField === 'nombreEmpresa'
           }"
           @focus="setFocus('nombreEmpresa')"
@@ -118,18 +118,18 @@
       <ion-label position="stacked" class="form-label">Correo Electrónico Empresarial <span class="required">*</span></ion-label>
       <div class="input-container">
         <div class="input-icon">
-          <Icon icon="mdi:email" width="20" height="20" />
+          <Icon icon="mdi:businessEmail" width="20" height="20" />
         </div>
         <input 
-          type="email"
-          placeholder="Email empresarial"
-          v-model="data.email"
+          type="businessEmail"
+          placeholder="businessEmail empresarial"
+          v-model="data.businessEmail"
           class="form-input"
           :class="{ 
-            'has-value': data.email.length > 0,
-            'is-focused': focusedField === 'email'
+            'has-value': data.businessEmail.length > 0,
+            'is-focused': focusedField === 'businessEmail'
           }"
-          @focus="setFocus('email')"
+          @focus="setFocus('businessEmail')"
           @blur="clearFocus"
         >
       </div>
@@ -146,11 +146,11 @@ import { useInitialData } from "@/composables/useInitialData";
 // Valores iniciales para el formulario
 const initialValues = {
   ruc: '',
+  name: '',
   legalName: '',
-  companyName: '',
   address: '',
   phone: '',
-  email: ''
+  businessEmail: ''
 };
 
 // Usar el composable useInitialData para manejar los datos

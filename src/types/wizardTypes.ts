@@ -34,7 +34,7 @@ export interface WizardState {
     legalName: string
     domain: string
     address: string
-    phones: string
+    phone: string
     businessEmail: string
   }
   

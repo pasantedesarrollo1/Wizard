@@ -32,7 +32,7 @@ export const initialState = (): WizardInterface => ({
       legalName: "",
       domain: "",
       address: "",
-      phones: "",
+      phone: "",
       businessEmail: "",
     },
     salesData: {
