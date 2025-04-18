@@ -1,6 +1,6 @@
 <template>
   <span class="block text-left text-gray-700">Elige cómo prefieres buscar tus productos por defecto</span>
-  <div class=" py-2 bg-white rounded-xl">    
+  <div class="py-2 bg-white rounded-xl">    
     <!-- Grid mejorado con SelectableCard -->
     <div class="w-full">
       <ion-grid class="w-full mx-auto parameter-grid">
@@ -32,8 +32,18 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
 import { IonGrid, IonRow, IonCol } from '@ionic/vue';
-import { useInitialData } from "@/composables/useInitialData";
 import SelectableCard from "@/components/ui/selectableCard.vue";
+
+// Definir props para recibir datos del componente padre
+const props = defineProps({
+  formData: {
+    type: Object,
+    required: true
+  }
+});
+
+// Definir eventos para comunicarse con el componente padre
+const emit = defineEmits(['update']);
 
 interface ParametroOpcion {
   label: string;
@@ -46,41 +56,30 @@ const opcionesParametro = ref<ParametroOpcion[]>([
   { label: 'Código', value: 'codigo' }
 ]);
 
-// Valores iniciales para el formulario
-const initialValues = {
-  defaultSearchParameter: 'nombre'
-};
-
-// Usar el composable useInitialData para manejar los datos
-const { data, updateFields } = useInitialData(
-  "companyConfig",
-  initialValues,
-  {
-    autoSave: true,
-    debug: false
-  }
-);
-
 // Estado local para el parámetro seleccionado
-const selectedParameter = ref(data.value.defaultSearchParameter || 'nombre');
+const selectedParameter = ref(props.formData.searchParameter || 'nombre');
 
-// Sincronizar el estado local con el store cuando cambia
+// Sincronizar el estado local con los props cuando cambian
+watch(() => props.formData.searchParameter, (newValue) => {
+  if (newValue && newValue !== selectedParameter.value) {
+    selectedParameter.value = newValue;
+  }
+});
+
+// Inicializar el componente
 onMounted(() => {
-  // Inicializar el estado local con el valor del store
-  selectedParameter.value = data.value.defaultSearchParameter || 'nombre';
-  
-  // Observar cambios en el store para actualizar el estado local
-  watch(() => data.value.defaultSearchParameter, (newValue) => {
-    if (newValue && newValue !== selectedParameter.value) {
-      selectedParameter.value = newValue;
-    }
-  }, { immediate: true }); // Add immediate: true to trigger the watcher on mount
+  // Asegurarse de que el estado local esté sincronizado con los props
+  selectedParameter.value = props.formData.searchParameter || 'nombre';
 });
 
 // Función para seleccionar un parámetro
 const seleccionarParametro = (value: string) => {
-  // Actualizar el store
-  updateFields({ defaultSearchParameter: value });
+  // Actualizar el estado local
+  selectedParameter.value = value;
+  
+  // Emitir evento al componente padre
+  emit('update', 'root', { searchParameter: value });
+  
   console.log('Parámetro seleccionado:', value);
 };
 

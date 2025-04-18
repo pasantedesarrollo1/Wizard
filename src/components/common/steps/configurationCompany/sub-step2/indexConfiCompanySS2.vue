@@ -8,29 +8,28 @@
           <!-- Sección 1: Datos informativos -->
           <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
             <h3 class="font-medium text-lg mb-3 flex items-center text-black">
-              <b>              Datos informativos <span class="text-blue-700 pl-1">*</span>
-              </b>
+              <b>Datos informativos <span class="text-blue-700 pl-1">*</span></b>
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <regimeRUC />
-              <categoryRUC />
-              <agentRUC />
+              <regimeRUC :form-data="formData" />
+              <categoryRUC :form-data="formData" />
+              <agentRUC :form-data="formData" />
             </div>
           </div>
 
           <!-- Sección 2: Contabilidad -->
           <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
-            <accountingRUC />
+            <accountingRUC :form-data="formData" @update="updateFormData" />
           </div>
 
           <!-- Sección 3: Artesano -->
           <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
-            <artisanRUC />
+            <artisanRUC :form-data="formData" @update="updateFormData" />
           </div>
 
           <!-- Sección 4: Despacho y Turismo -->
           <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
-            <dispatch_touris />
+            <dispatch_touris :form-data="formData" @update="updateFormData" />
           </div>
         </div>
 
@@ -40,25 +39,19 @@
           <!-- Grid de 2 columnas para las dos secciones independientes -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <!-- Columna para docDefault -->
-
-            <div
-              class="bg-white rounded-xl p-3 shadow-sm border border-gray-100"
-            >
-              <docDefault />
+            <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+              <docDefault :form-data="formData" @update="updateFormData" />
             </div>
 
             <!-- Columna para parameterSearch -->
-
-            <div
-              class="bg-white rounded-xl p-3 shadow-sm border border-gray-100"
-            >
-              <parameterSearch />
+            <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
+              <parameterSearch :form-data="formData" @update="updateFormData" />
             </div>
           </div>
 
           <!-- Sección 2: Impuestos -->
           <div class="bg-white rounded-xl p-3 shadow-sm border border-gray-100">
-            <taxesRUC />
+            <taxesRUC :form-data="formData" @update="updateFormData" />
           </div>
         </div>
       </div>
@@ -67,6 +60,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted, watch } from "vue";
 import { IonCard, IonCardContent } from "@ionic/vue";
 import regimeRUC from "./components/regimeRUC.vue";
 import categoryRUC from "./components/categoryRUC.vue";
@@ -77,6 +71,163 @@ import docDefault from "./components/docDefault.vue";
 import parameterSearch from "./components/parameterSearch.vue";
 import taxesRUC from "./components/taxesRUC.vue";
 import dispatch_touris from "./components/dispatch-tourist.vue";
+import { useWizardStore } from "@/stores/wizardStore";
+
+// Obtener la instancia del store
+const wizardStore = useWizardStore();
+
+// Definir un tipo para el objeto formData que incluya todas las propiedades necesarias
+interface FormDataType {
+  defaultDocument: string;
+  searchParameter: string;
+  regimeRUC: string;
+  categoryRUC: string;
+  taxAgent: {
+    isAgent: boolean;
+    accountingRequired: boolean;
+  };
+  artisan: {
+    isArtisan: boolean;
+    artisanNumber: string;
+  };
+  taxes: string[];
+  taxesFiveNumber: string;
+  branch: {
+    delayedDispatch: boolean;
+    isTouristEstablishment: boolean;
+    [key: string]: any; // Para otras propiedades de branch
+  };
+  [key: string]: any; // Para permitir acceso dinámico a otras propiedades
+}
+
+// Estado local para el formulario completo
+const formData = ref<FormDataType>({
+  defaultDocument: "facturas",
+  searchParameter: "nombre",
+  regimeRUC: "",
+  categoryRUC: "",
+  taxAgent: {
+    isAgent: false,
+    accountingRequired: false
+  },
+  artisan: {
+    isArtisan: false,
+    artisanNumber: ""
+  },
+  taxes: ["15"],
+  taxesFiveNumber: "",
+  branch: {
+    delayedDispatch: false,
+    isTouristEstablishment: false
+  }
+});
+
+// Función tipada para actualizar el estado local del formulario
+const updateFormData = (section: string, data: Record<string, any>) => {
+  if (section === "root") {
+    // Actualizar propiedades de nivel raíz
+    Object.keys(data).forEach(key => {
+      // Usamos una aserción de tipo para indicar a TypeScript que esta operación es segura
+      (formData.value as any)[key] = data[key];
+    });
+  } else if (section in formData.value) {
+    // Actualizar secciones anidadas
+    // Usamos una aserción de tipo para indicar a TypeScript que esta operación es segura
+    const sectionData = (formData.value as any)[section];
+    (formData.value as any)[section] = { ...sectionData, ...data };
+  }
+  
+  // No guardamos en el store aquí, solo actualizamos el estado local
+  console.log("Estado local actualizado:", formData.value);
+};
+
+// Cargar datos iniciales desde el store
+onMounted(() => {
+  const companyConfig = wizardStore.getStepData("companyConfig");
+  const branchData = wizardStore.getStepData("branchAndPOS");
+  
+  if (companyConfig) {
+    // Actualizar propiedades de nivel raíz
+    if (companyConfig.defaultDocument) formData.value.defaultDocument = companyConfig.defaultDocument;
+    if (companyConfig.searchParameter) formData.value.searchParameter = companyConfig.searchParameter;
+    if (companyConfig.regimeRUC) formData.value.regimeRUC = companyConfig.regimeRUC;
+    if (companyConfig.categoryRUC) formData.value.categoryRUC = companyConfig.categoryRUC;
+    
+    // Actualizar propiedades anidadas
+    if (companyConfig.taxAgent) {
+      formData.value.taxAgent = { ...formData.value.taxAgent, ...companyConfig.taxAgent };
+    }
+    
+    if (companyConfig.artisan) {
+      formData.value.artisan = { ...formData.value.artisan, ...companyConfig.artisan };
+    }
+    
+    if (companyConfig.taxes) {
+      formData.value.taxes = Array.isArray(companyConfig.taxes) ? [...companyConfig.taxes] : ["15"];
+    }
+    
+    if (companyConfig.taxesFiveNumber) {
+      formData.value.taxesFiveNumber = companyConfig.taxesFiveNumber;
+    }
+  }
+  
+  // Cargar datos de la sucursal
+  if (branchData && branchData.branch) {
+    formData.value.branch = {
+      ...formData.value.branch,
+      delayedDispatch: branchData.branch.delayedDispatch || false,
+      isTouristEstablishment: branchData.branch.isTouristEstablishment || false
+    };
+  }
+  
+  console.log("Datos iniciales cargados:", formData.value);
+});
+
+// Guardar datos en el store cuando se haga clic en "Siguiente"
+// Este watch se activará cuando cambie el paso actual en el wizard
+watch(() => wizardStore.getCurrentWizardState.currentStep, (newStep, oldStep) => {
+  // Solo guardar si estamos saliendo del paso actual
+  if (oldStep === "config-company" && newStep !== "config-company") {
+    saveFormToStore();
+  }
+});
+
+// También guardar cuando cambie el subpaso
+watch(() => wizardStore.getCurrentWizardState.currentSubStep, (newSubStep, oldSubStep) => {
+  // Si estamos en el paso config-company y cambiamos de subpaso
+  if (wizardStore.getCurrentWizardState.currentStep === "config-company" && newSubStep !== oldSubStep) {
+    saveFormToStore();
+  }
+});
+
+// Función para guardar todos los datos en el store
+const saveFormToStore = () => {
+  // Guardar datos en companyConfig
+  wizardStore.updateFormSection("companyConfig", {
+    defaultDocument: formData.value.defaultDocument,
+    searchParameter: formData.value.searchParameter,
+    regimeRUC: formData.value.regimeRUC,
+    categoryRUC: formData.value.categoryRUC,
+    taxAgent: formData.value.taxAgent,
+    artisan: formData.value.artisan,
+    taxes: formData.value.taxes,
+    taxesFiveNumber: formData.value.taxesFiveNumber
+  });
+  
+  // Guardar datos en branchAndPOS
+  wizardStore.updateFormSection("branchAndPOS", {
+    branch: {
+      ...wizardStore.getStepData("branchAndPOS")?.branch || {},
+      delayedDispatch: formData.value.branch.delayedDispatch,
+      isTouristEstablishment: formData.value.branch.isTouristEstablishment
+    }
+  });
+  
+  console.log("Datos guardados en el store:", {
+    companyConfig: wizardStore.getStepData("companyConfig"),
+    branchAndPOS: wizardStore.getStepData("branchAndPOS")
+  });
+};
 </script>
 
 <style scoped>

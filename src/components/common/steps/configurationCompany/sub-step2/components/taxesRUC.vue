@@ -30,7 +30,7 @@
         <input  
           type="text"
           placeholder="Ingresa tu código para 5%"
-          v-model="data.taxes.taxCode5Percent"
+          v-model="taxesFiveNumberLocal"
           class="w-full border border-gray-300 rounded-md py-2 pl-10 pr-3 text-base transition-all duration-300 ease-in-out focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
         />
       </div>
@@ -39,10 +39,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useInitialData } from "@/composables/useInitialData"
+import { ref, onMounted, watch } from 'vue'
 import { Icon } from '@iconify/vue';
 
+// Definir props para recibir datos del componente padre
+const props = defineProps({
+  formData: {
+    type: Object,
+    required: true
+  }
+});
+
+// Definir eventos para comunicarse con el componente padre
+const emit = defineEmits(['update']);
 
 interface ImpuestoOpcion {
   label: string
@@ -53,59 +62,47 @@ const opcionesImpuesto = ref<ImpuestoOpcion[]>([
   { label: '15%', value: '15' },
   { label: '5%', value: '5' },
   { label: '0%', value: '0' }
-])
+]);
 
-// Valores iniciales para el formulario - 15% seleccionado por defecto
-const initialValues = {
-  taxes: {
-    selectedTaxes: ['15'], // Inicializado con un array que contiene '15'
-    taxCode5Percent: ''
-  }
-};
+// Estado local para los impuestos seleccionados
+const selectedTaxes = ref(props.formData.taxes || ['15']);
 
-// Usar el composable useInitialData para manejar los datos
-const { data, updateNestedField } = useInitialData(
-  "companyConfig",
-  initialValues,
-  {
-    autoSave: true,
-    debug: true, // Activamos el modo debug para ver los logs
-    nestedFields: {
-      taxes: ["selectedTaxes", "taxCode5Percent"]
-    }
-  }
-);
+// Estado local para el código de 5%
+const taxesFiveNumberLocal = ref(props.formData.taxesFiveNumber || '');
 
-const selectedTaxesRef = computed(() => data.value.taxes.selectedTaxes);
-
-// Asegurarse de que selectedTaxes es un array y contiene '15' al inicio
-onMounted(() => {
-  // Verificar si selectedTaxes existe y es un array
-  if (!Array.isArray(selectedTaxesRef.value)) {
-    // Si no es un array, inicializarlo con '15'
-    updateNestedField("taxes", "selectedTaxes", ['15']);
-    console.log('selectedTaxes inicializado con [15]');
-  } else if (!selectedTaxesRef.value.includes('15')) {
-    // Si es un array pero no contiene '15', añadirlo
-    const updatedTaxes = [...selectedTaxesRef.value, '15'];
-    updateNestedField("taxes", "selectedTaxes", updatedTaxes);
-    console.log('15% añadido a selectedTaxes:', updatedTaxes);
-  } else {
-    console.log('selectedTaxes ya contiene 15%:', selectedTaxesRef.value);
+// Sincronizar el estado local con los props cuando cambian
+watch(() => props.formData.taxes, (newValue) => {
+  if (newValue && JSON.stringify(newValue) !== JSON.stringify(selectedTaxes.value)) {
+    selectedTaxes.value = Array.isArray(newValue) ? [...newValue] : ['15'];
   }
 });
 
+watch(() => props.formData.taxesFiveNumber, (newValue) => {
+  if (newValue !== taxesFiveNumberLocal.value) {
+    taxesFiveNumberLocal.value = newValue;
+  }
+});
+
+// Observar cambios en el código de 5% para actualizar el componente padre
+watch(taxesFiveNumberLocal, (newValue) => {
+  emit('update', 'root', { taxesFiveNumber: newValue });
+});
+
+// Inicializar el componente
+onMounted(() => {
+  // Asegurarse de que el estado local esté sincronizado con los props
+  selectedTaxes.value = Array.isArray(props.formData.taxes) ? [...props.formData.taxes] : ['15'];
+  taxesFiveNumberLocal.value = props.formData.taxesFiveNumber || '';
+});
+
+// Verificar si un impuesto está seleccionado
 const isSelected = (value: string): boolean => {
-  const currentTaxes = Array.isArray(selectedTaxesRef.value) ? selectedTaxesRef.value : [];
-  return currentTaxes.includes(value);
+  return selectedTaxes.value.includes(value);
 };
 
+// Alternar la selección de un impuesto
 const toggleImpuesto = (value: string) => {
-  // Asegurarse de que selectedTaxes es un array
-  const currentTaxes = Array.isArray(selectedTaxesRef.value) 
-    ? [...selectedTaxesRef.value] 
-    : [];
-  
+  const currentTaxes = [...selectedTaxes.value];
   const index = currentTaxes.indexOf(value);
   
   if (index === -1) {
@@ -122,16 +119,20 @@ const toggleImpuesto = (value: string) => {
     }
   }
   
-  // Actualizar el store con los nuevos impuestos seleccionados
-  updateNestedField("taxes", "selectedTaxes", currentTaxes);
+  // Actualizar el estado local
+  selectedTaxes.value = currentTaxes;
+  
+  // Emitir evento al componente padre
+  emit('update', 'root', { taxes: currentTaxes });
   
   console.log('Impuestos seleccionados:', currentTaxes);
   
   // Si se deselecciona 5%, limpiar el código
   if (!currentTaxes.includes('5')) {
-    updateNestedField("taxes", "taxCode5Percent", '');
+    taxesFiveNumberLocal.value = '';
+    emit('update', 'root', { taxesFiveNumber: '' });
   }
-}
+};
 </script>
 
 <style scoped>

@@ -58,15 +58,12 @@ export const initialState = (): WizardInterface => ({
       }
     },
     companyConfig: {
-      defaultDocument: {
-        type: "",
-        searchParameter: "",
-      },
+      defaultDocument:"",
+      searchParameter: "",
       regimeRUC: "",
       categoryRUC: "",
       taxAgent: {
         isAgent: false,
-        agentNumber: "",
         accountingRequired: false,
       },
       artisan: {

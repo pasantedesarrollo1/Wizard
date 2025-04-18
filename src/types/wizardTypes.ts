@@ -63,15 +63,12 @@ export interface WizardState {
   
   // Interfaces para configuración de la empresa
   export interface CompanyConfig {
-    defaultDocument: {
-      type: string
-      searchParameter: string
-    }
+    defaultDocument: string
+    searchParameter: string
     regimeRUC: string
     categoryRUC: string
     taxAgent: {
       isAgent: boolean
-      agentNumber: string
       accountingRequired: boolean
     }
     artisan: {

@@ -1,6 +1,6 @@
 <template>
   <span class="block text-left text-gray-700">Selecciona el tipo de documento que deseas emitir por defecto al vender</span>
-  <div class=" py-2 bg-white rounded-xl">    
+  <div class="py-2 bg-white rounded-xl">    
     <!-- Grid mejorado con SelectableCard -->
     <div class="w-full">
       <ion-grid class="w-full mx-auto document-grid">
@@ -32,7 +32,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue';
 import { IonGrid, IonRow, IonCol } from '@ionic/vue';
-import { useInitialData } from "@/composables/useInitialData";
 import SelectableCard from "@/components/ui/selectableCard.vue";
 
 interface DocumentoOpcion {
@@ -40,47 +39,47 @@ interface DocumentoOpcion {
   value: string;
 }
 
+// Definir props para recibir datos del componente padre
+const props = defineProps({
+  formData: {
+    type: Object,
+    required: true
+  }
+});
+
+// Definir eventos para comunicarse con el componente padre
+const emit = defineEmits(['update']);
+
 // Opciones de documentos disponibles
 const opcionesDocumento = ref<DocumentoOpcion[]>([
   { label: 'Facturas electrónicas', value: 'facturas' },
   { label: 'Recibos', value: 'recibos' }
 ]);
 
-// Valores iniciales para el formulario
-const initialValues = {
-  defaultDocumentType: 'facturas'
-};
-
-// Usar el composable useInitialData para manejar los datos
-const { data, updateFields } = useInitialData(
-  "companyConfig",
-  initialValues,
-  {
-    autoSave: true,
-    debug: false
-  }
-);
-
 // Estado local para el tipo de documento seleccionado
-const selectedDocumentType = ref(data.value.defaultDocumentType || 'facturas');
+const selectedDocumentType = ref(props.formData.defaultDocument || 'facturas');
 
-// Sincronizar el estado local con el store cuando cambia
+// Sincronizar el estado local con los props cuando cambian
+watch(() => props.formData.defaultDocument, (newValue) => {
+  if (newValue && newValue !== selectedDocumentType.value) {
+    selectedDocumentType.value = newValue;
+  }
+});
+
+// Inicializar el componente
 onMounted(() => {
-  // Inicializar el estado local con el valor del store
-  selectedDocumentType.value = data.value.defaultDocumentType || 'facturas';
-  
-  // Observar cambios en el store para actualizar el estado local
-  watch(data.value, (newValue) => {
-    if (newValue.defaultDocumentType && newValue.defaultDocumentType !== selectedDocumentType.value) {
-      selectedDocumentType.value = newValue.defaultDocumentType;
-    }
-  }, { deep: true });
+  // Asegurarse de que el estado local esté sincronizado con los props
+  selectedDocumentType.value = props.formData.defaultDocument || 'facturas';
 });
 
 // Función para seleccionar un documento
 const seleccionarDocumento = (value: string) => {
-  // Actualizar el store
-  updateFields({ defaultDocumentType: value });
+  // Actualizar el estado local
+  selectedDocumentType.value = value;
+  
+  // Emitir evento al componente padre
+  emit('update', 'root', { defaultDocument: value });
+  
   console.log('Documento seleccionado:', value);
 };
 
