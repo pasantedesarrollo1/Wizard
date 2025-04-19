@@ -213,7 +213,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, onMounted } from "vue";
 import { Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css"; // Importación correcta de estilos
@@ -232,26 +232,40 @@ import {
 } from "ionicons/icons";
 import { useWizardStore } from "@/stores/wizardStore";
 
+// Definición de tipos
+interface CropperInstance {
+  rotate: (angle: number) => void;
+  flip: (horizontal: boolean, vertical: boolean) => void;
+  getResult: () => { canvas?: HTMLCanvasElement };
+}
+
+interface CompanyConfig {
+  logo?: {
+    url: string;
+    fileName: string;
+  };
+}
+
 // Obtener la instancia del store
 const wizardStore = useWizardStore();
 
 // Estados reactivos para uploadLogo
-const selectedFile = ref(null);
-const previewUrl = ref(null);
-const isDragging = ref(false);
-const errorMessage = ref("");
+const selectedFile = ref<File | null>(null);
+const previewUrl = ref<string | null>(null);
+const isDragging = ref<boolean>(false);
+const errorMessage = ref<string>("");
 
 // Estados reactivos para imageSelector
-const isEditing = ref(false);
-const tempFile = ref(null);
-const tempImage = ref(undefined);
-const cropper = ref(null);
-const croppedImage = ref("");
-const showErrorMessage = ref(false);
-const fileInput = ref(null);
+const isEditing = ref<boolean>(false);
+const tempFile = ref<File | null>(null);
+const tempImage = ref<string | undefined>(undefined);
+const cropper = ref<CropperInstance | null>(null);
+const croppedImage = ref<string>("");
+const showErrorMessage = ref<boolean>(false);
+const fileInput = ref<HTMLInputElement | null>(null);
 
 // Función para iniciar el modo de edición
-const startEditing = () => {
+const startEditing = (): void => {
   isEditing.value = true;
   if (previewUrl.value) {
     tempImage.value = previewUrl.value;
@@ -259,15 +273,15 @@ const startEditing = () => {
 };
 
 // Función para cancelar la edición
-const cancelEditing = () => {
+const cancelEditing = (): void => {
   isEditing.value = false;
   tempFile.value = null;
   tempImage.value = undefined;
 };
 
 // Función para manejar la selección de archivos (uploadLogo)
-const handleFileChange = (event) => {
-  const input = event.target;
+const handleFileChange = (event: Event): void => {
+  const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
     const file = input.files[0];
 
@@ -285,7 +299,7 @@ const handleFileChange = (event) => {
 };
 
 // Función para validar el archivo
-const validateFile = (file) => {
+const validateFile = (file: File): boolean => {
   // Validar tipo de archivo
   const validTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml"];
   if (!validTypes.includes(file.type)) {
@@ -306,16 +320,16 @@ const validateFile = (file) => {
 };
 
 // Función para crear la vista previa
-const createPreview = (file) => {
+const createPreview = (file: File): void => {
   const reader = new FileReader();
-  reader.onload = (e) => {
-    previewUrl.value = e.target?.result;
+  reader.onload = (e: ProgressEvent<FileReader>) => {
+    previewUrl.value = e.target?.result as string;
   };
   reader.readAsDataURL(file);
 };
 
 // Función para eliminar el archivo seleccionado
-const removeFile = () => {
+const removeFile = (): void => {
   selectedFile.value = null;
   previewUrl.value = null;
 
@@ -329,7 +343,7 @@ const removeFile = () => {
 };
 
 // Función para formatear el tamaño del archivo
-const formatFileSize = (bytes) => {
+const formatFileSize = (bytes?: number): string => {
   if (bytes === undefined) return "Tamaño desconocido";
 
   if (bytes < 1024) return bytes + " bytes";
@@ -338,15 +352,15 @@ const formatFileSize = (bytes) => {
 };
 
 // Funciones para manejar el arrastrar y soltar
-const onDragOver = () => {
+const onDragOver = (): void => {
   isDragging.value = true;
 };
 
-const onDragLeave = () => {
+const onDragLeave = (): void => {
   isDragging.value = false;
 };
 
-const onDrop = (event) => {
+const onDrop = (event: DragEvent): void => {
   isDragging.value = false;
 
   if (event.dataTransfer?.files.length) {
@@ -361,7 +375,7 @@ const onDrop = (event) => {
 };
 
 // Función para actualizar el store con el archivo seleccionado
-const updateStore = (file) => {
+const updateStore = (file: File): void => {
   // En un entorno real, aquí se subiría el archivo a un servidor
   // y se obtendría la URL. Para este ejemplo, usamos la URL de vista previa
   wizardStore.updateFormSection("companyConfig", {
@@ -387,9 +401,9 @@ watch(tempFile, (file) => {
 watch(tempFile, (file) => {
   if (file) {
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = (e: ProgressEvent<FileReader>) => {
       if (e.target?.result) {
-        tempImage.value = e.target.result;
+        tempImage.value = e.target.result as string;
       }
     };
     reader.readAsDataURL(file);
@@ -405,27 +419,27 @@ watch(previewUrl, (newUrl) => {
 });
 
 // Eliminar la imagen temporal
-function removeTempImage() {
+function removeTempImage(): void {
   tempImage.value = undefined;
   tempFile.value = null;
 }
 
 // Función para rotar la imagen
-function rotate(angle) {
+function rotate(angle: number): void {
   if (cropper.value) {
     cropper.value.rotate(angle);
   }
 }
 
 // Función para voltear la imagen
-function flip(horizontal, vertical) {
+function flip(horizontal: boolean, vertical: boolean): void {
   if (cropper.value) {
     cropper.value.flip(horizontal, vertical);
   }
 }
 
 // Función para recortar la imagen
-async function saveCropped() {
+async function saveCropped(): Promise<void> {
   if (!cropper.value) return;
 
   const { canvas } = cropper.value.getResult();
@@ -435,13 +449,13 @@ async function saveCropped() {
     return;
   }
 
-  return new Promise((resolve) => {
+  return new Promise<void>((resolve) => {
     canvas.toBlob((blob) => {
       if (blob) {
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = (e: ProgressEvent<FileReader>) => {
           if (e.target?.result) {
-            croppedImage.value = e.target.result;
+            croppedImage.value = e.target.result as string;
             tempImage.value = croppedImage.value;
             resolve();
           }
@@ -455,7 +469,7 @@ async function saveCropped() {
 }
 
 // Función para guardar los cambios
-async function saveChanges() {
+async function saveChanges(): Promise<void> {
   await saveCropped();
 
   if (tempImage.value) {
@@ -482,21 +496,21 @@ async function saveChanges() {
 }
 
 // Métodos para manejo del input en modo edición
-function triggerFileInput() {
+function triggerFileInput(): void {
   if (fileInput.value) {
     fileInput.value.click();
   }
 }
 
-function handleDragOver() {
+function handleDragOver(): void {
   isDragging.value = true;
 }
 
-function handleDragLeave() {
+function handleDragLeave(): void {
   isDragging.value = false;
 }
 
-function handleDrop(event) {
+function handleDrop(event: DragEvent): void {
   const files = event.dataTransfer?.files;
   if (files?.length) {
     const file = files[0];
@@ -510,8 +524,8 @@ function handleDrop(event) {
   isDragging.value = false;
 }
 
-function handleFileInputChange(event) {
-  const input = event.target;
+function handleFileInputChange(event: Event): void {
+  const input = event.target as HTMLInputElement;
   if (input.files && input.files.length > 0) {
     const file = input.files[0];
     if (file.size <= 5 * 1024 * 1024) {
@@ -526,7 +540,7 @@ function handleFileInputChange(event) {
 
 // Cargar datos del store si existen
 onMounted(() => {
-  const companyConfig = wizardStore.getStepData("companyConfig");
+  const companyConfig = wizardStore.getStepData("companyConfig") as CompanyConfig;
   if (companyConfig?.logo?.url) {
     previewUrl.value = companyConfig.logo.url;
     if (companyConfig.logo.fileName) {
