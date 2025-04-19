@@ -73,7 +73,6 @@
         </div>
 
         <!-- Contenedor principal del editor -->
-        <!-- Contenedor principal del editor -->
         <div class="editor-layout">
           <!-- Barra lateral de herramientas - ajustada -->
           <div class="sidebar-tools">
@@ -397,6 +396,14 @@ watch(tempFile, (file) => {
   }
 });
 
+// NUEVO: Watch para actualizar el store cuando cambia la vista previa
+watch(previewUrl, (newUrl) => {
+  if (newUrl && selectedFile.value) {
+    console.log("Vista previa actualizada, actualizando store:", newUrl);
+    updateStore(selectedFile.value);
+  }
+});
+
 // Eliminar la imagen temporal
 function removeTempImage() {
   tempImage.value = undefined;
@@ -462,6 +469,7 @@ async function saveChanges() {
       selectedFile.value = newFile;
       previewUrl.value = tempImage.value;
 
+      // MODIFICADO: Actualizar el store inmediatamente después de guardar cambios
       updateStore(newFile);
     } catch (error) {
       console.error("Error al procesar la imagen:", error);
@@ -532,6 +540,7 @@ onMounted(() => {
 </script>
 
 <style>
+/* Los estilos se mantienen igual que en el código original */
 .upload-logo-container {
   width: 100%;
   padding: 1rem;
