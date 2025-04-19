@@ -2,6 +2,11 @@
     <div class="wizard-summary">
       <h3 class="summary-title">Resumen de Configuración</h3>
       
+      <!-- Logo de la empresa (si existe) -->
+      <div class="logo-container" v-if="hasLogo">
+        <img :src="logoUrl" alt="Logo de la empresa" class="company-logo" />
+      </div>
+      
       <!-- Datos Personales -->
       <div class="summary-section">
         <h4 class="section-title">Datos Personales</h4>
@@ -99,6 +104,11 @@
           <span class="item-label">Impuestos:</span>
           <span class="item-value">{{ formatTaxes(companyConfig.taxes) }}</span>
         </div>
+        <!-- Nuevo: Mostrar taxesFiveNumber -->
+        <div class="summary-item" v-if="companyConfig.taxesFiveNumber">
+          <span class="item-label">Código para Impuesto 5%:</span>
+          <span class="item-value">{{ companyConfig.taxesFiveNumber }}</span>
+        </div>
       </div>
       
       <!-- Sucursal y Punto de Venta -->
@@ -185,7 +195,8 @@
       taxAgent: { isAgent: false, accountingRequired: false },
       artisan: { isArtisan: false, artisanNumber: "" },
       taxes: [],
-      taxesFiveNumber: ""
+      taxesFiveNumber: "",
+      logo: { url: "", fileName: "" }
     };
   });
   
@@ -199,13 +210,45 @@
         phone: "",
         email: "",
         delayedDispatch: false,
-        isTouristEstablishment: false
+        isTouristEstablishment: false,
+        logo: { url: "", fileName: "" }
       },
       pointOfSale: {
         idPos: "",
         name: ""
       }
     };
+  });
+  
+  // Computed para verificar si hay un logo disponible
+  const hasLogo = computed(() => {
+    // Verificar primero en companyConfig
+    if (companyConfig.value.logo && companyConfig.value.logo.url) {
+      return true;
+    }
+    
+    // Verificar en branchAndPOS.branch
+    if (branchAndPOS.value.branch.logo && branchAndPOS.value.branch.logo.url) {
+      return true;
+    }
+    
+    return false;
+  });
+  
+  // Computed para obtener la URL del logo
+  const logoUrl = computed(() => {
+    // Priorizar el logo en companyConfig
+    if (companyConfig.value.logo && companyConfig.value.logo.url) {
+      return companyConfig.value.logo.url;
+    }
+    
+    // Si no existe, usar el logo en branchAndPOS.branch
+    if (branchAndPOS.value.branch.logo && branchAndPOS.value.branch.logo.url) {
+      return branchAndPOS.value.branch.logo.url;
+    }
+    
+    // Valor por defecto
+    return '';
   });
   
   // Funciones de utilidad para formatear datos
@@ -233,7 +276,7 @@
     return params[param] || param;
   };
   
-  // Nueva función para formatear los impuestos con tipado correcto
+  // Función para formatear los impuestos con tipado correcto
   const formatTaxes = (taxes: string[]): string => {
     if (!taxes || !Array.isArray(taxes) || taxes.length === 0) {
       return '';
@@ -256,6 +299,27 @@
     color: var(--ion-color-primary);
     margin-bottom: 1.5rem;
     text-align: center;
+  }
+  
+  /* Estilos para el contenedor del logo */
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .company-logo {
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 0.5rem;
+    background-color: white;
   }
   
   .summary-section {
@@ -309,6 +373,11 @@
     .item-value {
       max-width: 100%;
       text-align: left;
+    }
+    
+    .company-logo {
+      max-width: 150px;
+      max-height: 150px;
     }
   }
   </style>
