@@ -1,169 +1,193 @@
 <template>
     <div class="wizard-summary">
-      <h3 class="summary-title">Resumen de Configuración</h3>
-      
-      <!-- Logo de la empresa (si existe) -->
-      <div class="logo-container" v-if="hasLogo">
-        <img :src="logoUrl" alt="Logo de la empresa" class="company-logo" />
+      <!-- Cabecera con logo más compacto -->
+      <div class="summary-header">
+        <h3 class="summary-title">Resumen de Configuración</h3>
+        <img v-if="hasLogo" :src="logoUrl" alt="Logo" class="company-logo" />
       </div>
       
-      <!-- Datos Personales -->
-      <div class="summary-section">
-        <h4 class="section-title">Datos Personales</h4>
-        <div class="summary-item" v-if="personalInfo.identification.type">
-          <span class="item-label">Tipo de Identificación:</span>
-          <span class="item-value">{{ getIdentificationType(personalInfo.identification.type) }}</span>
-        </div>
-        <div class="summary-item" v-if="personalInfo.identification.number">
-          <span class="item-label">Número de Identificación:</span>
-          <span class="item-value">{{ personalInfo.identification.number }}</span>
-        </div>
-        <div class="summary-item" v-if="personalInfo.name.first || personalInfo.name.last">
-          <span class="item-label">Nombre Completo:</span>
-          <span class="item-value">{{ personalInfo.name.first }} {{ personalInfo.name.last }}</span>
-        </div>
-        <div class="summary-item" v-if="personalInfo.contact.email">
-          <span class="item-label">Correo Electrónico:</span>
-          <span class="item-value">{{ personalInfo.contact.email }}</span>
-        </div>
-        <div class="summary-item" v-if="personalInfo.contact.phone">
-          <span class="item-label">Teléfono:</span>
-          <span class="item-value">{{ personalInfo.contact.phone }}</span>
+      <!-- Tabs para navegar entre secciones -->
+      <div class="tabs-container">
+        <div 
+          v-for="(tab, index) in tabs" 
+          :key="index"
+          :class="['tab', { active: activeTab === index }]"
+          @click="activeTab = index"
+        >
+          {{ tab }}
         </div>
       </div>
       
-      <!-- Datos de la Empresa -->
-      <div class="summary-section">
-        <h4 class="section-title">Datos de la Empresa</h4>
-        <div class="summary-item" v-if="companyCreation.ruc">
-          <span class="item-label">RUC:</span>
-          <span class="item-value">{{ companyCreation.ruc }}</span>
+      <!-- Contenido de las pestañas -->
+      <div class="tab-content">
+        <!-- Tab 1: Datos Personales y Empresa -->
+        <div v-if="activeTab === 0" class="tab-pane">
+          <!-- Datos Personales - Formato compacto -->
+          <div class="summary-section">
+            <h4 class="section-title">Datos Personales</h4>
+            <div class="compact-grid">
+              <div class="info-pair" v-if="personalInfo.identification.type">
+                <span class="label">ID:</span>
+                <span class="value">{{ getIdentificationType(personalInfo.identification.type) }}</span>
+              </div>
+              <div class="info-pair" v-if="personalInfo.identification.number">
+                <span class="label">Número:</span>
+                <span class="value">{{ personalInfo.identification.number }}</span>
+              </div>
+              <div class="info-pair" v-if="personalInfo.name.first || personalInfo.name.last">
+                <span class="label">Nombre:</span>
+                <span class="value">{{ personalInfo.name.first }} {{ personalInfo.name.last }}</span>
+              </div>
+              <div class="info-pair" v-if="personalInfo.contact.email">
+                <span class="label">Email:</span>
+                <span class="value truncate" :title="personalInfo.contact.email">{{ personalInfo.contact.email }}</span>
+              </div>
+              <div class="info-pair" v-if="personalInfo.contact.phone">
+                <span class="label">Teléfono:</span>
+                <span class="value">{{ personalInfo.contact.phone }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Datos de la Empresa - Formato compacto -->
+          <div class="summary-section">
+            <h4 class="section-title">Datos de la Empresa</h4>
+            <div class="compact-grid">
+              <div class="info-pair" v-if="companyCreation.ruc">
+                <span class="label">RUC:</span>
+                <span class="value">{{ companyCreation.ruc }}</span>
+              </div>
+              <div class="info-pair" v-if="companyCreation.legalName">
+                <span class="label">Razón Social:</span>
+                <span class="value truncate" :title="companyCreation.legalName">{{ companyCreation.legalName }}</span>
+              </div>
+              <div class="info-pair" v-if="companyCreation.name">
+                <span class="label">Nombre:</span>
+                <span class="value truncate" :title="companyCreation.name">{{ companyCreation.name }}</span>
+              </div>
+              <div class="info-pair" v-if="companyCreation.domain">
+                <span class="label">Dominio:</span>
+                <span class="value">{{ companyCreation.domain }}</span>
+              </div>
+              <div class="info-pair" v-if="companyCreation.address">
+                <span class="label">Dirección:</span>
+                <span class="value truncate" :title="companyCreation.address">{{ companyCreation.address }}</span>
+              </div>
+              <div class="info-pair" v-if="companyCreation.phone">
+                <span class="label">Teléfono:</span>
+                <span class="value">{{ companyCreation.phone }}</span>
+              </div>
+              <div class="info-pair" v-if="companyCreation.businessEmail">
+                <span class="label">Email:</span>
+                <span class="value truncate" :title="companyCreation.businessEmail">{{ companyCreation.businessEmail }}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="summary-item" v-if="companyCreation.legalName">
-          <span class="item-label">Razón Social:</span>
-          <span class="item-value">{{ companyCreation.legalName }}</span>
+        
+        <!-- Tab 2: Configuración de la Empresa -->
+        <div v-if="activeTab === 1" class="tab-pane">
+          <div class="summary-section">
+            <h4 class="section-title">Configuración de la Empresa</h4>
+            <div class="compact-grid">
+              <div class="info-pair">
+                <span class="label">Agente Retención:</span>
+                <span class="value">{{ companyConfig.taxAgent?.isAgent ? 'Sí' : 'No' }}</span>
+              </div>
+              <div class="info-pair">
+                <span class="label">Contabilidad:</span>
+                <span class="value">{{ companyConfig.taxAgent?.accountingRequired ? 'Obligatoria' : 'No obligatoria' }}</span>
+              </div>
+              <div class="info-pair">
+                <span class="label">Artesano:</span>
+                <span class="value">{{ artisanText }}</span>
+              </div>
+              <div class="info-pair" v-if="companyConfig.artisan?.isArtisan && companyConfig.artisan?.artisanNumber">
+                <span class="label">Nº Artesano:</span>
+                <span class="value">{{ companyConfig.artisan.artisanNumber }}</span>
+              </div>
+              <div class="info-pair" v-if="companyConfig.defaultDocument">
+                <span class="label">Doc. Defecto:</span>
+                <span class="value">{{ getDocumentType(companyConfig.defaultDocument) }}</span>
+              </div>
+              <div class="info-pair" v-if="companyConfig.searchParameter">
+                <span class="label">Búsqueda:</span>
+                <span class="value">{{ getSearchParameter(companyConfig.searchParameter) }}</span>
+              </div>
+              <div class="info-pair" v-if="companyConfig.taxes && companyConfig.taxes.length > 0">
+                <span class="label">Impuestos:</span>
+                <span class="value">{{ formatTaxes(companyConfig.taxes) }}</span>
+              </div>
+              <div class="info-pair" v-if="companyConfig.taxesFiveNumber">
+                <span class="label">Código 5%:</span>
+                <span class="value">{{ companyConfig.taxesFiveNumber }}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="summary-item" v-if="companyCreation.name">
-          <span class="item-label">Nombre de la Empresa:</span>
-          <span class="item-value">{{ companyCreation.name }}</span>
-        </div>
-        <div class="summary-item" v-if="companyCreation.domain">
-          <span class="item-label">Dominio:</span>
-          <span class="item-value">{{ companyCreation.domain }}</span>
-        </div>
-        <div class="summary-item" v-if="companyCreation.address">
-          <span class="item-label">Dirección:</span>
-          <span class="item-value">{{ companyCreation.address }}</span>
-        </div>
-        <div class="summary-item" v-if="companyCreation.phone">
-          <span class="item-label">Teléfono:</span>
-          <span class="item-value">{{ companyCreation.phone }}</span>
-        </div>
-        <div class="summary-item" v-if="companyCreation.businessEmail">
-          <span class="item-label">Correo Empresarial:</span>
-          <span class="item-value">{{ companyCreation.businessEmail }}</span>
-        </div>
-      </div>
-      
-      <!-- Configuración de la Empresa -->
-      <div class="summary-section">
-        <h4 class="section-title">Configuración de la Empresa</h4>
-        <div class="summary-item" v-if="companyConfig.regimeRUC">
-          <span class="item-label">Régimen RUC:</span>
-          <span class="item-value">{{ companyConfig.regimeRUC }}</span>
-        </div>
-        <div class="summary-item" v-if="companyConfig.categoryRUC">
-          <span class="item-label">Categoría RUC:</span>
-          <span class="item-value">{{ companyConfig.categoryRUC }}</span>
-        </div>
-        <div class="summary-item">
-          <span class="item-label">Agente de Retención:</span>
-          <span class="item-value">{{ companyConfig.taxAgent?.isAgent ? 'Sí' : 'No' }}</span>
-        </div>
-        <div class="summary-item">
-          <span class="item-label">Contabilidad Obligatoria:</span>
-          <span class="item-value">{{ companyConfig.taxAgent?.accountingRequired ? 'Sí' : 'No' }}</span>
-        </div>
-        <div class="summary-item">
-          <span class="item-label">Artesano:</span>
-          <span class="item-value">{{ companyConfig.artisan?.isArtisan ? 'Sí' : 'No' }}</span>
-        </div>
-        <div class="summary-item" v-if="companyConfig.artisan?.isArtisan && companyConfig.artisan?.artisanNumber">
-          <span class="item-label">Número de Artesano:</span>
-          <span class="item-value">{{ companyConfig.artisan.artisanNumber }}</span>
-        </div>
-        <div class="summary-item" v-if="companyConfig.defaultDocument">
-          <span class="item-label">Documento por Defecto:</span>
-          <span class="item-value">{{ getDocumentType(companyConfig.defaultDocument) }}</span>
-        </div>
-        <div class="summary-item" v-if="companyConfig.searchParameter">
-          <span class="item-label">Parámetro de Búsqueda:</span>
-          <span class="item-value">{{ getSearchParameter(companyConfig.searchParameter) }}</span>
-        </div>
-        <div class="summary-item" v-if="companyConfig.taxes && companyConfig.taxes.length > 0">
-          <span class="item-label">Impuestos:</span>
-          <span class="item-value">{{ formatTaxes(companyConfig.taxes) }}</span>
-        </div>
-        <!-- Nuevo: Mostrar taxesFiveNumber -->
-        <div class="summary-item" v-if="companyConfig.taxesFiveNumber">
-          <span class="item-label">Código para Impuesto 5%:</span>
-          <span class="item-value">{{ companyConfig.taxesFiveNumber }}</span>
-        </div>
-      </div>
-      
-      <!-- Sucursal y Punto de Venta -->
-      <div class="summary-section">
-        <h4 class="section-title">Sucursal y Punto de Venta</h4>
-        <div class="summary-item" v-if="branchAndPOS.branch.idBranch">
-          <span class="item-label">Código de Sucursal:</span>
-          <span class="item-value">{{ branchAndPOS.branch.idBranch }}</span>
-        </div>
-        <div class="summary-item" v-if="branchAndPOS.branch.commercialName">
-          <span class="item-label">Nombre Comercial:</span>
-          <span class="item-value">{{ branchAndPOS.branch.commercialName }}</span>
-        </div>
-        <div class="summary-item" v-if="branchAndPOS.branch.name">
-          <span class="item-label">Nombre de Sucursal:</span>
-          <span class="item-value">{{ branchAndPOS.branch.name }}</span>
-        </div>
-        <div class="summary-item" v-if="branchAndPOS.branch.address">
-          <span class="item-label">Dirección de Sucursal:</span>
-          <span class="item-value">{{ branchAndPOS.branch.address }}</span>
-        </div>
-        <div class="summary-item" v-if="branchAndPOS.branch.phone">
-          <span class="item-label">Teléfono de Sucursal:</span>
-          <span class="item-value">{{ branchAndPOS.branch.phone }}</span>
-        </div>
-        <div class="summary-item" v-if="branchAndPOS.branch.email">
-          <span class="item-label">Correo de Sucursal:</span>
-          <span class="item-value">{{ branchAndPOS.branch.email }}</span>
-        </div>
-        <div class="summary-item">
-          <span class="item-label">Despacho Posterior:</span>
-          <span class="item-value">{{ branchAndPOS.branch.delayedDispatch ? 'Sí' : 'No' }}</span>
-        </div>
-        <div class="summary-item">
-          <span class="item-label">Establecimiento Turístico:</span>
-          <span class="item-value">{{ branchAndPOS.branch.isTouristEstablishment ? 'Sí' : 'No' }}</span>
-        </div>
-        <div class="summary-item" v-if="branchAndPOS.pointOfSale.idPos">
-          <span class="item-label">Código de Punto de Emisión:</span>
-          <span class="item-value">{{ branchAndPOS.pointOfSale.idPos }}</span>
-        </div>
-        <div class="summary-item" v-if="branchAndPOS.pointOfSale.name">
-          <span class="item-label">Nombre de Punto de Emisión:</span>
-          <span class="item-value">{{ branchAndPOS.pointOfSale.name }}</span>
+        
+        <!-- Tab 3: Sucursal y Punto de Venta -->
+        <div v-if="activeTab === 2" class="tab-pane">
+          <div class="summary-section">
+            <h4 class="section-title">Sucursal y Punto de Venta</h4>
+            <div class="compact-grid">
+              <div class="info-pair" v-if="branchAndPOS.branch.idBranch">
+                <span class="label">Cód. Sucursal:</span>
+                <span class="value">{{ branchAndPOS.branch.idBranch }}</span>
+              </div>
+              <div class="info-pair" v-if="branchAndPOS.branch.commercialName">
+                <span class="label">Nombre Comercial:</span>
+                <span class="value truncate" :title="branchAndPOS.branch.commercialName">{{ branchAndPOS.branch.commercialName }}</span>
+              </div>
+              <div class="info-pair" v-if="branchAndPOS.branch.name">
+                <span class="label">Nombre Sucursal:</span>
+                <span class="value truncate" :title="branchAndPOS.branch.name">{{ branchAndPOS.branch.name }}</span>
+              </div>
+              <div class="info-pair" v-if="branchAndPOS.pointOfSale.idPos">
+                <span class="label">Cód. Punto Emisión:</span>
+                <span class="value">{{ branchAndPOS.pointOfSale.idPos }}</span>
+              </div>
+              <div class="info-pair" v-if="branchAndPOS.pointOfSale.name">
+                <span class="label">Nombre P. Emisión:</span>
+                <span class="value truncate" :title="branchAndPOS.pointOfSale.name">{{ branchAndPOS.pointOfSale.name }}</span>
+              </div>
+              <div class="info-pair">
+                <span class="label">Despacho Posterior:</span>
+                <span class="value">{{ branchAndPOS.branch.delayedDispatch ? 'Sí' : 'No' }}</span>
+              </div>
+              <div class="info-pair">
+                <span class="label">Est. Turístico:</span>
+                <span class="value">{{ branchAndPOS.branch.isTouristEstablishment ? 'Sí' : 'No' }}</span>
+              </div>
+              <div class="info-pair" v-if="branchAndPOS.branch.address">
+                <span class="label">Dirección:</span>
+                <span class="value truncate" :title="branchAndPOS.branch.address">{{ branchAndPOS.branch.address }}</span>
+              </div>
+              <div class="info-pair" v-if="branchAndPOS.branch.phone">
+                <span class="label">Teléfono:</span>
+                <span class="value">{{ branchAndPOS.branch.phone }}</span>
+              </div>
+              <div class="info-pair" v-if="branchAndPOS.branch.email">
+                <span class="label">Email:</span>
+                <span class="value truncate" :title="branchAndPOS.branch.email">{{ branchAndPOS.branch.email }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </template>
   
   <script setup lang="ts">
-  import { computed } from 'vue';
+  import { computed, ref } from 'vue';
   import { useWizardStore } from "@/stores/wizardStore";
   
   // Obtener la instancia del store
   const wizardStore = useWizardStore();
+  
+  // Estado para las pestañas
+  const activeTab = ref(0);
+  const tabs = ['Datos', 'Configuración', 'Sucursal'];
   
   // Obtener los datos del store
   const personalInfo = computed(() => {
@@ -262,7 +286,7 @@
   
   const getDocumentType = (type: string): string => {
     const types: Record<string, string> = {
-      'facturas': 'Facturas electrónicas',
+      'facturas': 'Facturas',
       'recibos': 'Recibos'
     };
     return types[type] || type;
@@ -283,101 +307,148 @@
     }
     return taxes.map((tax: string) => `${tax}%`).join(', ');
   };
+  
+  const artisanText = computed(() => {
+    return companyConfig.value.artisan?.isArtisan ? 'Sí' : 'No';
+  });
   </script>
   
   <style scoped>
   .wizard-summary {
     width: 100%;
-    padding: 1rem;
-    background-color: #f9fafb;
-    border-radius: 0.5rem;
+    background-color: #f8fafc;
+    border-radius: 0.375rem;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    font-size: 0.8125rem;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Cabecera con logo más compacta */
+  .summary-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background-color: #f0f7ff;
+    border-bottom: 1px solid #e1effe;
   }
   
   .summary-title {
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: var(--ion-color-primary);
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
-  
-  /* Estilos para el contenedor del logo */
-  .logo-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background-color: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    color: #1a56db;
+    margin: 0;
+    flex: 1;
   }
   
   .company-logo {
-    max-width: 200px;
-    max-height: 200px;
+    max-width: 40px;
+    max-height: 40px;
     object-fit: contain;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    margin-left: 0.5rem;
+  }
+  
+  /* Tabs de navegación */
+  .tabs-container {
+    display: flex;
+    background-color: #f0f7ff;
+    border-bottom: 1px solid #e1effe;
+  }
+  
+  .tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #4b5563;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  
+  .tab.active {
+    color: #1a56db;
+    border-bottom-color: #1a56db;
+    background-color: rgba(26, 86, 219, 0.05);
+  }
+  
+  .tab:hover:not(.active) {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+  
+  /* Contenido de las pestañas */
+  .tab-content {
+    flex: 1;
+    overflow-y: auto;
     padding: 0.5rem;
-    background-color: white;
+  }
+  
+  .tab-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
   
   .summary-section {
-    margin-bottom: 1.5rem;
-    padding: 1rem;
     background-color: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
   }
   
   .section-title {
-    font-size: 1.25rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    color: #333;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1a56db;
+    padding: 0.5rem 0.75rem;
+    margin: 0;
+    border-bottom: 1px solid #e1effe;
+    background-color: #f8fafc;
+    border-radius: 0.375rem 0.375rem 0 0;
   }
   
-  .summary-item {
+  /* Grid compacto para la información */
+  .compact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+  
+  .info-pair {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.75rem;
-    padding: 0.5rem 0;
-    border-bottom: 1px dashed rgba(0, 0, 0, 0.05);
+    flex-direction: row; /* Cambiado de column a row */
+    align-items: center; /* Alinear verticalmente */
+    justify-content: space-between; /* Distribuir espacio */
+    background-color: #f9fafb;
+    padding: 0.375rem 0.5rem;
+    border-radius: 0.25rem;
+    min-width: 0; /* Para que funcione truncate */
   }
   
-  .summary-item:last-child {
-    border-bottom: none;
-  }
-  
-  .item-label {
+  .label {
+    font-size: 0.6875rem;
     font-weight: 500;
-    color: #4b5563;
+    color: #6b7280;
+    margin-right: 0.375rem; /* Espacio entre label y value */
+    white-space: nowrap; /* Evitar que el label se rompa */
   }
   
-  .item-value {
+  .value {
+    font-size: 0.75rem;
     font-weight: 600;
     color: #1f2937;
-    text-align: right;
-    max-width: 60%;
-    word-break: break-word;
+    text-align: left; /* Alinear a la derecha */
+    flex: 1; /* Tomar el espacio restante */
+    min-width: 0; /* Necesario para que truncate funcione */
   }
   
-  @media (max-width: 640px) {
-    .summary-item {
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-    
-    .item-value {
-      max-width: 100%;
-      text-align: left;
-    }
-    
-    .company-logo {
-      max-width: 150px;
-      max-height: 150px;
-    }
+  .truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   </style>

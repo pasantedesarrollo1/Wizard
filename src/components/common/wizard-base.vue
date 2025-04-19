@@ -46,9 +46,9 @@
     <!-- Modal de confirmación para finalizar el wizard -->
     <ConfirmationModal 
       :is-open="showConfirmationModal"
-      title="Finalizar Configuración"
-      message="¿Está seguro que desea finalizar la configuración?"
-      secondary-message="Al confirmar, se guardarán todos los datos y se completará el proceso."
+      title="Finalizar Proceso"
+      message="Verifique que todos los datos sean correctos. No podra regresar a este paso"
+      secondary-message=""
       confirm-button-text="Finalizar"
       cancel-button-text="Continuar Editando"
       @confirm="handleConfirmFinish" 
@@ -59,11 +59,11 @@
     <ConfirmationModal 
       :is-open="showSalesConfirmationModal"
       title="Confirmar Información de Venta"
-      message="¿Está seguro que desea continuar con esta información de venta?"
-      secondary-message="Verifique que todos los datos de pago y plan sean correctos antes de continuar."
+      message="Verifique que todos los datos sean correctos. No podra regresar a este paso"
+      secondary-message=""
       confirm-button-text="Continuar"
       cancel-button-text="Revisar Datos"
-      confirm-button-color="success"
+      confirm-button-color="primary"
       @confirm="handleConfirmSalesNext" 
       @cancel="handleCancelSalesNext"
     > 
