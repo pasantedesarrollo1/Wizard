@@ -118,11 +118,11 @@
       <ion-label position="stacked" class="form-label">Correo Electrónico Empresarial <span class="required">*</span></ion-label>
       <div class="input-container">
         <div class="input-icon">
-          <Icon icon="mdi:businessEmail" width="20" height="20" />
+          <Icon icon="mdi:email" width="20" height="20" />
         </div>
         <input 
           type="businessEmail"
-          placeholder="businessEmail empresarial"
+          placeholder="Email empresarial"
           v-model="data.businessEmail"
           class="form-input"
           :class="{ 

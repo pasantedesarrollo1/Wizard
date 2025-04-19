@@ -1,54 +1,70 @@
 <template>
   <ion-page>
-    <ion-header>
-      <ion-toolbar>
-        <ion-title class="ion-text-center">Empresa Creada Exitosamente</ion-title>
-      </ion-toolbar>
-    </ion-header>
-    
-    <ion-content class="ion-content">
-      <div class="domain-container">
-        <h3 class="section-title">¿Cómo acceder a mi empresa?</h3>
-        <p class="section-description">Este será el enlace donde podrás acceder a tu sistema</p>
+    <ion-content class="ion-padding">
+      <div class="success-container">
+        <!-- Cabecera con animación -->
+        <!-- <div class="success-header">
+          <div class="success-icon-container">
+            <ion-icon :icon="checkmarkCircle" class="success-icon"></ion-icon>
+          </div>
+          <h1 class="success-title">¡Empresa Creada Exitosamente!</h1>
+          <p class="success-subtitle">Tu empresa ya está lista para usar</p>
+        </div> -->
         
-        <!-- Texto concatenado de la URL -->
-        <div class="domain-url-container">
-          <div class="domain-url-text">
-            <span class="domain-prefix">https://</span>
-            <span class="domain-value">{{ domainValue }}</span>
-            <span class="domain-suffix">.illarli.net</span>
+        <!-- Tarjeta de acceso -->
+        <div class="access-card">
+          <h2 class="access-title">¡Empresa Creada Exitosamente!</h2>
+          
+          <!-- URL de acceso mejorada -->
+          <div class="domain-display">
+            <div class="domain-label">El siguiente link te permitira acceder a tu empresa</div>
+            <div class="domain-url-wrapper">
+              <div class="domain-url-display">
+                <span class="domain-prefix">https://</span>
+                <span class="domain-value">{{ domainValue }}</span>
+                <span class="domain-suffix">.illarli.net</span>
+              </div>
+              <button class="copy-button" @click="copyToClipboard" title="Copiar al portapapeles">
+                <ion-icon :icon="copy" class="copy-icon"></ion-icon>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Vista previa del navegador -->
+          <div class="browser-preview" v-if="domainValue.length > 0">
+            <div class="browser-chrome">
+              <div class="browser-actions">
+                <span class="browser-dot red"></span>
+                <span class="browser-dot yellow"></span>
+                <span class="browser-dot green"></span>
+              </div>
+              <div class="browser-address-bar">
+                <ion-icon :icon="lockClosed" class="secure-icon"></ion-icon>
+                <span class="browser-url">{{ fullDomainUrl }}</span>
+              </div>
+            </div>
+            <div class="browser-content">
+              <div class="site-preview">
+                <div class="site-logo">
+                  <ion-icon :icon="storefront" class="site-icon"></ion-icon>
+                </div>
+                <p class="site-welcome">¡Bienvenido a tu nueva plataforma empresarial!</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Botón de acción (solo el principal) -->
+          <div class="action-area">
+            <ion-button expand="block" color="primary" @click="goToCompany" class="main-button">
+              <ion-icon :icon="open" slot="start"></ion-icon>
+              ACCEDER A MI EMPRESA
+            </ion-button>
           </div>
         </div>
         
-        <!-- Vista previa del dominio -->
-        <div class="domain-preview" v-if="domainValue.length > 0">
-          <h4 class="preview-title">Vista previa</h4>
-          <div class="preview-box">
-            <div class="preview-browser">
-              <div class="browser-dots">
-                <span class="browser-dot"></span>
-                <span class="browser-dot"></span>
-                <span class="browser-dot"></span>
-              </div>
-              <div class="browser-address">
-                <ion-icon :icon="lockClosed" class="lock-icon"></ion-icon>
-                <span class="domain-url">{{ fullDomainUrl }}</span>
-              </div>
-            </div>
-            <div class="preview-content">
-              <div class="preview-logo">
-                <ion-icon :icon="storefront" class="preview-icon"></ion-icon>
-              </div>
-              <div class="preview-text">{{ domainValue }}</div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Botón de acción único -->
-        <div class="action-buttons">
-          <ion-button expand="block" color="primary" @click="goToCompany" class="action-button">
-            IR A MI EMPRESA
-          </ion-button>
+        <!-- Mensaje de copiado -->
+        <div class="copy-toast" :class="{ 'show-toast': showCopyToast }">
+          URL copiada al portapapeles
         </div>
       </div>
     </ion-content>
@@ -57,16 +73,22 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import { IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon } from "@ionic/vue";
-import { lockClosed, storefront } from "ionicons/icons";
+import { IonPage, IonContent, IonButton, IonIcon } from "@ionic/vue";
+import { 
+  lockClosed, 
+  storefront, 
+  // checkmarkCircle, 
+  copy, 
+  open
+} from "ionicons/icons";
 import { useWizardStore } from "@/stores/wizardStore";
-
 
 // Obtener la instancia del store
 const wizardStore = useWizardStore();
 
 // Estados reactivos
 const domainValue = ref("");
+const showCopyToast = ref(false);
 
 // Computar la URL completa del dominio
 const fullDomainUrl = computed(() => {
@@ -79,240 +101,408 @@ const goToCompany = () => {
   window.open(fullDomainUrl.value, "_blank");
 };
 
+// Función para copiar al portapapeles
+const copyToClipboard = () => {
+  navigator.clipboard.writeText(fullDomainUrl.value)
+    .then(() => {
+      showCopyToast.value = true;
+      setTimeout(() => {
+        showCopyToast.value = false;
+      }, 2000);
+    })
+    .catch(err => {
+      console.error('Error al copiar: ', err);
+    });
+};
+
 // Cargar datos del store si existen
 onMounted(() => {
+  // Obtener los datos de companyCreation del store
   const companyCreation = wizardStore.getStepData("companyCreation");
+  
+  // Verificar si existe companyCreation y si tiene la propiedad domain
   if (companyCreation && companyCreation.domain) {
+    // Asignar el valor del dominio
     domainValue.value = companyCreation.domain;
   }
 });
-
 </script>
 
 <style scoped>
-.ion-content {
-  --background: transparent;
-}
-
-.domain-container {
-  width: 100%;
+/* Contenedor principal */
+.success-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem;
 }
 
-.section-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
+/* Cabecera con animación */
+.success-header {
+  text-align: center;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.success-icon-container {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem;
+  background-color: rgba(var(--ion-color-success-rgb), 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-icon {
+  font-size: 48px;
+  color: var(--ion-color-success);
+}
+
+.success-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
   margin-bottom: 0.5rem;
 }
 
-.section-description {
-  font-size: 1rem;
-  color: #666;
-  margin-bottom: 1.5rem;
+.success-subtitle {
+  font-size: 1.1rem;
+  color: var(--ion-color-medium);
+  margin: 0;
 }
 
-/* Nuevo estilo para el texto de la URL */
-.domain-url-container {
+/* Tarjeta de acceso */
+.access-card {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  animation: fadeInUp 0.8s ease-out;
   display: flex;
-  justify-content: center;
-  margin-bottom: 1.5rem;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.domain-url-text {
+.access-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  margin: 0;
+  text-align: center;
+}
+
+/* URL de acceso mejorada */
+.domain-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.domain-label {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  margin-bottom: 0.25rem;
+}
+
+.domain-url-wrapper {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  border: 1px solid #0066ff;
-  border-radius: 8px;
-  background-color: white;
-  max-width: 100%;
-  overflow: hidden;
+  gap: 0.75rem;
+}
+
+.domain-url-display {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  background-color: #f0f4ff;
+  border-radius: 12px;
+  font-family: 'SF Mono', 'Consolas', monospace;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .domain-prefix {
-  color: #666;
+  color: #6b7280;
   font-size: 0.95rem;
 }
 
 .domain-value {
-  font-weight: 500;
-  color: #333;
-  font-size: 1rem;
-  padding: 0 4px;
+  font-weight: 600;
+  color: #2563eb;
+  font-size: 1.05rem;
+  padding: 0 0.25rem;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .domain-suffix {
-  color: #666;
+  color: #6b7280;
   font-size: 0.95rem;
 }
 
-.domain-preview {
-  margin-bottom: 2rem;
-  animation: fadeIn 0.5s ease;
+.copy-button {
+  min-width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background-color: #2563eb;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
+.copy-button:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
 }
 
-.preview-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 0.75rem;
+.copy-button:active {
+  transform: translateY(1px);
 }
 
-.preview-box {
-  border: 1px solid #e5e7eb;
+.copy-icon {
+  font-size: 20px;
+  color: white;
+}
+
+/* Vista previa del navegador */
+.browser-preview {
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
 }
 
-.preview-browser {
+.browser-chrome {
   background-color: #f3f4f6;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.browser-dots {
+.browser-actions {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.375rem;
   margin-bottom: 0.5rem;
 }
 
 .browser-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background-color: #d1d5db;
 }
 
-.browser-dot:nth-child(1) {
+.browser-dot.red {
   background-color: #ef4444;
 }
 
-.browser-dot:nth-child(2) {
+.browser-dot.yellow {
   background-color: #f59e0b;
 }
 
-.browser-dot:nth-child(3) {
+.browser-dot.green {
   background-color: #10b981;
 }
 
-.browser-address {
+.browser-address-bar {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   background-color: white;
   border-radius: 4px;
-  padding: 0.25rem 0.5rem;
+  padding: 0.375rem 0.75rem;
   font-size: 0.8rem;
   color: #4b5563;
 }
 
-.lock-icon {
-  font-size: 12px;
+.secure-icon {
+  font-size: 14px;
   color: #10b981;
 }
 
-.domain-url {
+.browser-url {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.preview-content {
-  padding: 2rem;
+.browser-content {
+  background-color: white;
+  min-height: 180px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: white;
-  min-height: 150px;
 }
 
-.preview-logo {
+.site-preview {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.site-logo {
   width: 64px;
   height: 64px;
   border-radius: 12px;
-  background-color: #003cff;
+  background-color: var(--ion-color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
 }
 
-.preview-icon {
+.site-icon {
   font-size: 32px;
   color: white;
 }
 
-.preview-text {
+.site-name {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--ion-color-dark);
+  margin: 0 0 0.5rem;
 }
 
-/* Estilos para el botón de acción */
-.action-buttons {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: center;
-}
-
-.action-button {
+.site-welcome {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
   margin: 0;
-  height: 48px;
+}
+
+/* Botón de acción */
+.action-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.main-button {
+  --border-radius: 10px;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
   font-weight: 600;
-  --border-radius: 8px;
-  width: 100%;
-  max-width: 300px;
-  font-size: 1rem;
-  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+/* Toast de copiado */
+.copy-toast {
+  position: fixed;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: bottom 0.3s ease;
+  z-index: 1000;
+}
+
+.show-toast {
+  bottom: 20px;
+}
+
+/* Animaciones */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Estilos responsivos */
-@media (max-width: 640px) {
-  .domain-container {
-    padding: 1.5rem 1rem;
+@media (max-width: 768px) {
+  .success-container {
+    padding: 1rem;
+    gap: 1.5rem;
   }
   
-  .domain-url-text {
-    padding: 10px 12px;
+  .success-title {
+    font-size: 1.5rem;
   }
   
-  .domain-prefix, .domain-suffix {
-    font-size: 0.85rem;
+  .success-subtitle {
+    font-size: 1rem;
   }
   
-  .domain-value {
+  .access-card {
+    padding: 1.5rem;
+  }
+  
+  .access-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .success-icon-container {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .success-icon {
+    font-size: 36px;
+  }
+  
+  .success-title {
+    font-size: 1.3rem;
+  }
+  
+  .success-subtitle {
     font-size: 0.9rem;
   }
   
-  .preview-content {
-    padding: 1.5rem;
-    min-height: 120px;
+  .access-card {
+    padding: 1.25rem;
   }
   
-  .preview-logo {
-    width: 48px;
-    height: 48px;
+  .domain-url-display {
+    padding: 0.6rem 1rem;
   }
   
-  .preview-icon {
+  .domain-value {
+    max-width: 120px;
+  }
+  
+  .site-logo {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .site-icon {
     font-size: 24px;
   }
   
-  .preview-text {
+  .site-name {
     font-size: 1.1rem;
+  }
+  
+  .site-welcome {
+    font-size: 0.8rem;
   }
 }
 </style>

@@ -55,7 +55,10 @@ export function useWizardValidation() {
       return validateDataSalesStep(currentSubStepIndexValue)
     } else if (currentStepKey === "personal-info") {
       return validatePersonalInfoStep(currentSubStepIndexValue)
-    } 
+    } else if (currentStepKey === "config-company" && currentSubStepIndexValue === 0) {
+      // Para el paso config-company y subpaso 0 (RUC validation)
+      return !wizardStore.getCurrentWizardState.rucValidated
+    }
     
     // Para otros pasos, el botón está habilitado por defecto
     return false

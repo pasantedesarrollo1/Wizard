@@ -1,7 +1,21 @@
 <template>
   <div class="information-ruc-container">
-    <!-- Contenedor de la información del RUC -->
-    <div class="ruc-info-grid">
+    <!-- Mensaje de error cuando no se encuentra el RUC -->
+    <div v-if="!rucFound" class="error-message">
+      <Icon icon="mdi:alert-circle" class="error-icon" />
+      <div class="error-content">
+        <h5 class="error-title">RUC no encontrado</h5>
+        <p class="error-description">
+          No se ha encontrado información para el RUC: <strong>{{ rucData.ruc }}</strong>
+        </p>
+        <p class="error-suggestion">
+          Por favor, verifica que el número ingresado sea correcto e intenta nuevamente.
+        </p>
+      </div>
+    </div>
+
+    <!-- Contenedor de la información del RUC (se muestra solo si se encontró el RUC) -->
+    <div v-else class="ruc-info-grid">
       <!-- RUC -->
       <div class="info-card">
         <div class="info-header">
@@ -33,8 +47,8 @@
       </div>
     </div>
     
-    <!-- Mensaje de confirmación -->
-    <div class="confirmation-message" v-if="rucData.estado === 'ACTIVO'">
+    <!-- Mensaje de confirmación (solo si el estado es ACTIVO) -->
+    <div class="confirmation-message" v-if="rucFound && rucData.estado === 'ACTIVO'">
       <Icon icon="mdi:check-circle" class="confirmation-icon" />
       <p>La información del RUC ha sido validada correctamente</p>
     </div>
@@ -42,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from "@iconify/vue";
 
 // Definición de la interfaz para los datos del RUC
 interface RucData {
@@ -50,9 +65,10 @@ interface RucData {
   estado: string;
 }
 
-// Recibir los datos del RUC como prop desde el componente padre
+// Recibir los datos del RUC y el estado de búsqueda como props desde el componente padre
 defineProps<{
   rucData: RucData;
+  rucFound: boolean;
 }>();
 </script>
 
@@ -148,6 +164,46 @@ defineProps<{
   font-size: 0.9rem;
 }
 
+/* Estilos para el mensaje de error */
+.error-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.error-icon {
+  color: #ef4444;
+  font-size: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.error-content {
+  flex: 1;
+}
+
+.error-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ef4444;
+  margin: 0 0 8px 0;
+}
+
+.error-description, .error-suggestion {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.error-suggestion {
+  color: #666;
+}
+
 /* Estilos responsivos */
 @media (max-width: 768px) {
   .ruc-info-grid {
@@ -157,6 +213,10 @@ defineProps<{
   
   .info-card {
     padding: 8px;
+  }
+  
+  .error-message {
+    padding: 12px;
   }
 }
 </style>

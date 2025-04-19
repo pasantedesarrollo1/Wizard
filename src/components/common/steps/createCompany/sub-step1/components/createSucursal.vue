@@ -11,7 +11,6 @@
           </div>
           <input 
             type="text"
-            readonly
             v-model="data.branch.commercialName"
             class="form-input"
             :class="{ 
@@ -26,7 +25,7 @@
 
       <!-- Código de Sucursal -->
       <div class="form-group">
-        <ion-label position="stacked" class="form-label">Código de Sucursal <span class="required">*</span></ion-label>
+        <ion-label position="stacked" class="form-label">Código de la Matriz <span class="required">*</span></ion-label>
         <div class="input-container">
           <div class="input-icon">
             <Icon icon="mdi:barcode" width="20" height="20" />
@@ -49,14 +48,14 @@
 
     <!-- Nombre de tu Sucursal -->
     <div class="form-group">
-      <ion-label position="stacked" class="form-label">Nombre de tu Sucursal <span class="required">*</span></ion-label>
+      <ion-label position="stacked" class="form-label">Nombre de la Matriz <span class="required">*</span></ion-label>
       <div class="input-container">
         <div class="input-icon">
           <Icon icon="mdi:home-city" width="20" height="20" />
         </div>
         <input 
           type="text"
-          placeholder="Nombre de la sucursal"
+          placeholder="Nombre de la matriz"
           v-model="data.branch.name"
           class="form-input"
           :class="{ 
@@ -71,14 +70,13 @@
 
     <!-- Dirección de la Sucursal -->
     <div class="form-group">
-      <ion-label position="stacked" class="form-label">Dirección de la Sucursal <span class="required">*</span></ion-label>
+      <ion-label position="stacked" class="form-label">Dirección de la Matriz <span class="required">*</span></ion-label>
       <div class="input-container">
         <div class="input-icon">
           <Icon icon="mdi:map-marker" width="20" height="20" />
         </div>
         <input 
           type="text"
-          readonly
           v-model="data.branch.address"
           class="form-input"
           :class="{ 
@@ -93,7 +91,7 @@
 
     <!-- Teléfono de la sucursal -->
     <div class="form-group">
-      <ion-label position="stacked" class="form-label">Teléfono de la sucursal <span class="required">*</span></ion-label>
+      <ion-label position="stacked" class="form-label">Teléfono de la Matriz<span class="required">*</span></ion-label>
       <div class="input-container">
         <div class="input-icon">
           <Icon icon="mdi:phone" width="20" height="20" />
@@ -115,14 +113,14 @@
 
     <!-- Correo de la Sucursal -->
     <div class="form-group">
-      <ion-label position="stacked" class="form-label">Correo de la Sucursal <span class="required">*</span></ion-label>
+      <ion-label position="stacked" class="form-label">Correo de la Matriz <span class="required">*</span></ion-label>
       <div class="input-container">
         <div class="input-icon">
           <Icon icon="mdi:email" width="20" height="20" />
         </div>
         <input 
           type="email"
-          placeholder="Email de la sucursal"
+          placeholder="Email de la Matriz"
           v-model="data.branch.email"
           class="form-input"
           :class="{ 

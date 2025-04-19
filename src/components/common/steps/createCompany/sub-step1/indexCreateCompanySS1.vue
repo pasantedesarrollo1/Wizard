@@ -13,7 +13,7 @@
           
           <!-- Columna 2: companySucursal -->
           <div class="section-container branch-section">
-            <h4 class="section-title">Datos de la Sucursal</h4>
+            <h4 class="section-title">Datos de la Matriz</h4>
             <companySucursal />
           </div>
         </div>

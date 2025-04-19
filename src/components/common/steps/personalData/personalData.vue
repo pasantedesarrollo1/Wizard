@@ -9,7 +9,7 @@
             <!-- Tipo de identificación -->
             <ion-item class="ion-item-custom">
               <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Tipo de Identificación</ion-label>
-              <div class="flex flex-col sm:flex-row gap-2.5 w-full">
+              <div class="flex flex-col sm:flex-row gap-2 w-full">
                 <!-- Select personalizado con estilos de Tailwind -->
                 <div class="relative flex flex-col gap-2.5 my-2.5 w-full sm:w-1/3">
                   <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10">
@@ -85,7 +85,7 @@
 
             <!-- Apellidos -->
             <ion-item class="ion-item-custom">
-              <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Apellidos <span class="text-blue-600">*</span></ion-label>
+              <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1 ">Apellidos <span class="text-blue-600">*</span></ion-label>
               <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
                 <input 
                   type="text"
@@ -250,16 +250,14 @@ const clearFocus = () => {
 
 /* Estilos para el contenido */
 .wizard-content {
-  padding: 16px;
   flex: 1;
   overflow-y: auto;
   height: 100%;
 }
 
-/* Estilos específicos para ion-item que no se pueden hacer con Tailwind */
+/* Eliminar completamente líneas y espacios en ion-item */
 .ion-item-custom {
-  --padding-start: 0;
-  --inner-padding-end: 0;
+  --border-color: transparent !important;
 }
 
 /* Estilos para inputs enfocados */
