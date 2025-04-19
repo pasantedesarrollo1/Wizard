@@ -52,8 +52,8 @@
       confirm-button-text="Finalizar"
       cancel-button-text="Continuar Editando"
       @confirm="handleConfirmFinish" 
-      @cancel="handleCancelFinish"
-    />
+      @cancel="handleCancelFinish"   
+    ><finishSummary /> </ConfirmationModal>
     
     <!-- Modal de confirmación para el paso de ventas -->
     <ConfirmationModal 
@@ -86,6 +86,7 @@ import { useWizardStore } from "@/stores/wizardStore"
 import type { Component } from "vue"
 import { useWizardValidation } from "@/composables/useWizardValidation"
 import SalesSummary from "@/components/summary/salesSummary.vue" // Importamos el componente
+import finishSummary from "@/components/summary/finishSummary.vue" // Importamos el componente
 
 // Obtener las funciones de validación del composable
 const { shouldDisableNextButton, shouldDisablePreviousButton } = useWizardValidation()
