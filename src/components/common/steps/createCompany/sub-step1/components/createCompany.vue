@@ -117,7 +117,7 @@
       </div>
     </div>
 
-    <!-- Correo Electrónico -->
+    <!-- Correo Electrónico Empresarial - MODIFICADO CON VALIDACIÓN EN TIEMPO REAL -->
     <div class="form-group">
       <ion-label position="stacked" class="form-label">Correo Electrónico Empresarial <span class="required">*</span></ion-label>
       <div class="input-container">
@@ -125,17 +125,24 @@
           <Icon icon="mdi:email" width="20" height="20" />
         </div>
         <input 
-          type="businessEmail"
+          type="email"
           placeholder="Email empresarial"
           v-model="data.businessEmail"
+          @input="handleEmailInput"
           class="form-input"
           :class="{ 
             'has-value': data.businessEmail.length > 0,
-            'is-focused': focusedField === 'businessEmail'
+            'is-focused': focusedField === 'businessEmail',
+            'valid-email': emailIsValid && data.businessEmail.length > 0,
+            'invalid-email': !emailIsValid && data.businessEmail.length > 0
           }"
           @focus="setFocus('businessEmail')"
           @blur="clearFocus"
         >
+      </div>
+      <!-- Mensaje de error para email inválido -->
+      <div v-if="!emailIsValid && data.businessEmail.length > 0" class="email-error-message">
+        Por favor, ingrese un correo electrónico válido
       </div>
     </div>
   </form>
@@ -149,6 +156,7 @@ import { useInitialData } from "@/composables/useInitialData";
 import { 
   allowOnlyLettersSpacesAndNumbers,
   formatPhoneNumber,
+  validateEmailInRealTime
 } from "@/utils/input-controls";
 
 
@@ -158,6 +166,14 @@ const handleNameCompanyInput = (event: Event) => {
 
 const handlePhoneInput = (event: Event) => {
   data.value.phone = formatPhoneNumber(event);
+};
+
+// Nuevo manejador para la validación de email en tiempo real
+const handleEmailInput = (event: Event) => {
+  // Usar la función de validación en tiempo real
+  const result = validateEmailInRealTime(event);
+  data.value.businessEmail = result.value;
+  emailIsValid.value = result.isValid;
 };
 
 // Valores iniciales para el formulario
@@ -182,6 +198,9 @@ const { data } = useInitialData(
 
 // Variable para controlar qué campo está enfocado
 const focusedField = ref('');
+
+// Nueva variable para controlar la validez del email
+const emailIsValid = ref(true);
 
 // Funciones para manejar el enfoque
 const setFocus = (fieldName: string) => {
@@ -282,5 +301,23 @@ const clearFocus = () => {
 .form-input[readonly] {
   background-color: #f5f5f5;
   color: #666;
+}
+
+/* Estilos para validación de email - NUEVOS */
+.valid-email {
+  border-color: #10b981 !important;
+  background-color: rgba(16, 185, 129, 0.05) !important;
+}
+
+.invalid-email {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.email-error-message {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
 }
 </style>

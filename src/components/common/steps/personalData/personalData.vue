@@ -1,27 +1,23 @@
 <template>
   <div class="w-full flex justify-center">
     <ion-card class="wizard-card main-container">
-      <!-- Aplicamos una altura máxima y habilitamos el scroll, pero de manera controlada -->
       <ion-card-content class="wizard-content">
         <div class="pb-5">
-          <span>Ingresa tus datos personales para crear tu empresa</span>
-          <form @submit.prevent>
+          <form @submit.prevent class="form-container">
             <!-- Tipo de identificación -->
-            <ion-item class="ion-item-custom">
-              <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Tipo de Identificación</ion-label>
-              <div class="flex flex-col sm:flex-row gap-2 w-full">
-                <!-- Select personalizado con estilos de Tailwind -->
-                <div class="relative flex flex-col gap-2.5 my-2.5 w-full sm:w-1/3">
-                  <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10">
+            <div class="form-row">
+              <div class="form-group">
+                <ion-label position="stacked" class="form-label">Tipo de Identificación <span class="required">*</span></ion-label>
+                <div class="input-container">
+                  <div class="input-icon">
                     <Icon icon="mdi:cards" width="20" height="20" />
                   </div>
                   <select 
                     v-model="data.identification.type" 
-                    class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 appearance-none
-                           hover:border-blue-400"
+                    class="form-input"
                     :class="{ 
-                      'bg-primary-50 border-primary text-primary': data.identification.type.length > 0,
-                      'border-blue-500 border-2 shadow-md': focusedField === 'tipoID'
+                      'has-value': data.identification.type.length > 0,
+                      'is-focused': focusedField === 'tipoID'
                     }"
                     @focus="setFocus('tipoID')"
                     @blur="clearFocus"
@@ -36,12 +32,13 @@
                       {{ opcion.label }}
                     </option>
                   </select>
-                  <div class="absolute right-3 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[5px] border-r-[5px] border-t-[5px] border-transparent border-t-gray-500 pointer-events-none"></div>
                 </div>
-                
-                <!-- Input personalizado con estilos de Tailwind -->
-                <div class="relative flex flex-col gap-2.5 my-2.5 w-full sm:w-2/3">
-                  <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+              </div>
+              
+              <div class="form-group">
+                <ion-label position="stacked" class="form-label">Número de Identificación <span class="required">*</span></ion-label>
+                <div class="input-container">
+                  <div class="input-icon">
                     <Icon icon="mdi:card-account-details-outline" width="20" height="20" />
                   </div>
                   <input 
@@ -49,12 +46,11 @@
                     placeholder="Número de identificación"
                     v-model="data.identification.number"
                     @input="handleIdentificationNumberInput"
-                    class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                           hover:border-blue-400"
+                    class="form-input"
                     :class="{ 
-                      'bg-primary-50 border-primary text-primary': data.identification.number.length > 0,
-                      'border-blue-500 border-2 shadow-md': focusedField === 'identificacion',
-                      'cursor-not-allowed opacity-70': !data.identification.type
+                      'has-value': data.identification.number.length > 0,
+                      'is-focused': focusedField === 'identificacion',
+                      'disabled': !data.identification.type
                     }"
                     @focus="setFocus('identificacion')"
                     @blur="clearFocus"
@@ -63,112 +59,109 @@
                   >
                 </div>
               </div>
-            </ion-item>
+            </div>
 
             <!-- Nombres -->
-            <ion-item class="ion-item-custom">
-              <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Nombres <span class="text-blue-600">*</span></ion-label>
-              <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
+            <div class="form-group">
+              <ion-label position="stacked" class="form-label">Nombres <span class="required">*</span></ion-label>
+              <div class="input-container">
+                <div class="input-icon">
+                  <Icon icon="mdi:account" width="20" height="20" />
+                </div>
                 <input 
                   type="text"
                   placeholder="Ingresa tus Nombres"
                   v-model="data.name.first"
                   @input="handleNameInput"
-                  class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                         hover:border-blue-400"
+                  class="form-input"
                   :class="{ 
-                    'bg-primary-50 border-primary text-primary': data.name.first.length > 0,
-                    'border-blue-500 border-2 shadow-md': focusedField === 'nombres'
+                    'has-value': data.name.first.length > 0,
+                    'is-focused': focusedField === 'nombres'
                   }"
                   @focus="setFocus('nombres')"
                   @blur="clearFocus"
                   required
                 >
               </div>
-            </ion-item>
+            </div>
 
             <!-- Apellidos -->
-            <ion-item class="ion-item-custom">
-              <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1 ">Apellidos <span class="text-blue-600">*</span></ion-label>
-              <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
+            <div class="form-group">
+              <ion-label position="stacked" class="form-label">Apellidos <span class="required">*</span></ion-label>
+              <div class="input-container">
+                <div class="input-icon">
+                  <Icon icon="mdi:account-outline" width="20" height="20" />
+                </div>
                 <input 
                   type="text"
                   placeholder="Ingresa tus Apellidos"
                   v-model="data.name.last"
                   @input="handleLastInput"
-                  class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                         hover:border-blue-400"
+                  class="form-input"
                   :class="{ 
-                    'bg-primary-50 border-primary text-primary': data.name.last.length > 0,
-                    'border-blue-500 border-2 shadow-md': focusedField === 'apellidos'
+                    'has-value': data.name.last.length > 0,
+                    'is-focused': focusedField === 'apellidos'
                   }"
                   @focus="setFocus('apellidos')"
                   @blur="clearFocus"
                   required
                 >
               </div>
-            </ion-item>
+            </div>
 
-            <!-- Correo Electrónico - CORREGIDO -->
-            <ion-item class="ion-item-custom">
-              <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Correo Electrónico <span class="text-blue-600">*</span></ion-label>
-              <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-                <!-- Contenedor del input con posición relativa -->
-                <div class="relative w-full">
-                  <!-- Icono posicionado relativo al input, no al contenedor principal -->
-                  <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10">
-                    <Icon icon="mdi:email" width="20" height="20" />
-                  </div>
-                  <input 
-                    type="email"
-                    placeholder="Email"
-                    v-model="data.contact.email"
-                    @input="handleEmailInput"
-                    class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                           hover:border-blue-400"
-                    :class="{ 
-                      'bg-primary-50 border-primary text-primary': data.contact.email.length > 0,
-                      'border-blue-500 border-2 shadow-md': focusedField === 'email',
-                      'valid-email': emailIsValid && data.contact.email.length > 0,
-                      'invalid-email': !emailIsValid && data.contact.email.length > 0
-                    }"
-                    @focus="setFocus('email')"
-                    @blur="clearFocus"
-                    required
-                  >
+            <!-- Correo Electrónico -->
+            <div class="form-group">
+              <ion-label position="stacked" class="form-label">Correo Electrónico <span class="required">*</span></ion-label>
+              <div class="input-container">
+                <div class="input-icon">
+                  <Icon icon="mdi:email" width="20" height="20" />
                 </div>
-                <!-- Mensaje de error para email inválido - AHORA FUERA DEL CONTENEDOR DEL INPUT -->
-                <div v-if="!emailIsValid && data.contact.email.length > 0" class="email-error-message">
-                  Por favor, ingrese un correo electrónico válido
-                </div>
+                <input 
+                  type="email"
+                  placeholder="Email"
+                  v-model="data.contact.email"
+                  @input="handleEmailInput"
+                  class="form-input"
+                  :class="{ 
+                    'has-value': data.contact.email.length > 0,
+                    'is-focused': focusedField === 'email',
+                    'valid-email': emailIsValid && data.contact.email.length > 0,
+                    'invalid-email': !emailIsValid && data.contact.email.length > 0
+                  }"
+                  @focus="setFocus('email')"
+                  @blur="clearFocus"
+                  required
+                >
               </div>
-            </ion-item>
+              <!-- Mensaje de error para email inválido -->
+              <div v-if="!emailIsValid && data.contact.email.length > 0" class="email-error-message">
+                Por favor, ingrese un correo electrónico válido
+              </div>
+            </div>
 
             <!-- Teléfono celular/whatsapp -->
-            <ion-item class="ion-item-custom">
-              <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Teléfono celular/whatsapp <span class="text-blue-600">*</span></ion-label>
-              <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
-                <div class="relative w-full">
-                  <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                    <Icon icon="mdi:phone" width="20" height="20" />
-                  </div>
-                  <input 
-                    type="phone"
-                    placeholder="+593"
-                    v-model="data.contact.phone"
-                    @input="handlePhoneInput"
-                    class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
-                           hover:border-blue-400"
-                    :class="{ 
-                      'bg-primary-50 border-primary text-primary': focusedField === 'telefono' && data.contact.phone.length > 0,
-                      'border-blue-500 border-2 shadow-md': focusedField === 'telefono'
-                    }"
-                    @focus="setFocus('telefono')"
-                    @blur="clearFocus"
-                  >
+            <div class="form-group">
+              <ion-label position="stacked" class="form-label">Teléfono celular/whatsapp <span class="required">*</span></ion-label>
+              <div class="input-container">
+                <div class="input-icon">
+                  <Icon icon="mdi:phone" width="20" height="20" />
                 </div>
+                <input 
+                  type="tel"
+                  placeholder="+593"
+                  v-model="data.contact.phone"
+                  @input="handlePhoneInput"
+                  class="form-input"
+                  :class="{ 
+                    'has-value': data.contact.phone.length > 0,
+                    'is-focused': focusedField === 'telefono'
+                  }"
+                  @focus="setFocus('telefono')"
+                  @blur="clearFocus"
+                  required
+                >
               </div>
-            </ion-item>
+            </div>
           </form>
         </div>
       </ion-card-content>
@@ -181,10 +174,9 @@ import { ref, watch, onMounted } from 'vue';
 import {
   IonCard,
   IonCardContent,
-  IonItem,
   IonLabel,
 } from '@ionic/vue';
-import { Icon } from '@iconify/vue'; // Importación de Iconify
+import { Icon } from '@iconify/vue';
 import { useInitialData } from "@/composables/useInitialData";
 import {
   allowOnlyLetters,
@@ -257,19 +249,25 @@ onMounted(() => {
   showIcons.value = true;
 });
 
+const selectedIdType = ref('');
+
+watch(() => data.value.identification.type, (newType) => {
+  selectedIdType.value = newType;
+  data.value.identification.number = '';
+});
+
 // Manejador de input para el número de identificación que aplica validación según el tipo seleccionado
 const handleIdentificationNumberInput = (event: Event) => {
-  // Aplicar diferentes validaciones según el tipo de identificación seleccionado
-  if (data.value.identification.type === 'ruc') {
-    // Si es RUC, usar formatEcuadorianId
-    data.value.identification.number = formatEcuadorianId(event);
-  } else if (data.value.identification.type === 'cedula') {
-    // Si es Cédula, usar formatPhoneNumber
-    data.value.identification.number = formatPhoneNumber(event);
-  } else {
-    // Si no hay tipo seleccionado o es otro tipo, permitir solo números
+  if (!selectedIdType.value) {
     const input = event.target as HTMLInputElement;
     data.value.identification.number = input.value.replace(/\D/g, '');
+    return;
+  }
+
+  if (selectedIdType.value === 'ruc') {
+    data.value.identification.number = formatEcuadorianId(event);
+  } else if (selectedIdType.value === 'cedula') {
+    data.value.identification.number = formatPhoneNumber(event);
   }
 };
 
@@ -287,20 +285,131 @@ const handlePhoneInput = (event: Event) => {
 };
 
 const handleEmailInput = (event: Event) => {
-  // Usar la nueva función de validación en tiempo real
+  // Usar la función de validación en tiempo real
   const result = validateEmailInRealTime(event);
   data.value.contact.email = result.value;
   emailIsValid.value = result.isValid;
 };
 
 // Watch para limpiar el número de identificación si cambia el tipo
-watch(() => data.value.identification.type, () => {
-  // Limpiar el número de identificación cuando cambia el tipo
-  data.value.identification.number = '';
-});
+// watch(() => data.value.identification.type, () => {
+//   // Limpiar el número de identificación cuando cambia el tipo
+//   data.value.identification.number = '';
+// });
 </script>
 
 <style scoped>
+/* Contenedor del formulario */
+.form-container {
+  width: 100%;
+}
+
+/* Fila de formulario para elementos en línea */
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+/* Grupo de formulario */
+.form-group {
+  width: 100%;
+}
+
+/* Etiqueta de formulario */
+.form-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+/* Indicador de campo requerido */
+.required {
+  color: var(--ion-color-primary);
+}
+
+/* Contenedor de input con icono */
+.input-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Icono dentro del input */
+.input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  z-index: 1;
+}
+
+/* Estilos del input */
+.form-input {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  background-color: white;
+  transition: all 0.3s ease;
+  appearance: none;
+}
+
+.form-input:hover {
+  border-color: #aaa;
+}
+
+.form-input.has-value {
+  background-color: rgba(var(--ion-color-primary-rgb), 0.05);
+  border-color: var(--ion-color-primary);
+}
+
+.form-input.is-focused {
+  border-color: var(--ion-color-primary);
+  border-width: 2px;
+  box-shadow: 0 0 0 2px rgba(var(--ion-color-primary-rgb), 0.1);
+}
+
+.form-input::placeholder {
+  color: #999;
+}
+
+/* Estilos para inputs deshabilitados */
+.form-input:disabled, .form-input.disabled {
+  background-color: #f5f5f5;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Estilos para validación de email */
+.valid-email {
+  border-color: #10b981 !important;
+  background-color: rgba(16, 185, 129, 0.05) !important;
+}
+
+.invalid-email {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.email-error-message {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
+}
+
 /* Configuración del ancho fijo para pantallas grandes */
 .main-container {
   width: 100%;
@@ -325,50 +434,5 @@ watch(() => data.value.identification.type, () => {
   flex: 1;
   overflow-y: auto;
   height: 100%;
-}
-
-/* Eliminar completamente líneas y espacios en ion-item */
-.ion-item-custom {
-  --border-color: transparent !important;
-}
-
-/* Estilos para inputs enfocados */
-input:focus, select:focus {
-  outline: none;
-  border-color: #1a73e8 !important;
-  border-width: 2px !important;
-  box-shadow: 0 0 0 1px rgba(26, 115, 232, 0.1);
-}
-
-/* Clase para mantener el estilo de enfoque */
-.border-blue-500 {
-  border-color: rgb(0,60,255) !important;
-  border-width: 2px !important;
-  box-shadow: 0 0 0 1px rgba(26, 115, 232, 0.1);
-}
-
-/* Estilos para validación de email */
-.valid-email {
-  border-color: #10b981 !important;
-  background-color: rgba(16, 185, 129, 0.05) !important;
-}
-
-.invalid-email {
-  border-color: #ef4444 !important;
-  background-color: rgba(239, 68, 68, 0.05) !important;
-}
-
-.email-error-message {
-  color: #ef4444;
-  font-size: 0.8rem;
-  margin-top: 0.25rem;
-  padding-left: 0.5rem;
-}
-
-/* Media queries para responsividad específica */
-@media (max-width: 640px) {
-  input, select {
-    padding: 0.6rem 1rem 0.6rem 2.5rem !important;
-  }
 }
 </style>
