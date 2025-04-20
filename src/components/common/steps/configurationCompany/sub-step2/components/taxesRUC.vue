@@ -50,6 +50,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import { Icon } from "@iconify/vue";
+import { allowOnlyNumericCharacters } from "@/utils/input-controls"; // Importamos la función de validación
 
 // Definir props para recibir datos del componente padre
 const props = defineProps({
@@ -154,8 +155,12 @@ const toggleImpuesto = (value: string) => {
   }
 };
 
-// Actualizar el código de 5%
-const updateTaxesFiveNumber = () => {
+// Actualizar el código de 5% con validación numérica
+const updateTaxesFiveNumber = (event: Event) => {
+  // Aplicar la validación para permitir solo caracteres numéricos
+  taxesFiveNumberLocal.value = allowOnlyNumericCharacters(event);
+  
+  // Emitir evento al componente padre con el valor validado
   emit("update", "root", { taxesFiveNumber: taxesFiveNumberLocal.value });
 };
 </script>

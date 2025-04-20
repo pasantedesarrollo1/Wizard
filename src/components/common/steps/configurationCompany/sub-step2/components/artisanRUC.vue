@@ -39,6 +39,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import { Icon } from '@iconify/vue';
+import { allowOnlyNumericCharacters } from "@/utils/input-controls"; // Importamos la función de validación
 
 // Definir props para recibir datos del componente padre
 const props = defineProps({
@@ -98,15 +99,16 @@ const toggleArtisan = () => {
 
 // Función para actualizar el número de artesano
 const updateArtisanNumber = (event: Event) => {
-  const target = event.target as HTMLInputElement;
+  // Aplicar la validación para permitir solo caracteres numéricos
+  const validatedValue = allowOnlyNumericCharacters(event);
   
   // Crear una copia del objeto artisan actual o uno nuevo si no existe
   const updatedArtisan = props.formData.artisan 
     ? { ...props.formData.artisan } 
     : { isArtisan: true, artisanNumber: '' };
   
-  // Actualizar el valor de artisanNumber
-  updatedArtisan.artisanNumber = target.value;
+  // Actualizar el valor de artisanNumber con el valor validado
+  updatedArtisan.artisanNumber = validatedValue;
   
   // Emitir evento al componente padre
   emit('update', 'artisan', updatedArtisan);
