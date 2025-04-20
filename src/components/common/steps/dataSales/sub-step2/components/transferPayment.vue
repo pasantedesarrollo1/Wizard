@@ -38,12 +38,12 @@
           </div>
           <input
             id="amount"
-            type="text"
+            type="number"
             step="0.01"
             placeholder="Valor a pagar"
             v-model.number="data.payment.amount"
             required
-            @input="(event) => allowPositiveNumbersWithTwoDecimals(event)"
+            @input="handleAmountInput"
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400 no-spinner"
             :class="{
               'bg-primary-50 border-primary text-primary': data.payment.amount > 0,
@@ -71,7 +71,8 @@
           placeholder="Ej.: Banco Pichincha"
           v-model="data.payment.transferData.financialInstitution"
           required
-          @input="(event) => data.payment.transferData.financialInstitution = allowOnlyLettersAndSpaces(event)"          class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
+          @input="handleFinancialInstitutionInput"
+          class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
           :class="{
             'bg-primary-50 border-primary text-primary': data.payment.transferData.financialInstitution.length > 0,
             'border-blue-500 border-2 shadow-md': focusedField === 'financialInstitution'
@@ -97,7 +98,7 @@
           placeholder="Ingresa el número de comprobante"
           v-model="data.payment.transferData.proofPayment"
           required
-          @input="(event) => data.payment.transferData.proofPayment = allowAlphanumeric(event)"
+          @input="handleProofPaymentInput"
           class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
           :class="{
             'bg-primary-50 border-primary text-primary': data.payment.transferData.proofPayment.length > 0,
@@ -119,7 +120,7 @@ import {
   allowPositiveNumbersWithTwoDecimals, 
   allowOnlyLettersAndSpaces,
   allowAlphanumeric
-} from "@/utils/input-controls"; // Importar la función de validación
+} from "@/utils/input-controls"; // Importar las funciones de validación
 
 // Formatear la fecha actual en formato YYYY-MM-DD para el input date
 const formatCurrentDate = () => {
@@ -146,7 +147,7 @@ const clearFocus = () => {
 const initialValues = {
   payment: {
     date: formatCurrentDate(),
-    amount: 0.00,
+    amount: 0,
     transferData: {
       financialInstitution: "",
       proofPayment: ""
@@ -167,9 +168,20 @@ const { data } = useInitialData(
   }
 );
 
+// Manejadores de eventos para los inputs con validación
+const handleAmountInput = (event: Event) => {
+  const inputValue = allowPositiveNumbersWithTwoDecimals(event);
+  // Convertir el string a número antes de asignarlo
+  data.value.payment.amount = inputValue ? parseFloat(inputValue) : 0;
+};
 
+const handleFinancialInstitutionInput = (event: Event) => {
+  data.value.payment.transferData.financialInstitution = allowOnlyLettersAndSpaces(event);
+};
 
-
+const handleProofPaymentInput = (event: Event) => {
+  data.value.payment.transferData.proofPayment = allowAlphanumeric(event);
+};
 </script>
 
 <style scoped>
