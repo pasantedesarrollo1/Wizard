@@ -27,8 +27,8 @@
         <input
           type="text"
           placeholder="Ingresa tu código de artesano"
-          :value="artisanNumber"
-          @input="updateArtisanNumber($event)"
+          :value="localArtisanNumber"
+          @input="updateArtisanNumber"
           class="w-full border border-gray-300 rounded-md py-2 pl-10 pr-3 text-base transition-all duration-300 ease-in-out focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
         />
       </div>
@@ -37,9 +37,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
-import { allowOnlyNumericCharacters } from "@/utils/input-controls"; // Importamos la función de validación
+import { allowOnlyNumericCharacters } from "@/utils/input-controls";
 
 // Definir props para recibir datos del componente padre
 const props = defineProps({
@@ -52,6 +52,9 @@ const props = defineProps({
 // Definir eventos para comunicarse con el componente padre
 const emit = defineEmits(['update']);
 
+// Variable local para almacenar temporalmente el valor validado
+const localArtisanNumber = ref('');
+
 // Computed property para obtener el estado actual de isArtisan
 const isArtisan = computed(() => {
   // Verificar si existe la propiedad artisan y isArtisan
@@ -62,18 +65,6 @@ const isArtisan = computed(() => {
   }
   // Valor por defecto si no existe
   return false;
-});
-
-// Computed property para obtener el número de artesano actual
-const artisanNumber = computed(() => {
-  // Verificar si existe la propiedad artisan y artisanNumber
-  if (props.formData && 
-      props.formData.artisan && 
-      props.formData.artisan.artisanNumber !== undefined) {
-    return props.formData.artisan.artisanNumber;
-  }
-  // Valor por defecto si no existe
-  return '';
 });
 
 // Función para alternar el estado del artesano
@@ -89,18 +80,26 @@ const toggleArtisan = () => {
   // Si se desmarca la casilla, limpiar el código de artesano
   if (!updatedArtisan.isArtisan) {
     updatedArtisan.artisanNumber = '';
+    localArtisanNumber.value = '';
   }
   
   // Emitir evento al componente padre
-  emit('update', 'artisan', updatedArtisan);
-  
-  console.log('Estado de artesano actualizado:', updatedArtisan);
+  emit("update", "artisan", updatedArtisan);
 };
 
 // Función para actualizar el número de artesano
 const updateArtisanNumber = (event: Event) => {
   // Aplicar la validación para permitir solo caracteres numéricos
+  const target = event.target as HTMLInputElement;
+  
+  // Usar la función de validación en el valor actual
   const validatedValue = allowOnlyNumericCharacters(event);
+  
+  // Actualizar la variable local
+  localArtisanNumber.value = validatedValue;
+  
+  // Forzar que el input muestre solo el valor validado
+  target.value = validatedValue;
   
   // Crear una copia del objeto artisan actual o uno nuevo si no existe
   const updatedArtisan = props.formData.artisan 
@@ -111,9 +110,7 @@ const updateArtisanNumber = (event: Event) => {
   updatedArtisan.artisanNumber = validatedValue;
   
   // Emitir evento al componente padre
-  emit('update', 'artisan', updatedArtisan);
-  
-  console.log('Número de artesano actualizado:', updatedArtisan.artisanNumber);
+  emit("update", "artisan", updatedArtisan);
 };
 
 // Inicializar el componente
@@ -121,10 +118,13 @@ onMounted(() => {
   // Verificar si los datos iniciales son válidos
   if (!props.formData.artisan) {
     // Si no existe artisan, inicializarlo con valores por defecto
-    emit('update', 'artisan', {
+    emit("update", "artisan", {
       isArtisan: false,
       artisanNumber: ''
     });
+  } else {
+    // Inicializar la variable local con el valor actual
+    localArtisanNumber.value = props.formData.artisan.artisanNumber || '';
   }
 });
 </script>
