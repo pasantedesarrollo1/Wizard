@@ -284,7 +284,7 @@ onUnmounted(() => {
   --background: white;
   --background-hover: rgba(var(--ion-color-primary-rgb), 0.05);
   --background-activated: rgba(var(--ion-color-primary-rgb), 0.05);
-  --border-radius: var(--border-radius);
+  --border-radius: 8px;
   --border-color: #d7d8da;
   --border-style: solid;
   --border-width: 1px;

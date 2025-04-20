@@ -3,9 +3,9 @@
       <!-- Fila con Fecha y Valor a Pagar en columnas separadas -->
       <div class="flex flex-col md:flex-row md:gap-4">
         <!-- Input Fecha -->
-        <div class="relative flex flex-col gap-2.5 my-2.5 w-full md:w-1/2">
+        <div class="relative flex flex-col  my-1.5 w-full md:w-1/2">
           <label for="date" class="text-gray-700 font-medium mb-1">
-            Fecha
+            Fecha <span class="required">*</span>
           </label>
           <div class="relative w-full">
             <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
@@ -18,7 +18,7 @@
               required
               class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
               :class="{
-                'bg-primary-50 border-primary text-primary': data.payment.date,
+                'bg-primary-50 border-primary ': data.payment.date,
                 'border-blue-500 border-2 shadow-md': focusedField === 'date'
               }"
               @focus="setFocus('date')"
@@ -28,9 +28,9 @@
         </div>
   
         <!-- Input Valor a Pagar -->
-        <div class="relative flex flex-col gap-2.5 my-2.5 w-full md:w-1/2">
+        <div class="relative flex flex-col  my-1.5 w-full md:w-1/2">
           <label for="amount" class="text-gray-700 font-medium mb-1">
-            Valor pagado
+            Valor pagado <span class="required">*</span>
           </label>
           <div class="relative w-full">
             <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
@@ -46,7 +46,7 @@
               @input="handleAmountInput"
               class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400 no-spinner"
               :class="{
-                'bg-primary-50 border-primary text-primary': data.payment.amount > 0,
+                'bg-primary-50 border-primary ': data.payment.amount > 0,
                 'border-blue-500 border-2 shadow-md': focusedField === 'amount'
               }"
               @focus="setFocus('amount')"
@@ -57,9 +57,9 @@
       </div>
   
       <!-- Tipo de tarjeta -->
-      <div class="relative flex flex-col gap-2.5 my-2.5 w-full">
+      <div class="relative flex flex-col  my-1.5 w-full">
         <label for="typeCard" class="text-gray-700 font-medium mb-1">
-          Tipo de tarjeta
+          Tipo de tarjeta <span class="required">*</span>
         </label>
         <div class="relative w-full">
           <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
@@ -74,7 +74,7 @@
             @input="handleTypeCardInput"
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
             :class="{
-              'bg-primary-50 border-primary text-primary': data.payment.datafastData.typeCard.length > 0,
+              'bg-primary-50 border-primary ': data.payment.datafastData.typeCard.length > 0,
               'border-blue-500 border-2 shadow-md': focusedField === 'typeCard'
             }"
             @focus="setFocus('typeCard')"
@@ -84,9 +84,9 @@
       </div>
   
       <!-- Input del lote -->
-      <div class="relative flex flex-col gap-2.5 my-2.5 w-full">
+      <div class="relative flex flex-col  my-2.5 w-full">
         <label for="numberLote" class="text-gray-700 font-medium mb-1">
-          Número de Lote
+          Número de Lote <span class="required">*</span>
         </label>
         <div class="relative w-full">
           <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
@@ -101,7 +101,7 @@
             @input="handleNumberLoteInput"
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
             :class="{
-              'bg-primary-50 border-primary text-primary': data.payment.datafastData.numberLote.length > 0,
+              'bg-primary-50 border-primary ': data.payment.datafastData.numberLote.length > 0,
               'border-blue-500 border-2 shadow-md': focusedField === 'numberLote'
             }"
             @focus="setFocus('numberLote')"
@@ -217,6 +217,10 @@ const handleNumberLoteInput = (event: Event) => {
     -moz-appearance: textfield;
   }
   
+  .required {
+  color: var(--ion-color-primary);
+}
+
   @media (max-width: 640px) {
     input {
       padding: 0.6rem 1rem 0.6rem 2.5rem !important;

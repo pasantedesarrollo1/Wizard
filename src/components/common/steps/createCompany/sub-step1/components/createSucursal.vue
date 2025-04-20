@@ -304,7 +304,6 @@ const clearFocus = () => {
 
 /* Estilos para validación de email - NUEVOS */
 .valid-email {
-  border-color: #10b981 !important;
   background-color: rgba(16, 185, 129, 0.05) !important;
 }
 

@@ -2,7 +2,7 @@
   <div class="w-full flex justify-center">
     <ion-card class="shadow-md rounded-2xl overflow-hidden w-full main-container">
       <ion-card-content>
-        <div class="w-full flex flex-col gap-6">
+        <div class="w-full flex flex-col gap-3">
           <!-- Primera fila: contiene vendor-section y payment-section -->
           <div class="flex flex-col md:flex-row w-full justify-center gap-4">
             <!-- Sección de selección de vendedor -->
@@ -24,7 +24,7 @@
           
           <!-- Segunda fila: sección de formularios - ahora condicionalmente visible -->
           <div v-if="selectedPaymentMethod" class="w-full flex justify-center animate-fadeIn">
-            <div class="p-3 rounded-xl shadow-sm bg-blue-50/30 w-full md:max-w-[600px] mx-auto">
+            <div class="p-3 rounded-xl shadow-sm bg-blue-50/70 w-full md:max-w-[600px] mx-auto">
               <h4 class="text-lg font-semibold text-gray-800 pl-1 mt-0 mb-4 pb-2 border-b border-opacity-6">
                 Llena los siguientes datos
               </h4>
