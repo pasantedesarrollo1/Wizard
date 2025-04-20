@@ -64,11 +64,52 @@ export function useWizardValidation() {
         // Para el subpaso 1 (indexConfiCompanySS2)
         return validateConfigCompanyStep(currentSubStepIndexValue)
       }
+    } else if (currentStepKey === "create-company") {
+      // Para el paso create-company
+      return validateCreateCompanyStep()
     }
     
     // Para otros pasos, el botón está habilitado por defecto
     return false
   })
+
+  /**
+   * Valida el paso de creación de la empresa (indexCreateCompanySS1)
+   * @returns boolean - true si el botón debe estar deshabilitado
+   */
+  const validateCreateCompanyStep = (): boolean => {
+    // Obtener los datos de companyCreation y branchAndPOS del store
+    const companyCreation = wizardStore.getStepData("companyCreation")
+    const branchAndPOS = wizardStore.getStepData("branchAndPOS")
+
+    // Verificar si los datos existen
+    if (!companyCreation || !branchAndPOS || !branchAndPOS.branch || !branchAndPOS.pointOfSale) {
+      return true // Deshabilitar si faltan datos
+    }
+
+    // Verificar que los campos requeridos en companyCreation tengan valor
+    const hasCompanyCreationData =
+      companyCreation.ruc &&
+      companyCreation.name &&
+      companyCreation.legalName &&
+      companyCreation.address &&
+      companyCreation.phone &&
+      companyCreation.businessEmail
+
+    // Verificar que los campos requeridos en branchAndPOS tengan valor
+    const hasBranchAndPOSData =
+      branchAndPOS.branch.commercialName &&
+      branchAndPOS.branch.idBranch &&
+      branchAndPOS.branch.name &&
+      branchAndPOS.branch.address &&
+      branchAndPOS.branch.phone &&
+      branchAndPOS.branch.email &&
+      branchAndPOS.pointOfSale.idPos &&
+      branchAndPOS.pointOfSale.name
+
+    // Retornar true (deshabilitar botón) si falta algún dato
+    return !(hasCompanyCreationData && hasBranchAndPOSData)
+  }
 
   /**
    * Valida el paso de configuración de la empresa (subpaso 1 - indexConfiCompanySS2)

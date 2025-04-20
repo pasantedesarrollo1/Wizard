@@ -38,11 +38,12 @@
           </div>
           <input
             id="amount"
-            type="number"
+            type="text"
             step="0.01"
             placeholder="Valor a pagar"
             v-model.number="data.payment.amount"
             required
+            @input="(event) => allowPositiveNumbersWithTwoDecimals(event)"
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400 no-spinner"
             :class="{
               'bg-primary-50 border-primary text-primary': data.payment.amount > 0,
@@ -70,7 +71,7 @@
           placeholder="Ej.: Banco Pichincha"
           v-model="data.payment.transferData.financialInstitution"
           required
-          class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
+          @input="(event) => data.payment.transferData.financialInstitution = allowOnlyLettersAndSpaces(event)"          class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
           :class="{
             'bg-primary-50 border-primary text-primary': data.payment.transferData.financialInstitution.length > 0,
             'border-blue-500 border-2 shadow-md': focusedField === 'financialInstitution'
@@ -96,6 +97,7 @@
           placeholder="Ingresa el número de comprobante"
           v-model="data.payment.transferData.proofPayment"
           required
+          @input="(event) => data.payment.transferData.proofPayment = allowAlphanumeric(event)"
           class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
           :class="{
             'bg-primary-50 border-primary text-primary': data.payment.transferData.proofPayment.length > 0,
@@ -113,6 +115,11 @@
 import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useInitialData } from "@/composables/useInitialData";
+import { 
+  allowPositiveNumbersWithTwoDecimals, 
+  allowOnlyLettersAndSpaces,
+  allowAlphanumeric
+} from "@/utils/input-controls"; // Importar la función de validación
 
 // Formatear la fecha actual en formato YYYY-MM-DD para el input date
 const formatCurrentDate = () => {
@@ -139,7 +146,7 @@ const clearFocus = () => {
 const initialValues = {
   payment: {
     date: formatCurrentDate(),
-    amount: 0,
+    amount: 0.00,
     transferData: {
       financialInstitution: "",
       proofPayment: ""
@@ -159,6 +166,10 @@ const { data } = useInitialData(
     }
   }
 );
+
+
+
+
 </script>
 
 <style scoped>
