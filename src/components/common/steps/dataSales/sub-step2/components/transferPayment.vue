@@ -118,8 +118,8 @@ import { Icon } from '@iconify/vue';
 import { useInitialData } from "@/composables/useInitialData";
 import { 
   allowPositiveNumbersWithTwoDecimals, 
-  allowOnlyLettersAndSpaces,
-  allowAlphanumeric
+  allowOnlyLettersSpacesAndNumbers,
+  allowOnlyNumericCharacters
 } from "@/utils/input-controls"; // Importar las funciones de validación
 
 // Formatear la fecha actual en formato YYYY-MM-DD para el input date
@@ -176,11 +176,11 @@ const handleAmountInput = (event: Event) => {
 };
 
 const handleFinancialInstitutionInput = (event: Event) => {
-  data.value.payment.transferData.financialInstitution = allowOnlyLettersAndSpaces(event);
+  data.value.payment.transferData.financialInstitution = allowOnlyLettersSpacesAndNumbers(event);
 };
 
 const handleProofPaymentInput = (event: Event) => {
-  data.value.payment.transferData.proofPayment = allowAlphanumeric(event);
+  data.value.payment.transferData.proofPayment = allowOnlyNumericCharacters(event);
 };
 </script>
 

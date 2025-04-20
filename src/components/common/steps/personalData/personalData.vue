@@ -48,14 +48,17 @@
                     type="text"
                     placeholder="Número de identificación"
                     v-model="data.identification.number"
+                    @input="handleIdentificationNumberInput"
                     class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                            hover:border-blue-400"
                     :class="{ 
                       'bg-primary-50 border-primary text-primary': data.identification.number.length > 0,
-                      'border-blue-500 border-2 shadow-md': focusedField === 'identificacion'
+                      'border-blue-500 border-2 shadow-md': focusedField === 'identificacion',
+                      'cursor-not-allowed opacity-70': !data.identification.type
                     }"
                     @focus="setFocus('identificacion')"
                     @blur="clearFocus"
+                    :disabled="!data.identification.type"
                     required
                   >
                 </div>
@@ -70,6 +73,7 @@
                   type="text"
                   placeholder="Ingresa tus Nombres"
                   v-model="data.name.first"
+                  @input="handleNameInput"
                   class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                          hover:border-blue-400"
                   :class="{ 
@@ -91,6 +95,7 @@
                   type="text"
                   placeholder="Ingresa tus Apellidos"
                   v-model="data.name.last"
+                  @input="handleLastInput"
                   class="w-full p-3 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                          hover:border-blue-400"
                   :class="{ 
@@ -104,28 +109,37 @@
               </div>
             </ion-item>
 
-            <!-- Correo Electrónico -->
+            <!-- Correo Electrónico - CORREGIDO -->
             <ion-item class="ion-item-custom">
               <ion-label position="stacked" class="text-lg font-semibold text-gray-800 pl-1">Correo Electrónico <span class="text-blue-600">*</span></ion-label>
               <div class="relative flex flex-col gap-2.5 my-2.5 w-full mt-2.5">
+                <!-- Contenedor del input con posición relativa -->
                 <div class="relative w-full">
-                  <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                  <!-- Icono posicionado relativo al input, no al contenedor principal -->
+                  <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 z-10">
                     <Icon icon="mdi:email" width="20" height="20" />
                   </div>
                   <input 
                     type="email"
                     placeholder="Email"
                     v-model="data.contact.email"
+                    @input="handleEmailInput"
                     class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                            hover:border-blue-400"
                     :class="{ 
                       'bg-primary-50 border-primary text-primary': data.contact.email.length > 0,
-                      'border-blue-500 border-2 shadow-md': focusedField === 'email'
+                      'border-blue-500 border-2 shadow-md': focusedField === 'email',
+                      'valid-email': emailIsValid && data.contact.email.length > 0,
+                      'invalid-email': !emailIsValid && data.contact.email.length > 0
                     }"
                     @focus="setFocus('email')"
                     @blur="clearFocus"
                     required
                   >
+                </div>
+                <!-- Mensaje de error para email inválido - AHORA FUERA DEL CONTENEDOR DEL INPUT -->
+                <div v-if="!emailIsValid && data.contact.email.length > 0" class="email-error-message">
+                  Por favor, ingrese un correo electrónico válido
                 </div>
               </div>
             </ion-item>
@@ -142,6 +156,7 @@
                     type="phone"
                     placeholder="+593"
                     v-model="data.contact.phone"
+                    @input="handlePhoneInput"
                     class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300
                            hover:border-blue-400"
                     :class="{ 
@@ -162,7 +177,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import {
   IonCard,
   IonCardContent,
@@ -171,6 +186,12 @@ import {
 } from '@ionic/vue';
 import { Icon } from '@iconify/vue'; // Importación de Iconify
 import { useInitialData } from "@/composables/useInitialData";
+import {
+  allowOnlyLetters,
+  validateEmailInRealTime,
+  formatPhoneNumber,
+  formatEcuadorianId
+} from "@/utils/input-controls";
 
 // Definimos la interfaz para las opciones de tipo de ID
 interface TipoIDOpcion {
@@ -218,6 +239,9 @@ const { data } = useInitialData(
 // Variable para controlar qué campo está enfocado
 const focusedField = ref('');
 
+// Variable para controlar la validez del email
+const emailIsValid = ref(true);
+
 // Funciones para manejar el enfoque
 const setFocus = (fieldName: string) => {
   focusedField.value = fieldName;
@@ -226,6 +250,54 @@ const setFocus = (fieldName: string) => {
 const clearFocus = () => {
   focusedField.value = '';
 };
+
+const showIcons = ref(false);
+
+onMounted(() => {
+  showIcons.value = true;
+});
+
+// Manejador de input para el número de identificación que aplica validación según el tipo seleccionado
+const handleIdentificationNumberInput = (event: Event) => {
+  // Aplicar diferentes validaciones según el tipo de identificación seleccionado
+  if (data.value.identification.type === 'ruc') {
+    // Si es RUC, usar formatEcuadorianId
+    data.value.identification.number = formatEcuadorianId(event);
+  } else if (data.value.identification.type === 'cedula') {
+    // Si es Cédula, usar formatPhoneNumber
+    data.value.identification.number = formatPhoneNumber(event);
+  } else {
+    // Si no hay tipo seleccionado o es otro tipo, permitir solo números
+    const input = event.target as HTMLInputElement;
+    data.value.identification.number = input.value.replace(/\D/g, '');
+  }
+};
+
+// Manejadores de eventos para los inputs con validación
+const handleNameInput = (event: Event) => {
+  data.value.name.first = allowOnlyLetters(event);
+};
+
+const handleLastInput = (event: Event) => {
+  data.value.name.last = allowOnlyLetters(event);
+};
+
+const handlePhoneInput = (event: Event) => {
+  data.value.contact.phone = formatPhoneNumber(event);
+};
+
+const handleEmailInput = (event: Event) => {
+  // Usar la nueva función de validación en tiempo real
+  const result = validateEmailInRealTime(event);
+  data.value.contact.email = result.value;
+  emailIsValid.value = result.isValid;
+};
+
+// Watch para limpiar el número de identificación si cambia el tipo
+watch(() => data.value.identification.type, () => {
+  // Limpiar el número de identificación cuando cambia el tipo
+  data.value.identification.number = '';
+});
 </script>
 
 <style scoped>
@@ -273,6 +345,24 @@ input:focus, select:focus {
   border-color: rgb(0,60,255) !important;
   border-width: 2px !important;
   box-shadow: 0 0 0 1px rgba(26, 115, 232, 0.1);
+}
+
+/* Estilos para validación de email */
+.valid-email {
+  border-color: #10b981 !important;
+  background-color: rgba(16, 185, 129, 0.05) !important;
+}
+
+.invalid-email {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.email-error-message {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
 }
 
 /* Media queries para responsividad específica */

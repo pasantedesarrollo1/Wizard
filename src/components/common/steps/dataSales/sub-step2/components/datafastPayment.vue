@@ -43,6 +43,7 @@
               placeholder="Valor a pagar"
               v-model.number="data.payment.amount"
               required
+              @input="handleAmountInput"
               class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400 no-spinner"
               :class="{
                 'bg-primary-50 border-primary text-primary': data.payment.amount > 0,
@@ -70,6 +71,7 @@
             placeholder="Ej.: Visa"
             v-model="data.payment.datafastData.typeCard"
             required
+            @input="handleTypeCardInput"
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
             :class="{
               'bg-primary-50 border-primary text-primary': data.payment.datafastData.typeCard.length > 0,
@@ -96,6 +98,7 @@
             placeholder="Ingresa el número de lote"
             v-model="data.payment.datafastData.numberLote"
             required
+            @input="handleNumberLoteInput"
             class="w-full p-3 pl-12 bg-white text-gray-900 border border-gray-300 rounded-lg outline-none transition-all duration-300 hover:border-blue-400"
             :class="{
               'bg-primary-50 border-primary text-primary': data.payment.datafastData.numberLote.length > 0,
@@ -113,7 +116,12 @@
   import { ref } from 'vue';
   import { Icon } from '@iconify/vue';
   import { useInitialData } from "@/composables/useInitialData";
-  
+  import { 
+  allowPositiveNumbersWithTwoDecimals, 
+  allowOnlyLettersSpacesAndNumbers,
+  allowOnlyNumericCharacters
+} from "@/utils/input-controls"; // Importar las funciones de validación
+
   // Variable para controlar el campo enfocado
   const focusedField = ref('');
   
@@ -159,6 +167,22 @@
       }
     }
   );
+
+  // Manejadores de eventos para los inputs con validación
+const handleAmountInput = (event: Event) => {
+  const inputValue = allowPositiveNumbersWithTwoDecimals(event);
+  // Convertir el string a número antes de asignarlo
+  data.value.payment.amount = inputValue ? parseFloat(inputValue) : 0;
+};
+
+const handleTypeCardInput = (event: Event) => {
+  data.value.payment.datafastData.typeCard = allowOnlyLettersSpacesAndNumbers(event);
+};
+
+const handleNumberLoteInput = (event: Event) => {
+  data.value.payment.datafastData.numberLote = allowOnlyNumericCharacters(event);
+};
+
   </script>
   
   <style scoped>
