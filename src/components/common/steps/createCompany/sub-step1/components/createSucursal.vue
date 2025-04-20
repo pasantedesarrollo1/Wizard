@@ -33,6 +33,7 @@
           <input 
             type="text"
             readonly
+            disable
             v-model="data.branch.idBranch"
             class="form-input"
             :class="{ 
@@ -100,6 +101,7 @@
           type="tel"
           placeholder="+593"
           v-model="data.branch.phone"
+          @input="handlePhoneInput"
           class="form-input"
           :class="{ 
             'has-value': data.branch.phone.length > 0,
@@ -140,6 +142,14 @@ import { ref } from 'vue';
 import { IonLabel } from '@ionic/vue';
 import { Icon } from '@iconify/vue';
 import { useInitialData } from "@/composables/useInitialData";
+import { 
+  formatPhoneNumber,
+} from "@/utils/input-controls";
+
+
+const handlePhoneInput = (event: Event) => {
+  data.value.branch.phone = formatPhoneNumber(event);
+};
 
 // Valores iniciales para el formulario
 const initialValues = {

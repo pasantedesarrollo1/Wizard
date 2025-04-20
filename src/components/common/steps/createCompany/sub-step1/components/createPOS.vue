@@ -40,6 +40,7 @@
           }"
           @focus="setFocus('codigoPOS')"
           @blur="clearFocus"
+          disabled
         >
       </div>
     </div>
@@ -47,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { IonLabel } from '@ionic/vue';
 import { Icon } from '@iconify/vue';
 import { useInitialData } from "@/composables/useInitialData";
@@ -55,7 +56,7 @@ import { useInitialData } from "@/composables/useInitialData";
 // Valores iniciales para el formulario
 const initialValues = {
   pointOfSale: {
-    idPos: '',
+    idPos: '010',
     name: ''
   }
 };
@@ -84,6 +85,13 @@ const setFocus = (fieldName: string) => {
 const clearFocus = () => {
   focusedField.value = '';
 };
+
+// Asegurar que el valor '010' se establezca al montar el componente
+onMounted(() => {
+  if (!data.value.pointOfSale.idPos) {
+    data.value.pointOfSale.idPos = '010';
+  }
+});
 </script>
 
 <style scoped>
@@ -156,5 +164,12 @@ const clearFocus = () => {
 
 .form-input::placeholder {
   color: #999;
+}
+
+/* Estilos para inputs deshabilitados */
+.form-input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.8;
 }
 </style>

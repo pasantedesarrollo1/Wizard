@@ -20,6 +20,7 @@
             @focus="setFocus('ruc')"
             @blur="clearFocus"
             readonly
+            disable
           >
         </div>
       </div>
@@ -42,6 +43,7 @@
             @focus="setFocus('razonSocial')"
             @blur="clearFocus"
             readonly
+            disable
           >
         </div>
       </div>
@@ -58,6 +60,7 @@
           type="text"
           placeholder="Nombre de tu empresa"
           v-model="data.name"
+          @input="handleNameCompanyInput"
           class="form-input"
           :class="{ 
             'has-value': data.name.length > 0,
@@ -102,6 +105,7 @@
           type="tel"
           placeholder="+593"
           v-model="data.phone"
+          @input="handlePhoneInput"
           class="form-input"
           :class="{ 
             'has-value': data.phone.length > 0,
@@ -142,6 +146,19 @@ import { ref } from 'vue';
 import { IonLabel } from '@ionic/vue';
 import { Icon } from '@iconify/vue';
 import { useInitialData } from "@/composables/useInitialData";
+import { 
+  allowOnlyLettersSpacesAndNumbers,
+  formatPhoneNumber,
+} from "@/utils/input-controls";
+
+
+const handleNameCompanyInput = (event: Event) => {
+  data.value.name = allowOnlyLettersSpacesAndNumbers(event);
+};
+
+const handlePhoneInput = (event: Event) => {
+  data.value.phone = formatPhoneNumber(event);
+};
 
 // Valores iniciales para el formulario
 const initialValues = {
