@@ -2,7 +2,7 @@
   <div>
     <ion-item lines="none" class="custom-item">
       <div class="search-container">
-        <div class="input-container" :class="{ 'input-focused': isFocused }" @click="focusInput">
+        <div class="input-container" :class="{ 'input-focused': isFocused, 'has-value': rucValue.length > 0 }" @click="focusInput">
           <Icon icon="material-symbols:search" class="search-icon" />
           <input
             id="ruc"
@@ -12,6 +12,7 @@
             @focus="isFocused = true"
             @blur="isFocused = false"
             class="native-input"
+            :class="{ 'has-value': rucValue.length > 0 }"
             ref="rucInput"
             required
           />
@@ -359,6 +360,11 @@ const searchRuc = async () => {
   height: 40px;
 }
 
+.input-container.has-value {
+  background-color: rgba(var(--ion-color-primary-rgb), 0.05);
+  border-color: var(--ion-color-primary);
+}
+
 .input-focused {
   border-color: #0054e9;
   box-shadow: 0 0 0 1px rgba(26, 115, 232, 0.2);
@@ -384,6 +390,10 @@ const searchRuc = async () => {
   padding: 0;
   width: 100%;
   caret-color: #0054e9;
+}
+
+.native-input.has-value {
+  background-color: transparent;
 }
 
 .native-input::placeholder {
