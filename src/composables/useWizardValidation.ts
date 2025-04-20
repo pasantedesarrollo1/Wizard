@@ -55,14 +55,55 @@ export function useWizardValidation() {
       return validateDataSalesStep(currentSubStepIndexValue)
     } else if (currentStepKey === "personal-info") {
       return validatePersonalInfoStep(currentSubStepIndexValue)
-    } else if (currentStepKey === "config-company" && currentSubStepIndexValue === 0) {
-      // Para el paso config-company y subpaso 0 (RUC validation)
-      return !wizardStore.getCurrentWizardState.rucValidated
+    } else if (currentStepKey === "config-company") {
+      // Para el paso config-company, verificar según el subpaso
+      if (currentSubStepIndexValue === 0) {
+        // Para el subpaso 0 (RUC validation)
+        return !wizardStore.getCurrentWizardState.rucValidated
+      } else if (currentSubStepIndexValue === 1) {
+        // Para el subpaso 1 (indexConfiCompanySS2)
+        return validateConfigCompanyStep(currentSubStepIndexValue)
+      }
     }
     
     // Para otros pasos, el botón está habilitado por defecto
     return false
   })
+
+  /**
+   * Valida el paso de configuración de la empresa (subpaso 1 - indexConfiCompanySS2)
+   * @param subStepIndex - Índice del subpaso actual
+   * @returns boolean - true si el botón debe estar deshabilitado
+   */
+  const validateConfigCompanyStep = (subStepIndex: number): boolean => {
+    // Solo validamos el subpaso 1 (indexConfiCompanySS2)
+    if (subStepIndex === 1) {
+      // Obtener los datos de configuración de la empresa
+      const companyConfig = wizardStore.getStepData("companyConfig")
+      
+      if (!companyConfig) return false
+      
+      // Verificar la condición 1: Si isArtisan es true y artisanNumber está vacío
+      const isArtisanInvalid = companyConfig.artisan?.isArtisan === true && 
+                              (!companyConfig.artisan?.artisanNumber || 
+                               companyConfig.artisan?.artisanNumber.trim() === '')
+      
+      // Verificar la condición 2: Si taxes incluye "5" y taxesFiveNumber está vacío
+      const hasFivePercentTax = companyConfig.taxes && 
+                               Array.isArray(companyConfig.taxes) && 
+                               companyConfig.taxes.includes("5")
+      
+      const isTaxesFiveInvalid = hasFivePercentTax && 
+                                (!companyConfig.taxesFiveNumber || 
+                                 companyConfig.taxesFiveNumber.trim() === '')
+      
+      // Retornar true (deshabilitar botón) si cualquiera de las condiciones se cumple
+      return isArtisanInvalid || isTaxesFiveInvalid
+    }
+    
+    // Para otros subpasos, el botón está habilitado por defecto
+    return false
+  }
 
   /**
    * Valida el paso de datos de venta
