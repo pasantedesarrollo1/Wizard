@@ -80,8 +80,7 @@ import { useRouter } from "vue-router"
 import ProgressBar from "@/components/common/progressBar.vue"
 import welcomeGeneral from "@/components/common/welcomeGeneral.vue"
 import ConfirmationModal from "@/components/ui/confirmationModal.vue" // Cambiado a la nueva ruta
-import { useWizardProgress } from "@/composables/useWizardProgress"
-import { useWizardSubSteps, WizardSubStepsConfig } from "@/composables/useWizardSubSteps"
+import { useWizardNavigation } from "@/composables/useWizardNavigation"
 import { useWizardStore } from "@/stores/wizardStore"
 import type { Component } from "vue"
 import { useWizardValidation } from "@/composables/useWizardValidation"
@@ -111,7 +110,7 @@ const props = defineProps({
   },
   // Configuración de sub-pasos
   subStepsConfig: {
-    type: Object as PropType<WizardSubStepsConfig>,
+    type: Object as PropType<Record<string, Array<{ title: string; component: Component }>>>,
     required: true,
   },
 })
@@ -125,23 +124,30 @@ const showConfirmationModal = ref(false)
 // Variable para controlar la visibilidad del modal de confirmación de ventas
 const showSalesConfirmationModal = ref(false)
 
-// Inicializamos el wizard con el tipo proporcionado
-const { steps, currentStep, nextStep, prevStep, goToStep } = useWizardProgress(props.wizardType)
-
-// Obtenemos las funciones del composable useWizardSubSteps
+// Inicializamos el wizard con el tipo proporcionado y la configuración de sub-pasos
 const {
+  // Estado
+  currentStep,
   currentSubStepIndex,
-  hasSubSteps,
-  getCurrentSubStep,
-  getTotalSubSteps,
-  nextSubStep,
-  prevSubStep,
-  resetSubStep,
-} = useWizardSubSteps(props.subStepsConfig)
+  steps,
+  currentStepKey,
+  
+  // Computed properties
+  hasSubStepsForCurrentStep,
+  currentSubStepComponent,
+  isLastStepAndSubStep,
+  
+  // Funciones de navegación
+  next,
+  previous,
+  goToStep,
+  resetSubStep
+} = useWizardNavigation(props.wizardType, props.subStepsConfig)
 
-// Obtenemos la clave del paso actual
-const currentStepKey = computed(() => {
-  return steps.value[currentStep.value]?.key || ""
+// Obtenemos el componente para el paso actual
+const currentStepComponent = computed(() => {
+  const key = currentStepKey.value
+  return props.stepComponents[key] || null
 })
 
 // Actualizamos el estado del wizard cuando cambia el paso
@@ -156,41 +162,6 @@ watch(currentStepKey, (newStepKey) => {
     wizardState: wizardStore.getCurrentWizardState,
     formData: wizardStore.getAllFormData,
   })
-})
-
-// Obtenemos el componente para el paso actual
-const currentStepComponent = computed(() => {
-  const key = currentStepKey.value
-  return props.stepComponents[key] || null
-})
-
-// Verificamos si el paso actual tiene sub-pasos
-const hasSubStepsForCurrentStep = computed(() => {
-  return hasSubSteps(currentStepKey.value)
-})
-
-// Obtenemos el sub-paso actual
-const currentSubStep = computed(() => {
-  return getCurrentSubStep(currentStepKey.value)
-})
-
-const currentSubStepComponent = computed(() => {
-  if (!currentSubStep.value) {
-    return null;
-  }
-  return currentSubStep.value.component;
-});
-
-// Obtenemos el número total de sub-pasos para el paso actual
-const totalSubStepsForCurrentStep = computed(() => {
-  return getTotalSubSteps(currentStepKey.value)
-})
-
-// Verificamos si estamos en el último paso y sub-paso
-const isLastStepAndSubStep = computed(() => {
-  return (
-    currentStep.value === steps.value.length - 1 && currentSubStepIndex.value === totalSubStepsForCurrentStep.value - 1
-  )
 })
 
 // Función para manejar el evento de inicio desde welcomeGeneral
@@ -223,40 +194,6 @@ const updateSalesDataIfNeeded = () => {
   }
 }
 
-// Modificar la función proceedToNextStep para mostrar el estado completo
-const proceedToNextStep = () => {
-  // Si el paso actual tiene sub-pasos
-  if (hasSubStepsForCurrentStep.value) {
-    // Intentamos avanzar al siguiente sub-paso
-    const completed = nextSubStep(currentStepKey.value);
-    // Actualizar el subpaso en el store
-    wizardStore.updateWizardState({
-      currentSubStep: currentSubStepIndex.value + 1,
-    });
-
-    // Mostrar el estado completo en consola con copia profunda para evitar referencias
-    console.log("Wizard state actualizado (proceedToNextStep - subpaso):", {
-      wizardState: JSON.parse(JSON.stringify(wizardStore.getCurrentWizardState)),
-      formData: JSON.parse(JSON.stringify(wizardStore.getAllFormData))
-    });
-
-    // Si hemos completado todos los sub-pasos, avanzamos al siguiente paso principal
-    if (completed) {
-      nextStep();
-    }
-    return;
-  }
-
-  // Para pasos sin sub-pasos, comportamiento normal
-  nextStep();
-
-  // Mostrar el estado completo en consola con copia profunda para evitar referencias
-  console.log("Wizard state actualizado (proceedToNextStep - paso principal):", {
-    wizardState: JSON.parse(JSON.stringify(wizardStore.getCurrentWizardState)),
-    formData: JSON.parse(JSON.stringify(wizardStore.getAllFormData))
-  });
-};
-
 // Modificar la función handleNext para asegurar que los datos se guarden correctamente
 const handleNext = () => {
   // Actualizar datos de salesData si es necesario
@@ -283,12 +220,20 @@ const handleNext = () => {
   if (currentStepKey.value === "config-company") {
     // Esperar un momento para asegurar que los datos se han guardado
     setTimeout(() => {
-      // Para todos los demás casos, procedemos normalmente
-      proceedToNextStep();
+      // Avanzar al siguiente paso/subpaso usando el nuevo método next()
+      const completed = next();
+      if (completed) {
+        // Aquí podrías manejar la finalización del wizard si es necesario
+        console.log("Wizard completado");
+      }
     }, 200);
   } else {
     // Para todos los demás casos, procedemos normalmente
-    proceedToNextStep();
+    const completed = next();
+    if (completed) {
+      // Aquí podrías manejar la finalización del wizard si es necesario
+      console.log("Wizard completado");
+    }
   }
 };
 
@@ -297,8 +242,8 @@ const handleConfirmSalesNext = () => {
   // Ocultamos el modal
   showSalesConfirmationModal.value = false
   
-  // Procedemos al siguiente paso/subpaso
-  proceedToNextStep()
+  // Procedemos al siguiente paso/subpaso usando el nuevo método next()
+  next();
 }
 
 // Función para manejar la cancelación del modal de ventas
@@ -331,35 +276,24 @@ const handleCancelFinish = () => {
 
 // Maneja la lógica de navegación "anterior"
 const handlePrevious = () => {
-  // Si el paso actual tiene sub-pasos
-  if (hasSubStepsForCurrentStep.value) {
-    // Intentamos retroceder al sub-paso anterior
-    const goToPrevStep = prevSubStep(currentStepKey.value)
-    // Actualizar el subpaso en el store
-    wizardStore.updateWizardState({
-      currentSubStep: currentSubStepIndex.value + 1,
-    })
-
-    // Mostrar el estado completo en consola
-    console.log("Wizard state actualizado (handlePrevious - subpaso):", {
-      wizardState: wizardStore.getCurrentWizardState,
-      formData: wizardStore.getAllFormData,
-    })
-
-    // Si estamos en el primer sub-paso, retrocedemos al paso principal anterior
-    if (goToPrevStep) {
-      prevStep()
-    }
-    return
+  // Usamos el nuevo método previous() para manejar la navegación hacia atrás
+  const result = previous();
+  
+  // Si result es false, significa que estamos en el primer paso y no podemos retroceder más
+  if (!result) {
+    console.log("No se puede retroceder más, estamos en el primer paso");
   }
-  // Para pasos sin sub-pasos, comportamiento normal
-  prevStep()
+  
+  // Actualizar el subpaso en el store
+  wizardStore.updateWizardState({
+    currentSubStep: currentSubStepIndex.value + 1,
+  });
 
   // Mostrar el estado completo en consola
-  console.log("Wizard state actualizado (handlePrevious - paso principal):", {
+  console.log("Wizard state actualizado (handlePrevious):", {
     wizardState: wizardStore.getCurrentWizardState,
     formData: wizardStore.getAllFormData,
-  })
+  });
 }
 
 // Maneja la actualización manual del paso
