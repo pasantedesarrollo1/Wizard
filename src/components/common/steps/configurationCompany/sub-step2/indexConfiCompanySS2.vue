@@ -264,14 +264,4 @@ const saveFormToStore = () => {
   margin: 0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
-
-:deep(ion-card-header) {
-  padding: 1.25rem;
-}
-
-@media (max-width: 640px) {
-  :deep(ion-card-content) {
-    padding: 1rem;
-  }
-}
 </style>

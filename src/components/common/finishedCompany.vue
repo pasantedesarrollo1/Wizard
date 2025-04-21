@@ -69,7 +69,6 @@ import { IonPage, IonContent, IonButton, IonIcon } from "@ionic/vue";
 import { 
   lockClosed, 
   storefront, 
-  // checkmarkCircle, 
   copy, 
   open
 } from "ionicons/icons";

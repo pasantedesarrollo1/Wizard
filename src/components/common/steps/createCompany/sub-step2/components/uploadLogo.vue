@@ -386,16 +386,6 @@ const updateStore = (file: File): void => {
   });
 };
 
-// Verificar tamaño de archivo
-watch(tempFile, (file) => {
-  if (file && file.size > 5 * 1024 * 1024) {
-    tempImage.value = undefined;
-    tempFile.value = null;
-    showErrorMessage.value = true;
-  } else if (file && file.size <= 5 * 1024 * 1024) {
-    showErrorMessage.value = false;
-  }
-});
 
 // Convertir archivo a base64
 watch(tempFile, (file) => {

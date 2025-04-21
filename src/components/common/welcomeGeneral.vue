@@ -235,25 +235,6 @@ const onStartClick = () => {
   color: var(--ion-color-primary);
   font-weight: 500;
 }
-
-
-.welcome-container.animate span:nth-child(1) {
-  opacity: 0.7;
-  transform: scale(1);
-  transition-delay: 1s;
-}
-
-.welcome-container.animate span:nth-child(2) {
-  opacity: 0.7;
-  transform: scale(1);
-  transition-delay: 1.2s;
-}
-
-.welcome-container.animate span:nth-child(3) {
-  opacity: 0.7;
-  transform: scale(1);
-  transition-delay: 1.4s;
-}
   
 /* Botón de comenzar */
 .button-container {
