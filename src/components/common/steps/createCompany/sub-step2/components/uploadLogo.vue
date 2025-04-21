@@ -376,15 +376,51 @@ const onDrop = (event: DragEvent): void => {
 
 // Función para actualizar el store con el archivo seleccionado
 const updateStore = (file: File): void => {
-  // En un entorno real, aquí se subiría el archivo a un servidor
-  // y se obtendría la URL. Para este ejemplo, usamos la URL de vista previa
-  wizardStore.updateFormSection("companyConfig", {
-    logo: {
-      url: previewUrl.value || "",
-      fileName: file.name,
-    },
+  // 1. Actualizar en companyConfig
+  const currentConfig = JSON.parse(JSON.stringify(wizardStore.getStepData("companyConfig") || {}));
+  
+  if (!currentConfig.logo) {
+    currentConfig.logo = {
+      url: "",
+      fileName: ""
+    };
+  }
+  
+  currentConfig.logo.url = previewUrl.value || "";
+  currentConfig.logo.fileName = file.name;
+  
+  wizardStore.updateFormSection("companyConfig", currentConfig);
+  
+  // 2. IMPORTANTE: También actualizar en branchAndPOS.branch
+  const branchData = JSON.parse(JSON.stringify(wizardStore.getStepData("branchAndPOS") || {}));
+  
+  if (!branchData.branch) {
+    branchData.branch = {};
+  }
+  
+  if (!branchData.branch.logo) {
+    branchData.branch.logo = {
+      url: "",
+      fileName: ""
+    };
+  }
+  
+  branchData.branch.logo.url = previewUrl.value || "";
+  branchData.branch.logo.fileName = file.name;
+  
+  wizardStore.updateFormSection("branchAndPOS", branchData);
+  
+  // Verificar en consola que se han actualizado ambos lugares
+  console.log("Logo actualizado en companyConfig:", {
+    url: currentConfig.logo.url,
+    fileName: currentConfig.logo.fileName
   });
-};
+  
+  console.log("Logo actualizado en branchAndPOS.branch:", {
+    url: branchData.branch.logo.url,
+    fileName: branchData.branch.logo.fileName
+  });
+}
 
 
 // Convertir archivo a base64
@@ -400,13 +436,14 @@ watch(tempFile, (file) => {
   }
 });
 
-// NUEVO: Watch para actualizar el store cuando cambia la vista previa
+// Watch para actualizar el store cuando cambia la vista previa
 watch(previewUrl, (newUrl) => {
   if (newUrl && selectedFile.value) {
     console.log("Vista previa actualizada, actualizando store:", newUrl);
+    // Llamar a updateStore con el archivo seleccionado actual
     updateStore(selectedFile.value);
   }
-});
+}, { immediate: false, deep: true });
 
 // Eliminar la imagen temporal
 function removeTempImage(): void {
@@ -473,8 +510,14 @@ async function saveChanges(): Promise<void> {
       selectedFile.value = newFile;
       previewUrl.value = tempImage.value;
 
-      // MODIFICADO: Actualizar el store inmediatamente después de guardar cambios
+      // Actualizar el store inmediatamente después de guardar cambios
       updateStore(newFile);
+      
+      // Verificar en consola
+      console.log("Logo guardado después de edición:", {
+        url: previewUrl.value,
+        fileName: fileName
+      });
     } catch (error) {
       console.error("Error al procesar la imagen:", error);
     }

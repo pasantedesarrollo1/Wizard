@@ -144,14 +144,25 @@ const { data: salesData, updateField } = useInitialData('salesData', {
 const selectedPlan = ref("");
 
 // Sincronizar el estado local con el store cuando cambia
+// Inicializar con valores predeterminados
 onMounted(() => {
   // Inicializar el estado local con el valor del store
   selectedPlan.value = salesData.value.plan || "";
+  
+  // IMPORTANTE: Establecer el valor predeterminado para billingFrequency si no existe
+  if (!salesData.value.billingFrequency) {
+    updateField('billingFrequency', 'mensual');
+  }
   
   // Observar cambios en el store para actualizar el estado local
   watch(() => salesData.value.plan, (newValue) => {
     if (newValue && newValue !== selectedPlan.value) {
       selectedPlan.value = newValue;
+      
+      // IMPORTANTE: Asegurar que billingFrequency tenga un valor cuando se selecciona un plan
+      if (!salesData.value.billingFrequency) {
+        updateField('billingFrequency', 'mensual');
+      }
     }
   }, { immediate: true });
 });
@@ -214,6 +225,11 @@ const getPlanPrice = (plan: TipoPlanesOpcion): string => {
 // Función para seleccionar un plan
 const seleccionarPlan = (value: string) => {
   updateField('plan', value);
+  
+  // IMPORTANTE: Asegurar que billingFrequency tenga un valor cuando se selecciona un plan
+  if (!salesData.value.billingFrequency) {
+    updateField('billingFrequency', 'mensual');
+  }
 }
 
 // Función para alternar entre periodos (mensual/anual)
