@@ -9,162 +9,81 @@
             <form @submit.prevent class="form-container">
               <!-- Tipo de identificación -->
               <div class="form-row">
-                <div class="form-group">
-                  <ion-label position="stacked" class="form-label">Tipo de Identificación <span class="required">*</span></ion-label>
-                  <div class="input-container">
-                    <div class="input-icon">
-                      <Icon icon="mdi:cards" width="20" height="20" />
-                    </div>
-                    <select 
-                      v-model="data.identification.type" 
-                      class="form-input"
-                      :class="{ 
-                        'has-value': data.identification.type.length > 0,
-                        'is-focused': focusedField === 'tipoID'
-                      }"
-                      @focus="setFocus('tipoID')"
-                      @blur="clearFocus"
-                      required
-                    >
-                      <option value="" disabled selected>Seleccionar</option>
-                      <option 
-                        v-for="opcion in opcionesTipoID" 
-                        :key="opcion.value" 
-                        :value="opcion.value"
-                      >
-                        {{ opcion.label }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
+                <FormField
+                  v-model="data.identification.type"
+                  label="Tipo de Identificación"
+                  icon="mdi:cards"
+                  type="select"
+                  required
+                  @validation="(isValid) => handleValidation('identificationType', isValid)"
+                >
+                  <option value="" disabled selected>Seleccionar</option>
+                  <option 
+                    v-for="opcion in opcionesTipoID" 
+                    :key="opcion.value" 
+                    :value="opcion.value"
+                  >
+                    {{ opcion.label }}
+                  </option>
+                </FormField>
                 
-                <div class="form-group">
-                  <ion-label position="stacked" class="form-label">Número de Identificación <span class="required">*</span></ion-label>
-                  <div class="input-container">
-                    <div class="input-icon">
-                      <Icon icon="mdi:card-account-details-outline" width="20" height="20" />
-                    </div>
-                    <input 
-                      type="text"
-                      placeholder="Número de identificación"
-                      v-model="data.identification.number"
-                      @input="handleIdentificationNumberInput"
-                      class="form-input"
-                      :class="{ 
-                        'has-value': data.identification.number.length > 0,
-                        'is-focused': focusedField === 'identificacion',
-                        'disabled': !data.identification.type
-                      }"
-                      @focus="setFocus('identificacion')"
-                      @blur="clearFocus"
-                      :disabled="!data.identification.type"
-                      required
-                    >
-                  </div>
-                </div>
+                <FormField
+                  v-model="data.identification.number"
+                  label="Número de Identificación"
+                  icon="mdi:card-account-details-outline"
+                  placeholder="Número de identificación"
+                  required
+                  :disabled="!data.identification.type"
+                  @input="handleIdentificationNumberInput"
+                  @validation="(isValid) => handleValidation('identificationNumber', isValid)"
+                />
               </div>
 
               <!-- Nombres -->
-              <div class="form-group">
-                <ion-label position="stacked" class="form-label">Nombres <span class="required">*</span></ion-label>
-                <div class="input-container">
-                  <div class="input-icon">
-                    <Icon icon="mdi:account" width="20" height="20" />
-                  </div>
-                  <input 
-                    type="text"
-                    placeholder="Ingresa tus Nombres"
-                    v-model="data.name.first"
-                    @input="handleNameInput"
-                    class="form-input"
-                    :class="{ 
-                      'has-value': data.name.first.length > 0,
-                      'is-focused': focusedField === 'nombres'
-                    }"
-                    @focus="setFocus('nombres')"
-                    @blur="clearFocus"
-                    required
-                  >
-                </div>
-              </div>
+              <FormField
+                v-model="data.name.first"
+                label="Nombres"
+                icon="mdi:account"
+                placeholder="Ingresa tus Nombres"
+                required
+                @input="handleNameInput"
+                @validation="(isValid) => handleValidation('firstName', isValid)"
+              />
 
               <!-- Apellidos -->
-              <div class="form-group">
-                <ion-label position="stacked" class="form-label">Apellidos <span class="required">*</span></ion-label>
-                <div class="input-container">
-                  <div class="input-icon">
-                    <Icon icon="mdi:account-outline" width="20" height="20" />
-                  </div>
-                  <input 
-                    type="text"
-                    placeholder="Ingresa tus Apellidos"
-                    v-model="data.name.last"
-                    @input="handleLastInput"
-                    class="form-input"
-                    :class="{ 
-                      'has-value': data.name.last.length > 0,
-                      'is-focused': focusedField === 'apellidos'
-                    }"
-                    @focus="setFocus('apellidos')"
-                    @blur="clearFocus"
-                    required
-                  >
-                </div>
-              </div>
+              <FormField
+                v-model="data.name.last"
+                label="Apellidos"
+                icon="mdi:account-outline"
+                placeholder="Ingresa tus Apellidos"
+                required
+                @input="handleLastInput"
+                @validation="(isValid) => handleValidation('lastName', isValid)"
+              />
 
               <!-- Correo Electrónico -->
-              <div class="form-group">
-                <ion-label position="stacked" class="form-label">Correo Electrónico <span class="required">*</span></ion-label>
-                <div class="input-container">
-                  <div class="input-icon">
-                    <Icon icon="mdi:email" width="20" height="20" />
-                  </div>
-                  <input 
-                    type="email"
-                    placeholder="Email"
-                    v-model="data.contact.email"
-                    @input="handleEmailInput"
-                    class="form-input"
-                    :class="{ 
-                      'has-value': data.contact.email.length > 0,
-                      'is-focused': focusedField === 'email',
-                      'valid-email': emailIsValid && data.contact.email.length > 0,
-                      'invalid-email': !emailIsValid && data.contact.email.length > 0
-                    }"
-                    @focus="setFocus('email')"
-                    @blur="clearFocus"
-                    required
-                  >
-                </div>
-                <!-- Mensaje de error para email inválido -->
-                <div v-if="!emailIsValid && data.contact.email.length > 0" class="email-error-message">
-                  Por favor, ingrese un correo electrónico válido
-                </div>
-              </div>
+              <FormField
+                v-model="data.contact.email"
+                label="Correo Electrónico"
+                icon="mdi:email"
+                placeholder="Email"
+                required
+                @input="handleEmailInput"
+                @validation="(isValid) => handleValidation('email', isValid)"
+                :validator="validateEmailInput"
+                errorMessage="Por favor, ingrese un correo electrónico válido"
+              />
 
               <!-- Teléfono celular/whatsapp -->
-              <div class="form-group">
-                <ion-label position="stacked" class="form-label">Teléfono celular/whatsapp <span class="required">*</span></ion-label>
-                <div class="input-container">
-                  <div class="input-icon">
-                    <Icon icon="mdi:phone" width="20" height="20" />
-                  </div>
-                  <input 
-                    type="tel"
-                    placeholder="+593"
-                    v-model="data.contact.phone"
-                    @input="handlePhoneInput"
-                    class="form-input"
-                    :class="{ 
-                      'has-value': data.contact.phone.length > 0,
-                      'is-focused': focusedField === 'telefono'
-                    }"
-                    @focus="setFocus('telefono')"
-                    @blur="clearFocus"
-                    required
-                  >
-                </div>
-              </div>
+              <FormField
+                v-model="data.contact.phone"
+                label="Teléfono celular/whatsapp"
+                icon="mdi:phone"
+                placeholder="+593"
+                required
+                @input="handlePhoneInput"
+                @validation="(isValid) => handleValidation('phone', isValid)"
+              />
             </form>
           </div>
         </div>
@@ -174,13 +93,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import {
   IonCard,
   IonCardContent,
-  IonLabel,
 } from '@ionic/vue';
-import { Icon } from '@iconify/vue';
+import FormField from "@/components/ui/FormField.vue";
 import { useInitialData } from "@/composables/useInitialData";
 import {
   allowOnlyLetters,
@@ -232,26 +150,23 @@ const { data } = useInitialData(
   }
 );
 
-// Variable para controlar qué campo está enfocado
-const focusedField = ref('');
+// Definir un tipo para las claves de validación
+type ValidationKey = 'identificationType' | 'identificationNumber' | 'firstName' | 'lastName' | 'email' | 'phone';
 
-// Variable para controlar la validez del email
-const emailIsValid = ref(true);
-
-// Funciones para manejar el enfoque
-const setFocus = (fieldName: string) => {
-  focusedField.value = fieldName;
-};
-
-const clearFocus = () => {
-  focusedField.value = '';
-};
-
-const showIcons = ref(false);
-
-onMounted(() => {
-  showIcons.value = true;
+// Estado para validación de campos con tipo explícito
+const validationState = ref<Record<ValidationKey, boolean>>({
+  identificationType: true,
+  identificationNumber: true,
+  firstName: true,
+  lastName: true,
+  email: true,
+  phone: true
 });
+
+// Función para manejar eventos de validación con tipos correctos
+const handleValidation = (field: ValidationKey, isValid: boolean) => {
+  validationState.value[field] = isValid;
+};
 
 // Manejador de input para el número de identificación que aplica validación según el tipo seleccionado
 const handleIdentificationNumberInput = (event: Event) => {
@@ -286,7 +201,12 @@ const handleEmailInput = (event: Event) => {
   // Usar la función de validación en tiempo real
   const result = validateEmailInRealTime(event);
   data.value.contact.email = result.value;
-  emailIsValid.value = result.isValid;
+  handleValidation('email', result.isValid);
+};
+
+// Función de validación para el email que devuelve un objeto con value e isValid
+const validateEmailInput = (event: Event) => {
+  return validateEmailInRealTime(event);
 };
 
 // Watch para limpiar el número de identificación si cambia el tipo
@@ -343,7 +263,6 @@ watch(() => data.value.identification.type, () => {
   font-weight: 600;
   color: #333;
   padding-bottom: 10px;
-  /* margin-bottom: 16px; */
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -363,99 +282,6 @@ watch(() => data.value.identification.type, () => {
     flex-direction: column;
     gap: 16px;
   }
-}
-
-/* Grupo de formulario */
-.form-group {
-  width: 100%;
-}
-
-/* Etiqueta de formulario */
-.form-label {
-  display: block;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-/* Indicador de campo requerido */
-.required {
-  color: var(--ion-color-primary);
-}
-
-/* Contenedor de input con icono */
-.input-container {
-  position: relative;
-  width: 100%;
-}
-
-/* Icono dentro del input */
-.input-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  z-index: 1;
-}
-
-/* Estilos del input */
-.form-input {
-  width: 100%;
-  padding: 12px 12px 12px 40px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #333;
-  background-color: white;
-  transition: all 0.3s ease;
-  appearance: none;
-}
-
-.form-input:hover {
-  border-color: #aaa;
-}
-
-.form-input.has-value {
-  background-color: rgba(var(--ion-color-primary-rgb), 0.05);
-  border-color: var(--ion-color-primary);
-}
-
-.form-input.is-focused {
-  border-color: var(--ion-color-primary);
-  border-width: 2px;
-  box-shadow: 0 0 0 2px rgba(var(--ion-color-primary-rgb), 0.1);
-}
-
-.form-input::placeholder {
-  color: #999;
-}
-
-/* Estilos para inputs deshabilitados */
-.form-input:disabled, .form-input.disabled {
-  background-color: #f5f5f5;
-  color: #666;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-/* Estilos para validación de email */
-.valid-email {
-  
-  background-color: rgba(16, 185, 129, 0.05) !important;
-}
-
-.invalid-email {
-  border-color: #ef4444 !important;
-  background-color: rgba(239, 68, 68, 0.05) !important;
-}
-
-.email-error-message {
-  color: #ef4444;
-  font-size: 0.8rem;
-  margin-top: 0.25rem;
-  padding-left: 0.5rem;
 }
 
 /* Estilos para el contenido */

@@ -1,56 +1,31 @@
 <template>
   <form @submit.prevent class="form-container">
     <!-- Nombre del Punto de Venta -->
-    <div class="form-group">
-      <ion-label position="stacked" class="form-label">Nombre del Punto de Emisión <span class="required">*</span></ion-label>
-      <div class="input-container">
-        <div class="input-icon">
-          <Icon icon="mdi:store" width="20" height="20" />
-        </div>
-        <input 
-          type="text"
-          placeholder="Nombre del punto de Emisión"
-          v-model="data.pointOfSale.name"
-          class="form-input"
-          :class="{ 
-            'has-value': data.pointOfSale.name.length > 0,
-            'is-focused': focusedField === 'nombrePOS'
-          }"
-          @focus="setFocus('nombrePOS')"
-          @blur="clearFocus"
-        >
-      </div>
-    </div>
+    <FormField
+      v-model="data.pointOfSale.name"
+      label="Nombre del Punto de Emisión"
+      icon="mdi:store"
+      placeholder="Nombre del punto de Emisión"
+      required
+      @validation="(isValid) => handleValidation('name', isValid)"
+    />
 
     <!-- Código del Punto de Venta -->
-    <div class="form-group">
-      <ion-label position="stacked" class="form-label">Código del Punto de Emisión <span class="required">*</span></ion-label>
-      <div class="input-container">
-        <div class="input-icon">
-          <Icon icon="mdi:barcode" width="20" height="20" />
-        </div>
-        <input 
-          type="text"
-          placeholder="Código del punto de Emisión"
-          v-model="data.pointOfSale.idPos"
-          class="form-input"
-          :class="{ 
-            'has-value': data.pointOfSale.idPos.length > 0,
-            'is-focused': focusedField === 'codigoPOS'
-          }"
-          @focus="setFocus('codigoPOS')"
-          @blur="clearFocus"
-          disabled
-        >
-      </div>
-    </div>
+    <FormField
+      v-model="data.pointOfSale.idPos"
+      label="Código del Punto de Emisión"
+      icon="mdi:barcode"
+      placeholder="Código del punto de Emisión"
+      required
+      disabled
+      @validation="(isValid) => handleValidation('idPos', isValid)"
+    />
   </form>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { IonLabel } from '@ionic/vue';
-import { Icon } from '@iconify/vue';
+import FormField from "@/components/ui/FormField.vue";
 import { useInitialData } from "@/composables/useInitialData";
 
 // Valores iniciales para el formulario
@@ -74,16 +49,18 @@ const { data } = useInitialData(
   }
 );
 
-// Variable para controlar qué campo está enfocado
-const focusedField = ref('');
+// Definir un tipo para las claves de validación
+type ValidationKey = 'name' | 'idPos';
 
-// Funciones para manejar el enfoque
-const setFocus = (fieldName: string) => {
-  focusedField.value = fieldName;
-};
+// Estado para validación de campos con tipo explícito
+const validationState = ref<Record<ValidationKey, boolean>>({
+  name: true,
+  idPos: true
+});
 
-const clearFocus = () => {
-  focusedField.value = '';
+// Función para manejar eventos de validación con tipos correctos
+const handleValidation = (field: ValidationKey, isValid: boolean) => {
+  validationState.value[field] = isValid;
 };
 
 // Asegurar que el valor '010' se establezca al montar el componente
@@ -98,78 +75,5 @@ onMounted(() => {
 /* Contenedor del formulario */
 .form-container {
   width: 100%;
-}
-
-/* Grupo de formulario */
-.form-group {
-  width: 100%;
-}
-
-/* Etiqueta de formulario */
-.form-label {
-  display: block;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-/* Indicador de campo requerido */
-.required {
-  color: var(--ion-color-primary);
-}
-
-/* Contenedor de input con icono */
-.input-container {
-  position: relative;
-  width: 100%;
-}
-
-/* Icono dentro del input */
-.input-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  z-index: 1;
-}
-
-/* Estilos del input */
-.form-input {
-  width: 100%;
-  padding: 12px 12px 12px 40px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #333;
-  background-color: white;
-  transition: all 0.3s ease;
-}
-
-.form-input:hover {
-  border-color: #aaa;
-}
-
-.form-input.has-value {
-  background-color: rgba(var(--ion-color-primary-rgb), 0.05);
-  border-color: var(--ion-color-primary);
-}
-
-.form-input.is-focused {
-  border-color: var(--ion-color-primary);
-  border-width: 2px;
-  box-shadow: 0 0 0 2px rgba(var(--ion-color-primary-rgb), 0.1);
-}
-
-.form-input::placeholder {
-  color: #999;
-}
-
-/* Estilos para inputs deshabilitados */
-.form-input:disabled {
-  background-color: #f5f5f5;
-  cursor: not-allowed;
-  opacity: 0.8;
 }
 </style>
