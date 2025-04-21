@@ -114,11 +114,6 @@ const getIconForDocumentType = (documentType: string): string => {
   width: 100%;
 }
 
-/* Asegurar que las tarjetas ocupen todo el ancho disponible */
-:deep(.selectable-card) {
-  width: 100% !important;
-}
-
 /* Hacer los iconos más pequeños */
 :deep(.selectable-card svg),
 :deep(.selectable-card i),

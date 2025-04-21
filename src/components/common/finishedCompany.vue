@@ -2,14 +2,6 @@
   <ion-page>
     <ion-content class="ion-padding">
       <div class="success-container">
-        <!-- Cabecera con animación -->
-        <!-- <div class="success-header">
-          <div class="success-icon-container">
-            <ion-icon :icon="checkmarkCircle" class="success-icon"></ion-icon>
-          </div>
-          <h1 class="success-title">¡Empresa Creada Exitosamente!</h1>
-          <p class="success-subtitle">Tu empresa ya está lista para usar</p>
-        </div> -->
         
         <!-- Tarjeta de acceso -->
         <div class="access-card">
@@ -129,52 +121,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Contenedor principal */
-.success-container {
-  max-width: 800px;
-  margin: 0 auto;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2rem;
-  padding: 1rem;
-}
-
-/* Cabecera con animación */
-.success-header {
-  text-align: center;
-  animation: fadeInDown 0.8s ease-out;
-}
-
-.success-icon-container {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 1rem;
-  background-color: rgba(var(--ion-color-success-rgb), 0.1);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.success-icon {
-  font-size: 48px;
-  color: var(--ion-color-success);
-}
-
-.success-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--ion-color-dark);
-  margin-bottom: 0.5rem;
-}
-
-.success-subtitle {
-  font-size: 1.1rem;
-  color: var(--ion-color-medium);
-  margin: 0;
-}
 
 /* Tarjeta de acceso */
 .access-card {
@@ -436,18 +382,6 @@ onMounted(() => {
 
 /* Estilos responsivos */
 @media (max-width: 768px) {
-  .success-container {
-    padding: 1rem;
-    gap: 1.5rem;
-  }
-  
-  .success-title {
-    font-size: 1.5rem;
-  }
-  
-  .success-subtitle {
-    font-size: 1rem;
-  }
   
   .access-card {
     padding: 1.5rem;
@@ -459,22 +393,6 @@ onMounted(() => {
 }
 
 @media (max-width: 480px) {
-  .success-icon-container {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .success-icon {
-    font-size: 36px;
-  }
-  
-  .success-title {
-    font-size: 1.3rem;
-  }
-  
-  .success-subtitle {
-    font-size: 0.9rem;
-  }
   
   .access-card {
     padding: 1.25rem;

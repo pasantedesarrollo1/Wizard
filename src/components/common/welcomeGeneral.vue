@@ -236,37 +236,20 @@ const onStartClick = () => {
   font-weight: 500;
 }
 
-/* Indicador visual minimalista */
-.indicator {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 1rem;
-}
 
-.indicator span {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: var(--ion-color-primary);
-  opacity: 0;
-  transform: scale(0);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-.welcome-container.animate .indicator span:nth-child(1) {
+.welcome-container.animate span:nth-child(1) {
   opacity: 0.7;
   transform: scale(1);
   transition-delay: 1s;
 }
 
-.welcome-container.animate .indicator span:nth-child(2) {
+.welcome-container.animate span:nth-child(2) {
   opacity: 0.7;
   transform: scale(1);
   transition-delay: 1.2s;
 }
 
-.welcome-container.animate .indicator span:nth-child(3) {
+.welcome-container.animate span:nth-child(3) {
   opacity: 0.7;
   transform: scale(1);
   transition-delay: 1.4s;

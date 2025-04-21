@@ -12,11 +12,6 @@ export function getWizardComponents(): Record<string, Component> {
     defineAsyncComponent(() => import("@/components/common/steps/dataSales/sub-step1/indexSalesDataSS1.vue")),
   )
 
-  // const indexConfiCompanySS3 = markRaw(
-  //   defineAsyncComponent(
-  //     () => import("@/components/common/steps/configurationCompany/sub-step3/indexConfiCompanySS3.vue"),
-  //   ),
-  // )
 
   const indexCreateCompanySS2 = markRaw(
     defineAsyncComponent(() => import("@/components/common/steps/createCompany/sub-step2/indexCreateCompanySS2.vue")),
@@ -42,7 +37,6 @@ export function getWizardComponents(): Record<string, Component> {
   return {
     indexCreateCompanySS1,
     indexSalesDataSS1,
-    // indexConfiCompanySS3,
     indexCreateCompanySS2,
     indexConfiCompanySS2,
     indexConfigCompanySS1,
@@ -62,7 +56,6 @@ export function getBaseSubStepsConfig() {
     "config-company": [
       { title: "config-comapny SS1", component: components.indexConfigCompanySS1 },
       { title: "config-comapny SS2", component: components.indexConfiCompanySS2 },
-   // { title: "config-comapny SS3", component: components.indexConfiCompanySS3 },
     ],
   }
 }

@@ -267,19 +267,9 @@ const goToStep = (index: number) => {
   overflow: hidden;
 }
 
-/* Descripción del paso */
-.step-description {
-  font-size: 0.7rem; /* Texto más pequeño */
-  color: #6b7280;
-  transition: all 0.3s ease;
-  white-space: normal;
-  line-height: 1.1;
-  display: none; /* Ocultar por defecto para ahorrar espacio */
-}
-
 /* Mostrar descripción solo en pantallas grandes */
 @media (min-width: 768px) {
-  .active .step-description {
+  .active  {
     display: block;
   }
 }

@@ -1,14 +1,7 @@
 import { ref, onMounted, watch } from 'vue'
 import { useWizardStore } from "@/stores/wizardStore"
 
-/**
- * Composable para manejar la carga y sincronización de datos iniciales desde el store
- * 
- * @param sectionKey - Clave de la sección en el store (ej: "personalInfo", "salesData")
- * @param initialValues - Objeto con valores iniciales por defecto (opcional)
- * @param options - Opciones de configuración adicionales
- * @returns Objeto con valores reactivos, funciones de actualización y estado de carga
- */
+// Composable para manejar la carga y sincronización de datos iniciales desde el store
 export function useInitialData<T extends Record<string, any>>(
   sectionKey: string,
   initialValues: T = {} as T,

@@ -18,13 +18,7 @@ export function useWizardValidation() {
     return subStepParam ? parseInt(subStepParam as string, 10) : 0
   })
 
-  /**
-   * Verifica si el botón "Anterior" debe estar deshabilitado
-   * @param currentStep - Índice del paso actual
-   * @param currentStepKey - Clave del paso actual
-   * @param currentSubStepIndex - Índice del subpaso actual
-   * @returns boolean - true si el botón debe estar deshabilitado
-   */
+// Verifica si el botón "Anterior" debe estar deshabilitado
   const shouldDisablePreviousButton = computed(() => {
     // Obtener la clave del paso actual
     const currentStepKey = wizardStore.getCurrentWizardState.currentStep
@@ -111,11 +105,7 @@ export function useWizardValidation() {
     return !(hasCompanyCreationData && hasBranchAndPOSData)
   }
 
-  /**
-   * Valida el paso de configuración de la empresa (subpaso 1 - indexConfiCompanySS2)
-   * @param subStepIndex - Índice del subpaso actual
-   * @returns boolean - true si el botón debe estar deshabilitado
-   */
+// Valida el paso de configuración de la empresa (subpaso 1 - indexConfiCompanySS2)
   const validateConfigCompanyStep = (subStepIndex: number): boolean => {
     // Solo validamos el subpaso 1 (indexConfiCompanySS2)
     if (subStepIndex === 1) {
@@ -146,11 +136,7 @@ export function useWizardValidation() {
     return false
   }
 
-  /**
-   * Valida el paso de datos de venta
-   * @param subStepIndex - Índice del subpaso actual
-   * @returns boolean - true si el botón debe estar deshabilitado
-   */
+// Valida el paso de datos de venta
   const validateDataSalesStep = (subStepIndex: number): boolean => {
     // Obtener los datos de venta del store
     const salesData = wizardStore.getStepData("salesData")
@@ -213,11 +199,7 @@ export function useWizardValidation() {
     return false
   }
 
-  /**
-   * Valida el paso de información personal
-   * @param subStepIndex - Índice del subpaso actual
-   * @returns boolean - true si el botón debe estar deshabilitado
-   */
+// Valida el paso de información personal
   const validatePersonalInfoStep = (subStepIndex: number): boolean => {
     // Obtener los datos personales del store
     const personalInfo = wizardStore.getStepData("personalInfo")

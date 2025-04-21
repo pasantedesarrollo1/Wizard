@@ -96,13 +96,7 @@ export function useWizardSubSteps(config: WizardSubStepsConfig) {
     currentSubStepIndex.value = 0
   }
 
-  /**
-   * Inserta un nuevo sub-paso en una posición específica
-   * @param stepKey - Clave del paso principal
-   * @param position - Posición donde insertar el sub-paso (0-indexed)
-   * @param subStep - Sub-paso a insertar
-   * @returns true si se insertó correctamente, false en caso contrario
-   */
+// Inserta un nuevo sub-paso en una posición específica
   const insertSubStep = (stepKey: string, position: number, subStep: SubStep): boolean => {
     // Verificamos que exista la clave en la configuración
     if (!config[stepKey]) {

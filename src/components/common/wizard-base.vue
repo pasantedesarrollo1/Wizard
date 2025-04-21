@@ -455,13 +455,7 @@ watch([currentStepKey, currentSubStepIndex], () => {
   flex-direction: column;
   align-items: center;
 }
-.sub-step-indicator {
-  width: 100%;
-  margin-bottom: 16px;
-  padding: 8px;
-  background-color: rgba(0, 60, 255, 0.05);
-  border-radius: 8px;
-}
+
 .navigation-controls {
   display: flex;
   justify-content: space-between;
