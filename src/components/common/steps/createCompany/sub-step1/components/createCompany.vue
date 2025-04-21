@@ -68,6 +68,8 @@
       required
       @input="handleEmailInput"
       @validation="(isValid) => handleValidation('businessEmail', isValid)"
+      :validator="validateEmailInput"
+      errorMessage="Por favor, ingrese un correo electrónico válido"
     />
   </form>
 </template>
@@ -136,6 +138,10 @@ const handleEmailInput = (event: Event) => {
   data.value.businessEmail = result.value;
   // Actualizar el estado de validación
   handleValidation('businessEmail', result.isValid);
+};
+// Función de validación para el email que devuelve un objeto con value e isValid
+const validateEmailInput = (event: Event) => {
+  return validateEmailInRealTime(event);
 };
 </script>
 
