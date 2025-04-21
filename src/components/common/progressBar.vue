@@ -39,7 +39,7 @@
               </div>
             </div>
             
-            <!-- Contenido del paso con texto más compacto -->
+            <!-- Contenido del paso con alineación mejorada -->
             <div class="step-content">
               <div class="step-label"
                    :class="{
@@ -243,6 +243,8 @@ const goToStep = (index: number) => {
   margin-bottom: 0.125rem; /* Margen reducido */
   transition: all 0.3s ease;
   line-height: 1.1;
+  width: 100%;
+  text-align: center;
 }
 
 /* Etiqueta activa */
@@ -267,9 +269,18 @@ const goToStep = (index: number) => {
   overflow: hidden;
 }
 
+/* Descripción del paso (visible solo en pantallas grandes) */
+.step-description {
+  display: none;
+  font-size: 0.7rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  line-height: 1.1;
+}
+
 /* Mostrar descripción solo en pantallas grandes */
 @media (min-width: 768px) {
-  .active  {
+  .step-item.active .step-description {
     display: block;
   }
 }

@@ -174,7 +174,14 @@ const opcionesTipoPlanes = ref<TipoPlanesOpcion[]>([
     value: "freeplan",
     precioMensual: "0",
     precioAnual: "0",
-    caracteristicas: ["Acceso básico", "Funciones limitadas", "Soporte por email"],
+    caracteristicas: [
+    "1 Usuario Simultanea",
+    "1 establecimiento Matriz",
+    "12 Facturas electronicas", 
+    "Emisión ilimitada de recibos",
+    
+
+  ],
   },
   {
     label: "Plan Lite",
