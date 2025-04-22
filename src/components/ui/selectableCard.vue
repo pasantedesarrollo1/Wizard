@@ -1,3 +1,4 @@
+// Modificación para el componente selectableCard.vue
 <template>
   <div 
     class="selectable-card"
@@ -24,12 +25,14 @@
     </div>
     
     <!-- Texto de la tarjeta -->
-    <div class="card-label">
-      <p class="label-text" :class="{ 'text-white': isSelected }">
+    <div class="card-label" :class="{ 'text-white': isSelected }">
+      <p class="label-text">
         {{ label }}
       </p>
       <!-- Slot para contenido adicional -->
-      <slot></slot>
+      <div class="selectable-card-content" :class="{ 'text-white': isSelected }">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -106,6 +109,11 @@ const selectCard = () => {
 
 .selectable-card.popular-card {
   border-color: var(--ion-color-warning);
+}
+
+/* Nuevo estilo para asegurar que todo el contenido sea blanco cuando está seleccionado */
+.selectable-card-content.text-white * {
+  color: white !important;
 }
 
 .selectable-card.popular-card:not(.selected-card) {
