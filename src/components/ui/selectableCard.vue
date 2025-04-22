@@ -1,4 +1,3 @@
-// Modificación para el componente selectableCard.vue
 <template>
   <div 
     class="selectable-card"
@@ -14,32 +13,22 @@
       {{ popularLabel }}
     </div>
     
-    <!-- Contenedor del icono -->
-    <div class="icon-container">
-      <Icon 
-        v-if="icon" 
-        :icon="icon" 
-        class="card-icon"
-        :class="{ 'text-white': isSelected }"
-      />
-    </div>
-    
-    <!-- Texto de la tarjeta -->
+    <!-- CORRECCIÓN: Contenedor del título con altura fija y sin espacio excesivo -->
     <div class="card-label" :class="{ 'text-white': isSelected }">
       <p class="label-text">
         {{ label }}
       </p>
-      <!-- Slot para contenido adicional -->
-      <div class="selectable-card-content" :class="{ 'text-white': isSelected }">
-        <slot></slot>
-      </div>
+    </div>
+    
+    <!-- Slot para contenido adicional -->
+    <div class="selectable-card-content" :class="{ 'text-white': isSelected }">
+      <slot></slot>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Icon } from "@iconify/vue";
 import { IonIcon } from "@ionic/vue";
 import { star } from "ionicons/icons";
 
@@ -77,6 +66,27 @@ const selectCard = () => {
 </script>
 
 <style scoped>
+.card-label {
+  height: auto; /* Cambia de 50px a auto */
+  min-height: 60px; /* Define una altura mínima en lugar de fija */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Asegurar que el contenido tenga margen superior adecuado */
+.selectable-card-content {
+  margin-top: 0; /* Eliminar margen superior si existe */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+/* Opcional: Hacer ajustes en la card completa para mejor distribución */
+.selectable-card {
+  padding: 0.75rem 0.5rem; /* Reducir el padding */
+  gap: 0; /* Eliminar espacio entre elementos */
+}
 .selectable-card {
   position: relative;
   width: v-bind('props.width');
@@ -111,7 +121,7 @@ const selectCard = () => {
   border-color: var(--ion-color-warning);
 }
 
-/* Nuevo estilo para asegurar que todo el contenido sea blanco cuando está seleccionado */
+/* CORRECCIÓN: Asegurar que el contenido sea blanco cuando está seleccionado */
 .selectable-card-content.text-white * {
   color: white !important;
 }
@@ -141,41 +151,16 @@ const selectCard = () => {
   font-size: 1rem;
 }
 
-.icon-container {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-}
-
-.card-icon {
-  width: 5rem;
-  height: 5rem;
-  transition: var(--transition-normal);
-}
-
-.card-label {
-  text-align: center;
-  width: 100%;
-  margin-top: auto;
-}
-
 .label-text {
-  margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
   transition: var(--transition-normal);
+  margin: 0; /* AÑADIDO: Eliminar todos los márgenes */
 }
 
 @media (max-width: 768px) {
   .selectable-card {
     height: 160px;
-  }
-  
-  .card-icon {
-    width: 4rem;
-    height: 4rem;
   }
   
   .label-text {
@@ -186,11 +171,6 @@ const selectCard = () => {
 @media (max-width: 576px) {
   .selectable-card {
     height: 140px;
-  }
-  
-  .card-icon {
-    width: 3.5rem;
-    height: 3.5rem;
   }
   
   .label-text {

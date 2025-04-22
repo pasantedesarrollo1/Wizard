@@ -66,10 +66,7 @@
                   <span class="amount">{{ getPlanPrice(opcion) }}</span>
                   <span class="period">/{{ salesData.billingFrequency === 'anual' ? 'año' : 'mes' }}</span>
                 </div>
-                
-                <div v-if="salesData.billingFrequency === 'anual' && opcion.value !== 'freeplan'" class="savings-text">
-                  <span class="original-price">{{ opcion.precioMensual }}×12</span>
-                </div>
+        
               </div>
               
               <!-- Características del plan -->
@@ -392,16 +389,12 @@ const togglePeriodo = (event: Event) => {
   margin: 1.5rem 0;
 }
 
-/* Estilos para las tarjetas de planes */
-.plan-card-wrapper {
-  height: 100%;
-}
-
 .plan-card-custom {
   height: 100% !important;
   min-height: 400px;
 }
 
+/* CORRECCIÓN: Asegurar que el contenido de la tarjeta tenga estructura uniforme */
 .plan-card-custom :deep(.selectable-card) {
   height: 100% !important;
   padding: 1rem;
@@ -413,15 +406,18 @@ const togglePeriodo = (event: Event) => {
   transform: scale(1.03);
 }
 
+/* CORRECCIÓN: Título con altura fija para eliminar el espacio morado no deseado */
 .plan-card-custom :deep(.card-label) {
   margin-top: 0;
-  margin-bottom: 0.5rem;
+  height: 70px; /* Altura fija para el título */
+  display: flex;
+  align-items: top;
+  justify-content: top;
 }
 
 .plan-card-custom :deep(.label-text) {
   font-size: 1.3rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
 }
 
 /* Contenedor de precio */
@@ -468,7 +464,6 @@ const togglePeriodo = (event: Event) => {
 
 /* Lista de características */
 .features-list {
-  margin: 1.5rem 0;
   width: 100%;
 }
 
