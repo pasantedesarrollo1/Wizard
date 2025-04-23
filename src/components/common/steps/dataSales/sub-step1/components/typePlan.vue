@@ -81,7 +81,6 @@
                     color="success"
                     class="plan-badge"
                   >
-                    Gratis
                   </ion-badge>
                   <ion-badge 
                     v-if="salesData.billingFrequency === 'anual' && opcion.value !== 'freeplan'" 

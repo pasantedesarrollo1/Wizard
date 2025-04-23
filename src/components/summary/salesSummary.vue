@@ -1,5 +1,14 @@
 <template>
   <div class="sales-summary">    
+    <!-- Nuevo encabezado según el diseño de la imagen -->
+    <div class="summary-header">
+      <h2 class="header-title">Confirmacion Informacion de venta</h2>
+      <div class="header-info">
+        <ion-icon :icon="informationCircle" class="info-icon"></ion-icon>
+        <span>Verifique que todos los datos sean correctos. No podra regresar a este paso</span>
+      </div>
+    </div>
+    
     <div class="summary-container">
       <!-- Datos generales y de pago en una disposición más compacta -->
       <div class="summary-flex-container">
@@ -83,6 +92,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useWizardStore } from "@/stores/wizardStore";
+import { informationCircle } from 'ionicons/icons'; // Importar el icono de información
 
 // Obtener la instancia del store
 const wizardStore = useWizardStore();
@@ -197,16 +207,45 @@ const getPaymentMethodName = (methodValue: string): string => {
 <style scoped>
 .sales-summary {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0;
   background-color: #f0f7ff; /* Fondo azul muy claro */
   border-radius: 0.5rem;
   border: 1px solid #e1effe;
+}
+
+/* Estilos para el nuevo encabezado */
+.summary-header {
+  background-color: #003cff;
+  padding: 1rem;
+  border-radius: 0.5rem 0.5rem 0 0;
+  color: white;
+}
+
+.header-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.info-icon {
+  font-size: 1.2rem;
 }
 
 .summary-container {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  padding: 0.75rem;
 }
 
 .summary-flex-container {

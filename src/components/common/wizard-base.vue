@@ -58,8 +58,8 @@
     <!-- Modal de confirmación para el paso de ventas -->
     <ConfirmationModal 
       :is-open="showSalesConfirmationModal"
-      title="Confirmar Información de Venta"
-      message="Verifique que todos los datos sean correctos. No podra regresar a este paso"
+      title=""
+      message=""
       secondary-message=""
       confirm-button-text="Continuar"
       cancel-button-text="Revisar Datos"
