@@ -164,7 +164,6 @@ const selectCard = () => {
 
 /* NUEVO: Estilos para el contenedor del icono */
 .icon-container {
-  flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,6 +182,8 @@ const selectCard = () => {
   font-weight: 500;
   transition: var(--transition-normal);
   margin: 0; /* AÑADIDO: Eliminar todos los márgenes */
+  text-align: center; /* AÑADIR ESTA LÍNEA */
+  width: 100%; /* AÑADIR ESTA LÍNEA para asegurar que ocupe todo el ancho */
 }
 
 @media (max-width: 768px) {
