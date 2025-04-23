@@ -1,3 +1,4 @@
+// src/components/common/steps/configurationCompany/sub-step2/indexConfiCompanySS2.vue
 <template>
   <ion-card class="shadow-lg rounded-xl overflow-hidden">
     <ion-card-content>
@@ -100,10 +101,10 @@ interface FormDataType {
   [key: string]: any; // Para permitir acceso dinámico a otras propiedades
 }
 
-// Estado local para el formulario completo
+// Estado local para el formulario completo con valores por defecto
 const formData = ref<FormDataType>({
-  defaultDocument: "facturas",
-  searchParameter: "nombre",
+  defaultDocument: "facturas", // Valor por defecto para documento
+  searchParameter: "nombre",   // Valor por defecto para parámetro de búsqueda
   regimeRUC: "",
   categoryRUC: "",
   taxAgent: {
@@ -114,7 +115,7 @@ const formData = ref<FormDataType>({
     isArtisan: false,
     artisanNumber: ""
   },
-  taxes: ["15"],
+  taxes: ["15"],              // Valor por defecto para impuestos (15%)
   taxesFiveNumber: "",
   branch: {
     delayedDispatch: false,
@@ -143,34 +144,45 @@ const updateFormData = (section: string, data: Record<string, any>) => {
   console.log("Estado local actualizado:", JSON.parse(JSON.stringify(formData.value)));
 };
 
-// Cargar datos iniciales desde el store
+// Cargar datos iniciales desde el store y aplicar valores por defecto
 onMounted(() => {
-  const companyConfig = wizardStore.getStepData("companyConfig");
-  const branchData = wizardStore.getStepData("branchAndPOS");
+  const companyConfig = wizardStore.getStepData("companyConfig") || {};
+  const branchData = wizardStore.getStepData("branchAndPOS") || {};
   
-  if (companyConfig) {
-    // Actualizar propiedades de nivel raíz
-    if (companyConfig.defaultDocument) formData.value.defaultDocument = companyConfig.defaultDocument;
-    if (companyConfig.searchParameter) formData.value.searchParameter = companyConfig.searchParameter;
-    if (companyConfig.regimeRUC) formData.value.regimeRUC = companyConfig.regimeRUC;
-    if (companyConfig.categoryRUC) formData.value.categoryRUC = companyConfig.categoryRUC;
-    
-    // Actualizar propiedades anidadas
-    if (companyConfig.taxAgent) {
-      formData.value.taxAgent = { ...formData.value.taxAgent, ...companyConfig.taxAgent };
-    }
-    
-    if (companyConfig.artisan) {
-      formData.value.artisan = { ...formData.value.artisan, ...companyConfig.artisan };
-    }
-    
-    if (companyConfig.taxes) {
-      formData.value.taxes = Array.isArray(companyConfig.taxes) ? [...companyConfig.taxes] : ["15"];
-    }
-    
-    if (companyConfig.taxesFiveNumber) {
-      formData.value.taxesFiveNumber = companyConfig.taxesFiveNumber;
-    }
+  // Aplicar valores por defecto si no existen en el store
+  if (!companyConfig.defaultDocument) {
+    formData.value.defaultDocument = "facturas"; // Valor por defecto
+  } else {
+    formData.value.defaultDocument = companyConfig.defaultDocument;
+  }
+  
+  if (!companyConfig.searchParameter) {
+    formData.value.searchParameter = "nombre"; // Valor por defecto
+  } else {
+    formData.value.searchParameter = companyConfig.searchParameter;
+  }
+  
+  if (!companyConfig.taxes || !Array.isArray(companyConfig.taxes) || companyConfig.taxes.length === 0) {
+    formData.value.taxes = ["15"]; // Valor por defecto
+  } else {
+    formData.value.taxes = [...companyConfig.taxes];
+  }
+  
+  // Actualizar el resto de propiedades desde el store
+  if (companyConfig.regimeRUC) formData.value.regimeRUC = companyConfig.regimeRUC;
+  if (companyConfig.categoryRUC) formData.value.categoryRUC = companyConfig.categoryRUC;
+  
+  // Actualizar propiedades anidadas
+  if (companyConfig.taxAgent) {
+    formData.value.taxAgent = { ...formData.value.taxAgent, ...companyConfig.taxAgent };
+  }
+  
+  if (companyConfig.artisan) {
+    formData.value.artisan = { ...formData.value.artisan, ...companyConfig.artisan };
+  }
+  
+  if (companyConfig.taxesFiveNumber) {
+    formData.value.taxesFiveNumber = companyConfig.taxesFiveNumber;
   }
   
   // Cargar datos de la sucursal
@@ -181,6 +193,9 @@ onMounted(() => {
       isTouristEstablishment: branchData.branch.isTouristEstablishment || false
     };
   }
+  
+  // Guardar los valores por defecto en el store inmediatamente después de cargar
+  saveFormToStore();
   
   console.log("Datos iniciales cargados:", JSON.parse(JSON.stringify(formData.value)));
 });
