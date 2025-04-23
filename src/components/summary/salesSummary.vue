@@ -216,7 +216,7 @@ const getPaymentMethodName = (methodValue: string): string => {
 /* Estilos para el nuevo encabezado */
 .summary-header {
   background-color: #003cff;
-  padding: 1rem;
+  padding: 10px;
   border-radius: 0.5rem 0.5rem 0 0;
   color: white;
 }
@@ -245,7 +245,7 @@ const getPaymentMethodName = (methodValue: string): string => {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 0.75rem;
+  padding: 0.55rem;
 }
 
 .summary-flex-container {

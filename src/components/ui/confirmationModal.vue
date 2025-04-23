@@ -4,13 +4,13 @@
       class="w-[95%] md:w-[80%] lg:w-[70%] max-w-[800px] rounded-2xl shadow-xl bg-white overflow-hidden animate-scaleIn" 
       @click.stop
     >
-      <!-- Título del modal -->
-      <div v-if="title" class="px-6 py-4 border-b border-blue-100 bg-blue-50">
+      <!-- Título del modal - Solo se muestra si hay título y no es el modal de ventas -->
+      <div v-if="title && showHeader" class="px-6 py-4 border-b border-blue-100 bg-blue-50">
         <h3 class="m-0 text-xl font-semibold text-blue-800">{{ title }}</h3>
       </div>
       
-      <!-- Cabecera con mensajes -->
-      <div class="px-6 py-4 bg-blue-50 border-b border-blue-100">
+      <!-- Cabecera con mensajes - Solo se muestra si hay mensaje y no es el modal de ventas -->
+      <div v-if="message && showHeader" class="px-6 py-4 bg-blue-50 border-b border-blue-100">
         <!-- Mensaje principal -->
         <p class="text-lg mb-2 text-blue-800 text-center font-medium">{{ message }}</p>
         
@@ -21,14 +21,14 @@
       </div>
       
       <!-- Contenido del modal -->
-      <ion-card-content class="p-4 md:p-5">
+      <ion-card-content>
         <!-- Contenido personalizado (slot) a todo el ancho -->
         <div class="custom-content-wrapper">
           <slot></slot>
         </div>
         
         <!-- Botones de acción -->
-        <div class="flex justify-between mt-5 gap-3 sm:flex-row flex-col-reverse">
+        <div class="flex justify-between mt-1 gap-3 sm:flex-row flex-col-reverse">
           <ion-button 
             fill="outline" 
             class="flex-1 cancel-button"
@@ -39,7 +39,7 @@
           </ion-button>
           
           <ion-button 
-            color="primary" 
+            :color="confirmButtonColor || 'primary'" 
             class="flex-1 confirm-button"
             @click="handleConfirm"
           >
@@ -53,6 +53,7 @@
 
 <script setup lang="ts">
 import { IonCard, IonCardContent, IonButton } from "@ionic/vue";
+import { computed } from 'vue';
 
 // Propiedades que recibe el componente
 interface Props {
@@ -71,10 +72,16 @@ const props = withDefaults(defineProps<Props>(), {
   title: "",
   message: "",
   secondaryMessage: "",
-  confirmButtonText: "",
-  cancelButtonText: "",
-  confirmButtonColor: "",
+  confirmButtonText: "Confirmar",
+  cancelButtonText: "Cancelar",
+  confirmButtonColor: "primary",
   closeOnBackdropClick: true
+});
+
+// Computed property para determinar si se debe mostrar el encabezado
+// Si el título está vacío, asumimos que es el modal de ventas y no mostramos el encabezado
+const showHeader = computed(() => {
+  return props.title !== "";
 });
 
 // Eventos que emite el componente
@@ -183,12 +190,12 @@ const handleBackdropClick = () => {
 }
 
 :deep(ion-card-content) {
-  padding: 16px;
+  padding: 8px;
 }
 
 @media (min-width: 768px) {
   :deep(ion-card-content) {
-    padding: 20px;
+    padding: 10px;
   }
 }
 </style>

@@ -46,8 +46,8 @@
     <!-- Modal de confirmación para finalizar el wizard -->
     <ConfirmationModal 
       :is-open="showConfirmationModal"
-      title="Finalizar Proceso"
-      message="Verifique que todos los datos sean correctos. No podra regresar a este paso"
+      title=""
+      message=""
       secondary-message=""
       confirm-button-text="Finalizar"
       cancel-button-text="Continuar Editando"
