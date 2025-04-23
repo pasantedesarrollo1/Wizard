@@ -30,22 +30,20 @@
           'period-inactive': salesData.billingFrequency !== 'anual' 
         }">
           Anual
-          <ion-badge v-if="salesData.billingFrequency === 'anual'" class="savings-badge">
-            Ahorro 20%
-          </ion-badge>
         </span>
       </div>
     </div>
     
     <!-- Contenedor de cards con ion-grid para mejor control responsivo -->
     <ion-grid class="plans-grid">
-      <ion-row>
+      <ion-row class="equal-height-row">
         <ion-col 
           size="12" 
           size-sm="6" 
           size-md="3" 
           v-for="opcion in opcionesTipoPlanes" 
           :key="opcion.value"
+          class="equal-height-col"
         >
           <!-- Usando el componente SelectableCard para los planes -->
           <div class="plan-card-wrapper">
@@ -55,44 +53,43 @@
               :label="opcion.label"
               :is-popular="opcion.value === 'pymeplan'"
               popular-label="Popular"
-              height="auto"
               class="plan-card-custom"
               @update:modelValue="seleccionarPlan"
             >
               <!-- Contenido personalizado dentro del SelectableCard -->
-              <div class="price-container">
-                <div class="price-tag">
-                  <span class="currency">$</span>
-                  <span class="amount">{{ getPlanPrice(opcion) }}</span>
-                  <span class="period">/{{ salesData.billingFrequency === 'anual' ? 'año' : 'mes' }}</span>
+              <div class="plan-content">
+                <div class="price-container">
+                  <div class="price-tag">
+                    <span class="currency">$</span>
+                    <span class="amount">{{ getPlanPrice(opcion) }}</span>
+                    <span class="period">/{{ salesData.billingFrequency === 'anual' ? 'año' : 'mes' }}</span>
+                  </div>
                 </div>
-        
-              </div>
-              
-              <!-- Características del plan -->
-              <div class="features-list">
-                <div v-for="(caracteristica, index) in opcion.caracteristicas" :key="index" class="feature-item">
-                  <ion-icon :icon="checkmarkCircle" class="feature-icon"></ion-icon>
-                  <span>{{ caracteristica }}</span>
+                
+                <!-- Características del plan -->
+                <div class="features-list">
+                  <div v-for="(caracteristica, index) in opcion.caracteristicas" :key="index" class="feature-item">
+                    <ion-icon :icon="checkmarkCircle" class="feature-icon"></ion-icon>
+                    <span>{{ caracteristica }}</span>
+                  </div>
                 </div>
-              </div>
-              
-              <!-- Etiquetas adicionales -->
-              <div class="badges-container">
-                <ion-badge 
-                  v-if="opcion.value === 'freeplan'" 
-                  color="success"
-                  class="plan-badge"
-                >
-                  Gratis
-                </ion-badge>
-                <ion-badge 
-                  v-if="salesData.billingFrequency === 'anual' && opcion.value !== 'freeplan'" 
-                  color="tertiary"
-                  class="plan-badge annual-badge"
-                >
-                  Ahorro anual
-                </ion-badge>
+                
+                <!-- Etiquetas adicionales -->
+                <div class="badges-container">
+                  <ion-badge 
+                    v-if="opcion.value === 'freeplan'" 
+                    color="success"
+                    class="plan-badge"
+                  >
+                    Gratis
+                  </ion-badge>
+                  <ion-badge 
+                    v-if="salesData.billingFrequency === 'anual' && opcion.value !== 'freeplan'" 
+                    color="tertiary"
+                    class="plan-badge annual-badge"
+                  >
+                  </ion-badge>
+                </div>
               </div>
             </SelectableCard>
           </div>
@@ -183,7 +180,7 @@ const opcionesTipoPlanes = ref<TipoPlanesOpcion[]>([
   {
     label: "Plan Lite",
     value: "liteplan",
-    precioMensual: "",
+    precioMensual: " ",
     precioAnual: "49.99",
     caracteristicas: [
       "2 Usuarios Simultaneaos",
@@ -284,15 +281,6 @@ const togglePeriodo = (event: Event) => {
   color: #777;
 }
 
-.savings-badge {
-  margin-left: 0.5rem;
-  font-size: 0.7rem;
-  padding: 4px 8px;
-  border-radius: 12px;
-  background-color: rgba(var(--ion-color-tertiary-rgb), 0.15);
-  color: var(--ion-color-tertiary);
-}
-
 /* Estilos para el switch */
 .switch-container {
   position: relative;
@@ -389,30 +377,60 @@ const togglePeriodo = (event: Event) => {
   margin: 1.5rem 0;
 }
 
-.plan-card-custom {
-  height: 100% !important;
-  min-height: 400px;
+/* NUEVO: Asegurar que todas las filas tengan la misma altura */
+.equal-height-row {
+  display: flex;
+  flex-wrap: wrap;
 }
 
-/* CORRECCIÓN: Asegurar que el contenido de la tarjeta tenga estructura uniforme */
-.plan-card-custom :deep(.selectable-card) {
-  height: 100% !important;
-  padding: 1rem;
+/* NUEVO: Asegurar que todas las columnas tengan la misma altura */
+.equal-height-col {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+/* NUEVO: Asegurar que las tarjetas ocupen todo el espacio disponible */
+.plan-card-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+/* MODIFICADO: Asegurar que las tarjetas tengan altura fija */
+.plan-card-custom {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
+}
+
+/* NUEVO: Estructura del contenido de la tarjeta */
+.plan-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+/* MODIFICADO: Asegurar que el componente SelectableCard ocupe todo el espacio */
+.plan-card-custom :deep(.selectable-card) {
+  height: 100% !important;
+  min-height: 450px; /* Altura mínima para todas las tarjetas */
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
 }
 
 .plan-card-custom :deep(.selectable-card.popular-card) {
   transform: scale(1.03);
 }
 
-/* CORRECCIÓN: Título con altura fija para eliminar el espacio morado no deseado */
+/* MODIFICADO: Título con altura fija */
 .plan-card-custom :deep(.card-label) {
   margin-top: 0;
-  height: 70px; /* Altura fija para el título */
+  height: 65px; /* Altura fija para el título */
   display: flex;
-  align-items: top;
-  justify-content: top;
+  align-items: center;
+  justify-content: center;
 }
 
 .plan-card-custom :deep(.label-text) {
@@ -423,7 +441,7 @@ const togglePeriodo = (event: Event) => {
 /* Contenedor de precio */
 .price-container {
   text-align: center;
-  margin: 1rem 0 1.5rem;
+  margin: 1rem 0;
   width: 100%;
 }
 
@@ -451,25 +469,18 @@ const togglePeriodo = (event: Event) => {
   color: #777;
 }
 
-.savings-text {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: #777;
-}
-
-.savings-text .original-price {
-  text-decoration: line-through;
-  opacity: 0.7;
-}
-
 /* Lista de características */
 .features-list {
   width: 100%;
+  flex-grow: 1; /* Permite que la lista de características crezca */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .feature-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
   margin-bottom: 0.8rem;
   font-size: 0.9rem;
@@ -481,6 +492,7 @@ const togglePeriodo = (event: Event) => {
   color: var(--ion-color-primary);
   font-size: 1.2rem;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 /* Contenedor de badges */
@@ -505,6 +517,10 @@ const togglePeriodo = (event: Event) => {
   ion-col[size-md="3"] {
     --ion-grid-column-size: 6;
     --ion-grid-column: 6;
+  }
+  
+  .plan-card-custom :deep(.selectable-card) {
+    min-height: 400px;
   }
 }
 
@@ -531,6 +547,10 @@ const togglePeriodo = (event: Event) => {
   
   .title-heading {
     font-size: 1.2rem;
+  }
+  
+  .plan-card-custom :deep(.selectable-card) {
+    min-height: 350px;
   }
 }
 </style>

@@ -13,6 +13,16 @@
       {{ popularLabel }}
     </div>
     
+    <!-- Contenedor del icono (NUEVO) -->
+    <div class="icon-container">
+      <Icon 
+        v-if="icon" 
+        :icon="icon" 
+        class="card-icon"
+        :class="{ 'text-white': isSelected }"
+      />
+    </div>
+    
     <!-- CORRECCIÓN: Contenedor del título con altura fija y sin espacio excesivo -->
     <div class="card-label" :class="{ 'text-white': isSelected }">
       <p class="label-text">
@@ -31,6 +41,7 @@
 import { computed } from 'vue';
 import { IonIcon } from "@ionic/vue";
 import { star } from "ionicons/icons";
+import { Icon } from "@iconify/vue"; // NUEVO: Importación del componente Icon
 
 interface Props {
   modelValue: string;
@@ -151,6 +162,22 @@ const selectCard = () => {
   font-size: 1rem;
 }
 
+/* NUEVO: Estilos para el contenedor del icono */
+.icon-container {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* NUEVO: Estilos para el icono */
+.card-icon {
+  width: 5rem;
+  height: 5rem;
+  transition: var(--transition-normal);
+}
+
 .label-text {
   font-size: 1rem;
   font-weight: 500;
@@ -163,6 +190,12 @@ const selectCard = () => {
     height: 160px;
   }
   
+  /* NUEVO: Media query para el icono */
+  .card-icon {
+    width: 4rem;
+    height: 4rem;
+  }
+  
   .label-text {
     font-size: 1rem;
   }
@@ -171,6 +204,12 @@ const selectCard = () => {
 @media (max-width: 576px) {
   .selectable-card {
     height: 140px;
+  }
+  
+  /* NUEVO: Media query para el icono */
+  .card-icon {
+    width: 3.5rem;
+    height: 3.5rem;
   }
   
   .label-text {
