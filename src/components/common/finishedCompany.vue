@@ -3,26 +3,31 @@
     <ion-content class="ion-padding">
       <div class="success-container">
         
-        <!-- Tarjeta de acceso -->
+        <!-- Tarjeta de éxito con diseño mejorado -->
         <div class="access-card">
           <h2 class="access-title">¡Empresa Creada Exitosamente!</h2>
           
-          <!-- URL de acceso mejorada -->
+          <!-- URL de acceso mejorada con mejor visibilidad y feedback -->
           <div class="domain-display">
-            <div class="domain-label">El siguiente link te permitira acceder a tu empresa</div>
+            <div class="domain-label">El siguiente enlace te permitirá acceder a tu empresa:</div>
             <div class="domain-url-wrapper">
               <div class="domain-url-display">
                 <span class="domain-prefix">https://</span>
                 <span class="domain-value">{{ domainValue }}</span>
                 <span class="domain-suffix">.illarli.net</span>
               </div>
-              <button class="copy-button" @click="copyToClipboard" title="Copiar al portapapeles">
+              <button 
+                class="copy-button" 
+                @click="copyToClipboard" 
+                title="Copiar al portapapeles"
+                aria-label="Copiar URL al portapapeles"
+              >
                 <ion-icon :icon="copy" class="copy-icon"></ion-icon>
               </button>
             </div>
           </div>
           
-          <!-- Vista previa del navegador -->
+          <!-- Vista previa del navegador para mejor reconocimiento -->
           <div class="browser-preview" v-if="domainValue.length > 0">
             <div class="browser-chrome">
               <div class="browser-actions">
@@ -45,16 +50,22 @@
             </div>
           </div>
           
-          <!-- Botón de acción (solo el principal) -->
+          <!-- Botón de acción principal con etiqueta clara -->
           <div class="action-area">
-            <ion-button expand="block" color="primary" @click="goToCompany" class="main-button">
+            <ion-button 
+              expand="block" 
+              color="primary" 
+              @click="goToCompany" 
+              class="main-button"
+              aria-label="Acceder a mi empresa"
+            >
               <ion-icon :icon="open" slot="start"></ion-icon>
               ACCEDER A MI EMPRESA
             </ion-button>
           </div>
         </div>
         
-        <!-- Mensaje de copiado -->
+        <!-- Mensaje de confirmación de copiado -->
         <div class="copy-toast" :class="{ 'show-toast': showCopyToast }">
           URL copiada al portapapeles
         </div>
@@ -89,10 +100,10 @@ const fullDomainUrl = computed(() => {
 // Función para ir a la empresa
 const goToCompany = () => {
   // Abrir la URL completa en una nueva ventana
-  window.open(fullDomainUrl.value, "_blank");
+  window.open(fullDomainUrl.value, "_blank", "noopener,noreferrer");
 };
 
-// Función para copiar al portapapeles
+// Función para copiar al portapapeles con feedback
 const copyToClipboard = () => {
   navigator.clipboard.writeText(fullDomainUrl.value)
     .then(() => {
@@ -103,13 +114,21 @@ const copyToClipboard = () => {
     })
     .catch(err => {
       console.error('Error al copiar: ', err);
+      // Proporcionar feedback alternativo en caso de error
+      alert('No se pudo copiar automáticamente. Por favor, copia manualmente la URL: ' + fullDomainUrl.value);
     });
 };
 
 // Cargar datos del store si existen
 onMounted(() => {
   // Obtener los datos de companyCreation del store
-  const companyCreation = wizardStore.getStepData("companyCreation");
+  let companyCreation;
+  try {
+    companyCreation = wizardStore.getStepData("companyCreation");
+  } catch (error) {
+    console.error("Error al obtener datos del store:", error);
+    companyCreation = null;
+  }
   
   // Verificar si existe companyCreation y si tiene la propiedad domain
   if (companyCreation && companyCreation.domain) {
@@ -120,23 +139,39 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Contenedor principal con animación de entrada */
+.success-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 1rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /* Tarjeta de acceso */
 .access-card {
+  width: 100%;
+  max-width: 600px;
   background-color: white;
   border-radius: 16px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
   padding: 2rem;
-  animation: fadeInUp 0.8s ease-out;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
 .access-title {
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: var(--ion-color-dark);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
   margin: 0;
   text-align: center;
 }
@@ -149,8 +184,8 @@ onMounted(() => {
 }
 
 .domain-label {
-  font-size: 0.9rem;
-  color: var(--ion-color-medium);
+  font-size: 0.95rem;
+  color: #4b5563;
   margin-bottom: 0.25rem;
 }
 
@@ -169,6 +204,7 @@ onMounted(() => {
   border-radius: 12px;
   font-family: 'SF Mono', 'Consolas', monospace;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
 }
 
 .domain-prefix {
@@ -215,6 +251,11 @@ onMounted(() => {
   transform: translateY(1px);
 }
 
+.copy-button:focus {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
 .copy-icon {
   font-size: 20px;
   color: white;
@@ -226,6 +267,12 @@ onMounted(() => {
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   border: 1px solid #e5e7eb;
+  animation: slideUp 0.6s ease-out 0.3s both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .browser-chrome {
@@ -309,16 +356,9 @@ onMounted(() => {
   color: white;
 }
 
-.site-name {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--ion-color-dark);
-  margin: 0 0 0.5rem;
-}
-
 .site-welcome {
-  font-size: 0.9rem;
-  color: var(--ion-color-medium);
+  font-size: 0.95rem;
+  color: #4b5563;
   margin: 0;
 }
 
@@ -327,6 +367,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  animation: fadeIn 0.6s ease-out 0.6s both;
 }
 
 .main-button {
@@ -335,6 +376,19 @@ onMounted(() => {
   --padding-bottom: 1rem;
   font-weight: 600;
   margin: 0;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  transition: all 0.3s ease;
+}
+
+.main-button:hover {
+  --background: var(--ion-color-primary-shade);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+  transform: translateY(-2px);
+}
+
+.main-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }
 
 /* Toast de copiado */
@@ -356,49 +410,41 @@ onMounted(() => {
   bottom: 20px;
 }
 
-/* Animaciones */
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* Estilos responsivos */
 @media (max-width: 768px) {
-  
   .access-card {
     padding: 1.5rem;
   }
   
   .access-title {
-    font-size: 1.2rem;
-  }
-}
-
-@media (max-width: 480px) {
-  
-  .access-card {
-    padding: 1.25rem;
+    font-size: 1.3rem;
   }
   
   .domain-url-display {
     padding: 0.6rem 1rem;
+  }
+  
+  .domain-value {
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .access-card {
+    padding: 1.25rem;
+  }
+  
+  .domain-url-wrapper {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .domain-url-display {
+    width: 100%;
+  }
+  
+  .copy-button {
+    align-self: flex-end;
   }
   
   .domain-value {
@@ -414,12 +460,8 @@ onMounted(() => {
     font-size: 24px;
   }
   
-  .site-name {
-    font-size: 1.1rem;
-  }
-  
   .site-welcome {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
   }
 }
 </style>

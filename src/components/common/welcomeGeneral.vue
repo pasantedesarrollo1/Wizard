@@ -1,48 +1,56 @@
 <template>
-  <ion-content class="ion-padding">
-    <div class="welcome-container">
-      <!-- Fondo minimalista con gradiente sutil -->
+  <ion-content>
+    <div class="welcome-container" :class="{ 'animate': isAnimated }">
+      <!-- Fondo con diseño minimalista y accesible -->
       <div class="minimal-background">
         <div class="gradient-overlay"></div>
       </div>
   
-      <!-- Contenido principal -->
+      <!-- Contenido principal con mejor estructura semántica -->
       <div class="content">
         <div class="welcome-card">
-          <!-- Logo con soporte para src -->
-          <div class="logo-container">
-            <div class="logo-rectangle">
-              <img src="@\assets\icons\logo-horizontal.png" alt="Logo" class="logo-image" />
+          <!-- Logo container como parte de la tarjeta pero sin padding -->
+          <div class="logo-wrapper">
+            <div class="logo-container" aria-hidden="true">
+              <img 
+                src="@/assets/icons/logo-horizontal.png" 
+                alt="Logo Wanqara" 
+                class="logo-image" 
+              />
             </div>
           </div>
           
-          <!-- Título principal -->
-          <h1 class="welcome-title">¡Wanqara te da la bienvenida!</h1>
-          
-          <!-- Descripción -->
-          <div class="description-container">
-            <p class="description-text">
-              Este asistente te guiará paso a paso para configurar
-              lo que necesitas de forma rápida y sencilla. ¡Empecemos!
-            </p>
-          </div>
-          
-          <!-- Indicación para continuar -->
-          <div class="cta-container">
-            <p class="cta-text">
-              Haz clic en el siguiente botón para comenzar
-            </p>
-          </div>
+          <!-- Contenido de la tarjeta -->
+          <div class="card-content">
+            <!-- Título principal con jerarquía clara -->
+            <h1 class="welcome-title">¡Bienvenido a Wanqara!</h1>
+            
+            <!-- Descripción con texto más claro y conciso -->
+            <div class="description-container">
+              <p class="description-text">
+                Este asistente te guiará paso a paso para configurar tu empresa 
+                de forma rápida y sencilla. Completarás el proceso en pocos minutos.
+              </p>
+            </div>
+            
+            <!-- Indicación para continuar con mejor contraste y visibilidad -->
+            <div class="cta-container">
+              <p class="cta-text">
+                Haz clic en el botón para comenzar la configuración
+              </p>
+            </div>
 
-          <!-- Botón Comenzar -->
-          <div class="button-container">
-            <ion-button 
-              expand="block"
-              class="start-button" 
-              @click="onStartClick"
-            >
-              Comenzar
-            </ion-button>
+            <!-- Botón Comenzar con mejor accesibilidad y feedback visual -->
+            <div class="button-container">
+              <ion-button 
+                expand="block"
+                class="start-button" 
+                @click="onStartClick"
+                aria-label="Comenzar el proceso de configuración"
+              >
+                Comenzar
+              </ion-button>
+            </div>
           </div>
         </div>
       </div>
@@ -51,18 +59,20 @@
 </template>
   
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { 
-  IonContent, 
-  IonButton 
-} from '@ionic/vue';
+import { ref, onMounted } from 'vue';
+import { IonContent, IonButton } from '@ionic/vue';
+
+// Estado para controlar las animaciones
+const isAnimated = ref(false);
 
 // Definimos el evento que emitirá este componente cuando se haga clic en "Comenzar"
 const emit = defineEmits(['start']);
 
 onMounted(() => {
-  // Añadimos la clase para iniciar las animaciones cuando el componente está montado
-  document.querySelector('.welcome-container')?.classList.add('animate');
+  // Pequeño retraso para asegurar que las transiciones se ejecuten correctamente
+  setTimeout(() => {
+    isAnimated.value = true;
+  }, 100);
 });
 
 // Función que se ejecuta cuando se hace clic en el botón "Comenzar"
@@ -73,7 +83,7 @@ const onStartClick = () => {
 </script>
   
 <style scoped>
-/* Estilos base */
+/* Estilos base con mejor organización */
 * {
   margin: 0;
   padding: 0;
@@ -90,9 +100,10 @@ const onStartClick = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0px;
 }
 
-/* Fondo minimalista */
+/* Fondo minimalista con mejor contraste */
 .minimal-background {
   position: absolute;
   top: 0;
@@ -109,10 +120,10 @@ const onStartClick = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(var(--ion-color-primary-rgb), 0.03) 0%, rgba(var(--ion-color-primary-rgb), 0.01) 100%);
+  background: linear-gradient(135deg, rgba(var(--ion-color-primary-rgb), 0.05) 0%, rgba(var(--ion-color-primary-rgb), 0.02) 100%);
 }
   
-/* Contenido principal */
+/* Contenido principal con animaciones mejoradas */
 .content {
   position: relative;
   z-index: 1;
@@ -129,38 +140,39 @@ const onStartClick = () => {
   transform: translateY(0);
 }
   
-/* Tarjeta de bienvenida */
+/* Tarjeta de bienvenida con mejor elevación y contraste */
 .welcome-card {
   position: relative;
-  padding: 1.5rem;
-  border-radius: 16px;
   background-color: white;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
-  
-/* Logo */
+
+/* Contenedor del logo que se extiende al ancho completo */
+.logo-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .logo-container {
-  margin-bottom: 2.5rem;
   width: 100%;
-}
-  
-.logo-rectangle {
-  width: 100%;
-  height: 80px;
+  height: 100px;
   background: white;
-  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 5px 15px rgba(var(--ion-color-primary-rgb), 0.15);
   opacity: 0;
-  transform: scale(0.8);
+  transform: scale(0.9);
   transition: opacity 0.6s ease, transform 0.6s ease;
   transition-delay: 0.2s;
 }
 
-.welcome-container.animate .logo-rectangle {
+.welcome-container.animate .logo-container {
   opacity: 1;
   transform: scale(1);
 }
@@ -169,16 +181,15 @@ const onStartClick = () => {
   height: 60%;
   object-fit: contain;
 }
-  
-.logo-placeholder {
-  color: var(--ion-color-primary);
-  font-size: 2rem;
-  font-weight: 700;
+
+/* Contenido de la tarjeta con padding adecuado */
+.card-content {
+  padding: 2rem;
 }
   
-/* Título */
+/* Título con mejor jerarquía visual */
 .welcome-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   color: var(--ion-color-primary);
   margin-bottom: 1.5rem;
@@ -193,14 +204,14 @@ const onStartClick = () => {
   transform: translateY(0);
 }
   
-/* Descripción */
+/* Descripción con mejor legibilidad */
 .description-container {
   margin-bottom: 2.5rem;
 }
   
 .description-text {
   font-size: 1.1rem;
-  color: var(--ion-color-medium);
+  color: #4a5568;
   line-height: 1.6;
   opacity: 0;
   transform: translateY(15px);
@@ -213,12 +224,12 @@ const onStartClick = () => {
   transform: translateY(0);
 }
   
-/* Sección de llamada a la acción */
+/* Sección de llamada a la acción con mejor contraste */
 .cta-container {
   margin-top: 2rem;
   padding: 1.5rem;
   border-radius: 12px;
-  background-color: rgba(var(--ion-color-primary-rgb), 0.03);
+  background-color: rgba(var(--ion-color-primary-rgb), 0.05);
   opacity: 0;
   transform: translateY(15px);
   transition: opacity 0.6s ease, transform 0.6s ease;
@@ -236,13 +247,13 @@ const onStartClick = () => {
   font-weight: 500;
 }
   
-/* Botón de comenzar */
+/* Botón de comenzar con mejor feedback visual */
 .button-container {
   margin-top: 2.5rem;
   opacity: 0;
   transform: translateY(15px);
   transition: opacity 0.6s ease, transform 0.6s ease;
-  transition-delay: 1.6s;
+  transition-delay: 1s;
 }
 
 .welcome-container.animate .button-container {
@@ -254,23 +265,29 @@ const onStartClick = () => {
   --background: var(--ion-color-primary);
   --color: white;
   --border-radius: 12px;
-  --padding-top: 12px;
-  --padding-bottom: 12px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
   --padding-start: 40px;
   --padding-end: 40px;
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 auto;
-  box-shadow: 0 8px 16px rgba(var(--ion-color-primary-rgb), 0.15);
+  box-shadow: 0 8px 16px rgba(var(--ion-color-primary-rgb), 0.2);
   transition: all 0.3s ease;
 }
   
 .start-button:hover {
   --background: var(--ion-color-primary-shade);
-  box-shadow: 0 10px 20px rgba(var(--ion-color-primary-rgb), 0.2);
+  box-shadow: 0 10px 20px rgba(var(--ion-color-primary-rgb), 0.25);
+  transform: translateY(-2px);
+}
+
+.start-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 5px 10px rgba(var(--ion-color-primary-rgb), 0.15);
 }
   
-/* Ajustes responsivos */
+/* Ajustes responsivos mejorados */
 @media (max-width: 768px) {
   .welcome-title {
     font-size: 1.8rem;
@@ -284,11 +301,11 @@ const onStartClick = () => {
     font-size: 0.9rem;
   }
     
-  .welcome-card {
-    padding: 2rem 1.5rem;
+  .card-content {
+    padding: 1.75rem 1.5rem;
   }
     
-  .logo-rectangle {
+  .logo-container {
     height: 70px;
   }
 }
@@ -302,16 +319,20 @@ const onStartClick = () => {
     font-size: 0.9rem;
   }
     
-  .welcome-card {
+  .card-content {
     padding: 1.5rem 1rem;
   }
     
-  .logo-rectangle {
+  .logo-container {
     height: 60px;
   }
     
-  .logo-placeholder {
-    font-size: 1.5rem;
+  .start-button {
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    --padding-start: 30px;
+    --padding-end: 30px;
+    font-size: 1rem;
   }
 }
 </style>
