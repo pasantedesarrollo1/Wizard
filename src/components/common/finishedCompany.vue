@@ -9,7 +9,7 @@
           
           <!-- URL de acceso mejorada con mejor visibilidad y feedback -->
           <div class="domain-display">
-            <div class="domain-label">El siguiente enlace te permitirá acceder a tu empresa:</div>
+            <div class="domain-label">Copia el siguiente enlace que te permitirá acceder a tu empresa:</div>
             <div class="domain-url-wrapper">
               <div class="domain-url-display">
                 <span class="domain-prefix">https://</span>

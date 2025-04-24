@@ -113,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useInitialData } from "@/composables/useInitialData";
 import { 
@@ -182,6 +182,14 @@ const handleFinancialInstitutionInput = (event: Event) => {
 const handleProofPaymentInput = (event: Event) => {
   data.value.payment.transferData.proofPayment = allowOnlyNumericCharacters(event);
 };
+
+// Asegurar que la fecha actual se cargue al montar el componente
+onMounted(() => {
+  // Si no hay fecha establecida, establecer la fecha actual
+  if (!data.value.payment.date) {
+    data.value.payment.date = formatCurrentDate();
+  }
+});
 </script>
 
 <style scoped>
