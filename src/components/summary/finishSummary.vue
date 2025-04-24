@@ -1,6 +1,6 @@
 <template>
-  <div class="sales-summary">    
-    <!-- Cabecera con estilo de salesSummary pero manteniendo el logo -->
+  <div class="finish-summary">
+    <!-- Cabecera con título claro y mensaje informativo -->
     <div class="summary-header">
       <h2 class="header-title">Resumen de Configuración</h2>
       <div class="header-info">
@@ -8,192 +8,178 @@
         <span>Verifique que todos los datos sean correctos antes de finalizar</span>
       </div>
     </div>
-    <img v-if="hasLogo" :src="logoUrl" alt="Logo" class="company-logo" />
 
-    <!-- Tabs para navegar entre secciones -->
-    <div class="tabs-container">
-      <div 
-        v-for="(tab, index) in tabs" 
-        :key="index"
-        :class="['tab', { active: activeTab === index }]"
-        @click="activeTab = index"
-      >
-        {{ tab }}
-      </div>
+    <!-- Logo de la empresa (si existe) -->
+    <div class="logo-container" v-if="hasLogo">
+      <img :src="logoUrl" alt="Logo de la empresa" class="company-logo" />
     </div>
-    
-    <!-- Contenido de las pestañas -->
-    <div class="tab-content">
-      <!-- Tab 1: Datos Personales y Empresa -->
-      <div v-if="activeTab === 0" class="tab-pane">
-        <!-- Datos Personales - Formato compacto -->
-        <div class="summary-section">
-          <h4 class="section-title">Datos Personales</h4>
-          <div class="compact-grid">
-            <div class="info-pair" v-if="personalInfo.identification.type">
-              <span class="label">ID:</span>
-              <span class="value">{{ getIdentificationType(personalInfo.identification.type) }}</span>
+
+    <!-- Contenedor principal con diseño de factura -->
+    <div class="summary-content">
+      <!-- Sección de Datos Personales y de la Empresa -->
+      <section class="summary-section">
+        <h3 class="section-title">Datos Generales</h3>
+        <div class="data-grid">
+          <!-- Datos Personales -->
+          <div class="data-column">
+            <h4 class="data-title">Datos Personales</h4>
+            <div class="data-item" v-if="personalInfo.identification.type">
+              <span class="data-label">Tipo de ID:</span>
+              <span class="data-value">{{ getIdentificationType(personalInfo.identification.type) }}</span>
             </div>
-            <div class="info-pair" v-if="personalInfo.identification.number">
-              <span class="label">Número:</span>
-              <span class="value">{{ personalInfo.identification.number }}</span>
+            <div class="data-item" v-if="personalInfo.identification.number">
+              <span class="data-label">Número:</span>
+              <span class="data-value">{{ personalInfo.identification.number }}</span>
             </div>
-            <div class="info-pair" v-if="personalInfo.name.first || personalInfo.name.last">
-              <span class="label">Nombre:</span>
-              <span class="value">{{ personalInfo.name.first }} {{ personalInfo.name.last }}</span>
+            <div class="data-item" v-if="personalInfo.name.first || personalInfo.name.last">
+              <span class="data-label">Nombre:</span>
+              <span class="data-value">{{ personalInfo.name.first }} {{ personalInfo.name.last }}</span>
             </div>
-            <div class="info-pair" v-if="personalInfo.contact.email">
-              <span class="label">Email:</span>
-              <span class="value truncate" :title="personalInfo.contact.email">{{ personalInfo.contact.email }}</span>
+            <div class="data-item" v-if="personalInfo.contact.email">
+              <span class="data-label">Email:</span>
+              <span class="data-value" :title="personalInfo.contact.email">{{ personalInfo.contact.email }}</span>
             </div>
-            <div class="info-pair" v-if="personalInfo.contact.phone">
-              <span class="label">Teléfono:</span>
-              <span class="value">{{ personalInfo.contact.phone }}</span>
+            <div class="data-item" v-if="personalInfo.contact.phone">
+              <span class="data-label">Teléfono:</span>
+              <span class="data-value">{{ personalInfo.contact.phone }}</span>
+            </div>
+          </div>
+
+          <!-- Datos de la Empresa -->
+          <div class="data-column">
+            <h4 class="data-title">Datos de la Empresa</h4>
+            <div class="data-item" v-if="companyCreation.ruc">
+              <span class="data-label">RUC:</span>
+              <span class="data-value">{{ companyCreation.ruc }}</span>
+            </div>
+            <div class="data-item" v-if="companyCreation.legalName">
+              <span class="data-label">Razón Social:</span>
+              <span class="data-value" :title="companyCreation.legalName">{{ companyCreation.legalName }}</span>
+            </div>
+            <div class="data-item" v-if="companyCreation.name">
+              <span class="data-label">Nombre:</span>
+              <span class="data-value" :title="companyCreation.name">{{ companyCreation.name }}</span>
+            </div>
+            <div class="data-item" v-if="companyCreation.address">
+              <span class="data-label">Dirección:</span>
+              <span class="data-value" :title="companyCreation.address">{{ companyCreation.address }}</span>
+            </div>
+             <div class="data-item" v-if="companyCreation.phone">
+              <span class="data-label">Teléfono:</span>
+              <span class="data-value">{{ companyCreation.phone }}</span>
+            </div>
+            <div class="data-item" v-if="companyCreation.businessEmail">
+              <span class="data-label">Email:</span>
+              <span class="data-value" :title="companyCreation.businessEmail">{{ companyCreation.businessEmail }}</span>
             </div>
           </div>
         </div>
-        
-        <!-- Datos de la Empresa - Formato compacto -->
-        <div class="summary-section">
-          <h4 class="section-title">Datos de la Empresa</h4>
-          <div class="compact-grid">
-            <div class="info-pair" v-if="companyCreation.ruc">
-              <span class="label">RUC:</span>
-              <span class="value">{{ companyCreation.ruc }}</span>
+      </section>
+
+      <!-- Sección de Configuración de la Empresa -->
+      <section class="summary-section">
+        <h3 class="section-title">Configuración de la Empresa</h3>
+        <div class="data-grid">
+          <div class="data-column">
+            <div class="data-item">
+              <span class="data-label">Agente Retención:</span>
+              <span class="data-value">{{ companyConfig.taxAgent?.isAgent ? 'Sí' : 'No' }}</span>
             </div>
-            <div class="info-pair" v-if="companyCreation.legalName">
-              <span class="label">Razón Social:</span>
-              <span class="value truncate" :title="companyCreation.legalName">{{ companyCreation.legalName }}</span>
+            <div class="data-item">
+              <span class="data-label">Contabilidad:</span>
+              <span class="data-value">{{ companyConfig.taxAgent?.accountingRequired ? 'Obligatoria' : 'No obligatoria' }}</span>
             </div>
-            <div class="info-pair" v-if="companyCreation.name">
-              <span class="label">Nombre:</span>
-              <span class="value truncate" :title="companyCreation.name">{{ companyCreation.name }}</span>
+            <div class="data-item">
+              <span class="data-label">Artesano:</span>
+              <span class="data-value">{{ artisanText }}</span>
             </div>
-            <div class="info-pair" v-if="companyCreation.domain">
-              <span class="label">Dominio:</span>
-              <span class="value">{{ companyCreation.domain }}</span>
+            <div class="data-item" v-if="companyConfig.artisan?.isArtisan && companyConfig.artisan?.artisanNumber">
+              <span class="data-label">Nº Artesano:</span>
+              <span class="data-value">{{ companyConfig.artisan.artisanNumber }}</span>
             </div>
-            <div class="info-pair" v-if="companyCreation.address">
-              <span class="label">Dirección:</span>
-              <span class="value truncate" :title="companyCreation.address">{{ companyCreation.address }}</span>
+          </div>
+          <div class="data-column">
+            <div class="data-item" v-if="companyConfig.defaultDocument">
+              <span class="data-label">Doc. Defecto:</span>
+              <span class="data-value">{{ getDocumentType(companyConfig.defaultDocument) }}</span>
             </div>
-            <div class="info-pair" v-if="companyCreation.phone">
-              <span class="label">Teléfono:</span>
-              <span class="value">{{ companyCreation.phone }}</span>
+            <div class="data-item" v-if="companyConfig.searchParameter">
+              <span class="data-label">Búsqueda:</span>
+              <span class="data-value">{{ getSearchParameter(companyConfig.searchParameter) }}</span>
             </div>
-            <div class="info-pair" v-if="companyCreation.businessEmail">
-              <span class="label">Email:</span>
-              <span class="value truncate" :title="companyCreation.businessEmail">{{ companyCreation.businessEmail }}</span>
+            <div class="data-item" v-if="companyConfig.taxes && companyConfig.taxes.length > 0">
+              <span class="data-label">Impuestos:</span>
+              <span class="data-value">{{ formatTaxes(companyConfig.taxes) }}</span>
+            </div>
+            <div class="data-item" v-if="companyConfig.taxesFiveNumber">
+              <span class="data-label">Código 5%:</span>
+              <span class="data-value">{{ companyConfig.taxesFiveNumber }}</span>
             </div>
           </div>
         </div>
-      </div>
-      
-      <!-- Tab 2: Configuración de la Empresa -->
-      <div v-if="activeTab === 1" class="tab-pane">
-        <div class="summary-section">
-          <h4 class="section-title">Configuración de la Empresa</h4>
-          <div class="compact-grid">
-            <div class="info-pair">
-              <span class="label">Agente Retención:</span>
-              <span class="value">{{ companyConfig.taxAgent?.isAgent ? 'Sí' : 'No' }}</span>
+      </section>
+
+      <!-- Sección de Sucursal y Punto de Venta -->
+      <section class="summary-section">
+        <h3 class="section-title">Matriz y Punto de Emisión</h3>
+        <div class="data-grid">
+          <div class="data-column">
+            <div class="data-item" v-if="branchAndPOS.branch.idBranch">
+              <span class="data-label">Cód. Matriz:</span>
+              <span class="data-value">{{ branchAndPOS.branch.idBranch }}</span>
             </div>
-            <div class="info-pair">
-              <span class="label">Contabilidad:</span>
-              <span class="value">{{ companyConfig.taxAgent?.accountingRequired ? 'Obligatoria' : 'No obligatoria' }}</span>
+            <div class="data-item" v-if="branchAndPOS.branch.commercialName">
+              <span class="data-label">Nombre Comercial:</span>
+              <span class="data-value" :title="branchAndPOS.branch.commercialName">{{ branchAndPOS.branch.commercialName }}</span>
             </div>
-            <div class="info-pair">
-              <span class="label">Artesano:</span>
-              <span class="value">{{ artisanText }}</span>
+            <div class="data-item" v-if="branchAndPOS.branch.name">
+              <span class="data-label">Nombre Matriz:</span>
+              <span class="data-value" :title="branchAndPOS.branch.name">{{ branchAndPOS.branch.name }}</span>
             </div>
-            <div class="info-pair" v-if="companyConfig.artisan?.isArtisan && companyConfig.artisan?.artisanNumber">
-              <span class="label">Nº Artesano:</span>
-              <span class="value">{{ companyConfig.artisan.artisanNumber }}</span>
+            <div class="data-item" v-if="branchAndPOS.branch.address">
+              <span class="data-label">Dirección:</span>
+              <span class="data-value" :title="branchAndPOS.branch.address">{{ branchAndPOS.branch.address }}</span>
             </div>
-            <div class="info-pair" v-if="companyConfig.defaultDocument">
-              <span class="label">Doc. Defecto:</span>
-              <span class="value">{{ getDocumentType(companyConfig.defaultDocument) }}</span>
+             <div class="data-item" v-if="branchAndPOS.branch.phone">
+              <span class="data-label">Teléfono:</span>
+              <span class="data-value">{{ branchAndPOS.branch.phone }}</span>
             </div>
-            <div class="info-pair" v-if="companyConfig.searchParameter">
-              <span class="label">Búsqueda:</span>
-              <span class="value">{{ getSearchParameter(companyConfig.searchParameter) }}</span>
+            <div class="data-item" v-if="branchAndPOS.branch.email">
+              <span class="data-label">Email:</span>
+              <span class="data-value" :title="branchAndPOS.branch.email">{{ branchAndPOS.branch.email }}</span>
             </div>
-            <div class="info-pair" v-if="companyConfig.taxes && companyConfig.taxes.length > 0">
-              <span class="label">Impuestos:</span>
-              <span class="value">{{ formatTaxes(companyConfig.taxes) }}</span>
+          </div>
+          <div class="data-column">
+            <div class="data-item" v-if="branchAndPOS.pointOfSale.idPos">
+              <span class="data-label">Cód. Punto Emisión:</span>
+              <span class="data-value">{{ branchAndPOS.pointOfSale.idPos }}</span>
             </div>
-            <div class="info-pair" v-if="companyConfig.taxesFiveNumber">
-              <span class="label">Código 5%:</span>
-              <span class="value">{{ companyConfig.taxesFiveNumber }}</span>
+            <div class="data-item" v-if="branchAndPOS.pointOfSale.name">
+              <span class="data-label">Nombre P. Emisión:</span>
+              <span class="data-value" :title="branchAndPOS.pointOfSale.name">{{ branchAndPOS.pointOfSale.name }}</span>
+            </div>
+            <div class="data-item">
+              <span class="data-label">Despacho Posterior:</span>
+              <span class="data-value">{{ branchAndPOS.branch.delayedDispatch ? 'Sí' : 'No' }}</span>
+            </div>
+            <div class="data-item">
+              <span class="data-label">Est. Turístico:</span>
+              <span class="data-value">{{ branchAndPOS.branch.isTouristEstablishment ? 'Sí' : 'No' }}</span>
             </div>
           </div>
         </div>
-      </div>
-      
-      <!-- Tab 3: Sucursal y Punto de Venta -->
-      <div v-if="activeTab === 2" class="tab-pane">
-        <div class="summary-section">
-          <h4 class="section-title">Sucursal y Punto de Venta</h4>
-          <div class="compact-grid">
-            <div class="info-pair" v-if="branchAndPOS.branch.idBranch">
-              <span class="label">Cód. Sucursal:</span>
-              <span class="value">{{ branchAndPOS.branch.idBranch }}</span>
-            </div>
-            <div class="info-pair" v-if="branchAndPOS.branch.commercialName">
-              <span class="label">Nombre Comercial:</span>
-              <span class="value truncate" :title="branchAndPOS.branch.commercialName">{{ branchAndPOS.branch.commercialName }}</span>
-            </div>
-            <div class="info-pair" v-if="branchAndPOS.branch.name">
-              <span class="label">Nombre Sucursal:</span>
-              <span class="value truncate" :title="branchAndPOS.branch.name">{{ branchAndPOS.branch.name }}</span>
-            </div>
-            <div class="info-pair" v-if="branchAndPOS.pointOfSale.idPos">
-              <span class="label">Cód. Punto Emisión:</span>
-              <span class="value">{{ branchAndPOS.pointOfSale.idPos }}</span>
-            </div>
-            <div class="info-pair" v-if="branchAndPOS.pointOfSale.name">
-              <span class="label">Nombre P. Emisión:</span>
-              <span class="value truncate" :title="branchAndPOS.pointOfSale.name">{{ branchAndPOS.pointOfSale.name }}</span>
-            </div>
-            <div class="info-pair">
-              <span class="label">Despacho Posterior:</span>
-              <span class="value">{{ branchAndPOS.branch.delayedDispatch ? 'Sí' : 'No' }}</span>
-            </div>
-            <div class="info-pair">
-              <span class="label">Est. Turístico:</span>
-              <span class="value">{{ branchAndPOS.branch.isTouristEstablishment ? 'Sí' : 'No' }}</span>
-            </div>
-            <div class="info-pair" v-if="branchAndPOS.branch.address">
-              <span class="label">Dirección:</span>
-              <span class="value truncate" :title="branchAndPOS.branch.address">{{ branchAndPOS.branch.address }}</span>
-            </div>
-            <div class="info-pair" v-if="branchAndPOS.branch.phone">
-              <span class="label">Teléfono:</span>
-              <span class="value">{{ branchAndPOS.branch.phone }}</span>
-            </div>
-            <div class="info-pair" v-if="branchAndPOS.branch.email">
-              <span class="label">Email:</span>
-              <span class="value truncate" :title="branchAndPOS.branch.email">{{ branchAndPOS.branch.email }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useWizardStore } from "@/stores/wizardStore";
-import { informationCircle } from 'ionicons/icons'; // Importar el icono de información
-import { onMounted } from 'vue';
+import { informationCircle } from 'ionicons/icons';
 
 // Obtener la instancia del store
 const wizardStore = useWizardStore();
-
-// Estado para las pestañas
-const activeTab = ref(0);
-const tabs = ['Datos', 'Configuración', 'Sucursal'];
 
 // Obtener los datos del store
 const personalInfo = computed(() => {
@@ -239,9 +225,12 @@ const branchAndPOS = computed(() => {
       address: "",
       phone: "",
       email: "",
-      delayedDispatch: false,
       isTouristEstablishment: false,
-      logo: { url: "", fileName: "" }
+      delayedDispatch: false,
+      logo: {
+        url: "",
+        fileName: ""
+      }
     },
     pointOfSale: {
       idPos: "",
@@ -292,7 +281,7 @@ const getIdentificationType = (type: string): string => {
 
 const getDocumentType = (type: string): string => {
   const types: Record<string, string> = {
-    'facturas': 'Facturas',
+    'facturas': 'Facturas Electrónicas',
     'recibos': 'Recibos'
   };
   return types[type] || type;
@@ -300,8 +289,8 @@ const getDocumentType = (type: string): string => {
 
 const getSearchParameter = (param: string): string => {
   const params: Record<string, string> = {
-    'nombre': 'Nombre',
-    'codigo': 'Código'
+    'nombre': 'Por Nombre',
+    'codigo': 'Por Código'
   };
   return params[param] || param;
 };
@@ -309,7 +298,7 @@ const getSearchParameter = (param: string): string => {
 // Función para formatear los impuestos con tipado correcto
 const formatTaxes = (taxes: string[]): string => {
   if (!taxes || !Array.isArray(taxes) || taxes.length === 0) {
-    return '';
+    return 'Ninguno';
   }
   return taxes.map((tax: string) => `${tax}%`).join(', ');
 };
@@ -317,42 +306,34 @@ const formatTaxes = (taxes: string[]): string => {
 const artisanText = computed(() => {
   return companyConfig.value.artisan?.isArtisan ? 'Sí' : 'No';
 });
-
-onMounted(() => {
-  // This will run when the component is mounted
-});
 </script>
 
 <style scoped>
-.sales-summary {
+.finish-summary {
   width: 100%;
   background-color: #f8fafc;
-  border-radius: 0.375rem;
+  border-radius: 12px;
   border: 1px solid #e2e8f0;
   overflow: hidden;
-  font-size: 0.8125rem;
-  max-height: 100%;
   display: flex;
   flex-direction: column;
-  min-height: 550px; /* Añadir esta línea para establecer altura mínima */
-
+  min-height: 550px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Estilos para el nuevo encabezado */
+/* Cabecera mejorada */
 .summary-header {
-  background-color: #003cff;
-  padding: 10px;
-  border-radius: 0.5rem 0.5rem 0 0;
+  background: linear-gradient(135deg, #003cff, #0035e0);
+  padding: 16px;
   color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .header-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
   text-align: center;
 }
 
@@ -360,124 +341,112 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 8px;
   font-size: 0.9rem;
   text-align: center;
-  margin-bottom: 0.5rem;
 }
 
 .info-icon {
   font-size: 1.2rem;
 }
 
-/* Ajuste para el logo en el nuevo encabezado */
-.company-logo {
-  max-width: 40px;
-  max-height: 40px;
-  object-fit: contain;
-  border-radius: 4px;
-  margin-top: 0.5rem;
-  background-color: white;
-  padding: 2px;
-}
-
-/* Tabs de navegación */
-.tabs-container {
+/* Contenedor del logo */
+.logo-container {
   display: flex;
-  background-color: #f0f7ff;
-  border-bottom: 1px solid #e1effe;
+  justify-content: center;
+  padding: 12px 0;
+  background-color: white;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.tab {
-  padding: 0.5rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #4b5563;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
+.company-logo {
+  max-width: 80px;
+  max-height: 80px;
+  object-fit: contain;
+  border-radius: 8px;
+  padding: 4px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.tab.active {
-  color: #1a56db;
-  border-bottom-color: #1a56db;
-  background-color: rgba(26, 86, 219, 0.05);
-}
-
-.tab:hover:not(.active) {
-  background-color: rgba(0, 0, 0, 0.02);
-}
-
-/* Contenido de las pestañas */
-.tab-content {
+/* Contenedor principal del contenido */
+.summary-content {
   flex: 1;
   overflow-y: auto;
-  padding: 0.5rem;
-}
-
-.tab-pane {
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 16px;
 }
 
+/* Estilos para las secciones */
 .summary-section {
   background-color: white;
-  border-radius: 0.375rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e5e7eb;
+  padding: 16px;
 }
 
 .section-title {
-  font-size: 0.875rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #1a56db;
-  padding: 0.5rem 0.75rem;
-  margin: 0;
-  border-bottom: 1px solid #e1effe;
-  background-color: #f8fafc;
-  border-radius: 0.375rem 0.375rem 0 0;
+  color: #0f172a;
+  margin-bottom: 12px;
 }
 
-/* Grid compacto para la información */
-.compact-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 0.25rem;
-  padding: 0.5rem;
-}
-
-.info-pair {
+/* Grid para organizar los datos en dos columnas */
+.data-grid {
   display: flex;
-  flex-direction: row; /* Cambiado de column a row */
-  align-items: center; /* Alinear verticalmente */
-  justify-content: space-between; /* Distribuir espacio */
-  background-color: #f9fafb;
-  padding: 0.375rem 0.5rem;
-  border-radius: 0.25rem;
-  min-width: 0; /* Para que funcione truncate */
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
-.label {
-  font-size: 0.6875rem;
+.data-column {
+  flex: 1 1 300px; /* Cada columna ocupa al menos 300px o 1fr del espacio disponible */
+  min-width: 300px;
+}
+
+.data-title {
+  font-size: 0.9rem;
   font-weight: 500;
-  color: #6b7280;
-  margin-right: 0.375rem; /* Espacio entre label y value */
-  white-space: nowrap; /* Evitar que el label se rompa */
+  color: #4b5563;
+  margin-bottom: 8px;
 }
 
-.value {
-  font-size: 0.75rem;
+/* Estilos para cada item de datos */
+.data-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.data-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+.data-value {
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #1f2937;
-  text-align: left; /* Alinear a la derecha */
-  flex: 1; /* Tomar el espacio restante */
-  min-width: 0; /* Necesario para que truncate funcione */
+  color: #334155;
+  text-align: right;
+  word-break: break-word;
 }
 
-.truncate {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .data-grid {
+    flex-direction: column;
+  }
+  
+  .data-column {
+    min-width: auto;
+  }
 }
 </style>
