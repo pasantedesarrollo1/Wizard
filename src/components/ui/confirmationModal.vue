@@ -132,7 +132,7 @@ const handleBackdropClick = () => {
 /* Contenedor para el contenido personalizado */
 .custom-content-wrapper {
   width: 100%;
-  max-height: 50vh;
+  max-height: 100vh;
   overflow-y: auto;
   border-radius: 0.5rem;
   background-color: #f9fafb;

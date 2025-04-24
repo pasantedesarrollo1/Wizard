@@ -334,6 +334,8 @@ onMounted(() => {
   max-height: 100%;
   display: flex;
   flex-direction: column;
+  min-height: 550px; /* Añadir esta línea para establecer altura mínima */
+
 }
 
 /* Estilos para el nuevo encabezado */
