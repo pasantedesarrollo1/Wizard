@@ -1,6 +1,6 @@
 <template>
   <div class="upload-logo-container">
-    <h3 class="section-title">Carga el logo de tu empresa</h3>
+    <h3 class="section-title">Carga el logo de la Matriz</h3>
     <p class="section-description">
       Este logo aparecerá en tus documentos y en tu portal web
     </p>

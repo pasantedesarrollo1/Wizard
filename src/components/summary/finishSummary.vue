@@ -2,16 +2,17 @@
   <div class="finish-summary">
     <!-- Cabecera con título claro y mensaje informativo -->
     <div class="summary-header">
-      <h2 class="header-title">Resumen de Configuración</h2>
-      <div class="header-info">
-        <ion-icon :icon="informationCircle" class="info-icon"></ion-icon>
-        <span>Verifique que todos los datos sean correctos antes de finalizar</span>
+      <div class="header-left">
+        <h2 class="header-title">Resumen de Configuración</h2>
+        <div class="header-info">
+          <ion-icon :icon="informationCircle" class="info-icon"></ion-icon>
+          <span>Verifique que todos los datos sean correctos antes de finalizar</span>
+        </div>
       </div>
-    </div>
-
-    <!-- Logo de la empresa (si existe) -->
-    <div class="logo-container" v-if="hasLogo">
-      <img :src="logoUrl" alt="Logo de la empresa" class="company-logo" />
+      <!-- Logo de la empresa (si existe) posicionado a la derecha -->
+      <div class="header-right">
+        <img v-if="hasLogo" :src="logoUrl" alt="Logo de la empresa" class="company-logo" />
+      </div>
     </div>
 
     <!-- Contenedor principal con diseño de factura -->
@@ -174,12 +175,23 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useWizardStore } from "@/stores/wizardStore";
 import { informationCircle } from 'ionicons/icons';
 
 // Obtener la instancia del store
 const wizardStore = useWizardStore();
+
+// Inicializar los datos del store al montar el componente
+onMounted(() => {
+  personalInfo.value;
+  companyCreation.value;
+  companyConfig.value;
+  branchAndPOS.value;
+  hasLogo.value;
+  logoUrl.value;
+  artisanText.value;
+});
 
 // Obtener los datos del store
 const personalInfo = computed(() => {
@@ -321,47 +333,49 @@ const artisanText = computed(() => {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Cabecera mejorada */
+/* Cabecera mejorada con flexbox para alinear elementos */
 .summary-header {
   background: linear-gradient(135deg, #003cff, #0035e0);
   padding: 16px;
   color: white;
-  text-align: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Contenedor izquierdo para título e información */
+.header-left {
+  flex: 1;
+}
+
+/* Contenedor derecho para el logo */
+.header-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .header-title {
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0 0 8px 0;
-  text-align: center;
 }
 
 .header-info {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
   font-size: 0.9rem;
-  text-align: center;
 }
 
 .info-icon {
   font-size: 1.2rem;
 }
 
-/* Contenedor del logo */
-.logo-container {
-  display: flex;
-  justify-content: center;
-  padding: 12px 0;
-  background-color: white;
-  border-bottom: 1px solid #e2e8f0;
-}
-
+/* Estilos del logo */
 .company-logo {
-  max-width: 80px;
-  max-height: 80px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   border-radius: 8px;
   padding: 4px;
@@ -373,10 +387,10 @@ const artisanText = computed(() => {
 .summary-content {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 /* Estilos para las secciones */
@@ -441,12 +455,50 @@ const artisanText = computed(() => {
 
 /* Estilos responsivos */
 @media (max-width: 768px) {
+  .summary-header {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .header-left {
+    flex: 1;
+  }
+  
+  .header-title {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+  
+  .header-info {
+    font-size: 0.8rem;
+  }
+  
+  .company-logo {
+    width: 60px;
+    height: 60px;
+  }
+  
   .data-grid {
     flex-direction: column;
   }
   
   .data-column {
     min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-header {
+    padding: 12px;
+  }
+  
+  .header-title {
+    font-size: 1.1rem;
+  }
+  
+  .company-logo {
+    width: 50px;
+    height: 50px;
   }
 }
 </style>

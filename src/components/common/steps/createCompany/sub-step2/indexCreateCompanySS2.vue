@@ -5,10 +5,10 @@
       <ion-card class="component-card shadow-lg border border-blue-100">
         <ion-card-header class="bg-blue-500 text-white">
           <ion-card-title class="text-center text-xl font-bold">
-            Logo de la Empresa
+            Logo de la Matriz
           </ion-card-title>
           <ion-card-subtitle class="text-center text-white opacity-90">
-            Personaliza la identidad visual de tu empresa
+            Personaliza la identidad visual de tu Matriz
           </ion-card-subtitle>
         </ion-card-header>
         
