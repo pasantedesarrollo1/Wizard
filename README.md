@@ -1,10 +1,10 @@
 # Wizard - Aplicación de Configuración Empresarial
 
-![Logo de Wizard](./src/assets/icons/logo-horizontal.png)
+## ℹ️ Información General
 
-## 📋 Descripción
-
-Esta es una aplicación desarrollada con Vue 3, TypeScript e Ionic que proporciona una interfaz de usuario intuitiva para la configuración y creación de empresas. La aplicación utiliza un sistema de pasos (steps) y subpasos (substeps) que guía al usuario a través del proceso completo de configuración empresarial, desde la información personal hasta la configuración de la empresa, sucursales y puntos de venta.
+- **Nombre del Proyecto:** Wizard
+- **Versión:** 0.0.1
+- **Descripción:** Aplicación modular desarrollada para facilitar la configuración y el registro de empresas, optimizando la experiencia del usuario a través de un flujo de trabajo guiado mediante steps y substeps.
 
 ## ✨ Características Principales
 
